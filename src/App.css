@@ -79,6 +79,9 @@ body{
   overflow-x: auto;
 }
 
-/* .border-left {
-  border-left: 1px solid #545454;
-} */
+.circle {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
