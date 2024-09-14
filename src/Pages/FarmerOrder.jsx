@@ -61,7 +61,7 @@ function FarmerOrder() {
 
   // Function to determine circle color
   const getCircleColor = (item) => {
-    return item['ยอดส่งจริง'] !== "" ? 'bg-success' : 'bg-primary';
+    return item['ยอดส่งจริง'] !== "" ? 'bg-success' : 'bg-warning';
   };
 
   return (
@@ -69,7 +69,7 @@ function FarmerOrder() {
       <Link to="/home">
         <img src={Enum.URL_LOGO} alt="Company Logo" className="img-fluid" style={{ maxWidth: '150px' }} />
       </Link>
-      <h2 className="text-center">รายการสั่งซื้อ</h2>
+      <h2 className="text-center">ยอดจำนวนการสั่งซื้อและส่งจริงแต่ละสัปดาห์</h2>
       <div className="mb-6">
         <label htmlFor="startDate" className="form-label mt-3 me-3">วันที่เริ่ม:</label>
         <input
