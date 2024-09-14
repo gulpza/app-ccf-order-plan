@@ -1,6 +1,6 @@
 {
-  "homepage": "https://order-plan.chaicharoenfresh.com",
-  "name": "app-ccf-order-plan",
+  "homepage": "https://gulpza.github.io/app-ccf-order-planner",
+  "name": "app-ccf-order-planner",
   "private": true,
   "version": "0.0.0",
   "type": "module",
