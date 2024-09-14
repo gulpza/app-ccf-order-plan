@@ -16,8 +16,8 @@ function formatDate(date) {
 
 function FarmerOrder() {
   // Get the start and end of the current week
-  const getStartOfWeek = () => moment().startOf('week').toDate();
-  const getEndOfWeek = () => moment().endOf('week').toDate();
+  const getStartOfWeek = () => moment().startOf('isoWeek').toDate();
+  const getEndOfWeek = () => moment().endOf('isoWeek').toDate();
 
   const [filteredData, setFilteredData] = useState([]);
   const [startDate, setStartDate] = useState(formatDate(getStartOfWeek())); // Start date as the first day of the week
