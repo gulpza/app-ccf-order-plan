@@ -1,0 +1,84 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  /* margin-top: 4rem; */
+  /* padding: 0rem; */
+  text-align: center;
+}
+
+body{
+  display: block !important;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.container {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.disabled-link {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.custom-react-select .select__single-value {
+  text-align: left;
+}
+
+.custom-react-select .select__single-value,
+.custom-react-select .select__placeholder {
+  text-align: left;
+}
+
+.table tfoot tr {
+  border-top: 2px solid #dee2e6;
+  border-bottom: 2px solid #dee2e6;
+  font-weight: bold;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+/* .border-left {
+  border-left: 1px solid #545454;
+} */
