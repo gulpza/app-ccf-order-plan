@@ -14,7 +14,9 @@ const Home = () => {
           <Link to="/farmer-order" className="card text-center">
             <div className="card-body">
               <i className="fas fa-bullhorn fa-3x mb-3"></i>
-              <h5 className="card-title">ยอดจำนวนการสั่งซื้อและส่งจริงแต่ละสัปดาห์</h5>
+              <h5 className="card-title">ยอดจำนวนการสั่งซื้อ</h5>
+              <h5 className="card-title">และส่งจริงแต่ละสัปดาห์</h5>
+              
             </div>
           </Link>
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom'; // Import useLocation
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Spinner } from 'react-bootstrap';
 import moment from 'moment';
@@ -15,6 +15,10 @@ function formatDate(date) {
 }
 
 function FarmerOrder() {
+  const location = useLocation(); // Get the location object to access the URL query parameters
+  const searchParams = new URLSearchParams(location.search); // Parse query parameters
+  const farmName = searchParams.get('farmName'); // Extract the 'farmName' parameter
+
   // Get the start and end of the current week
   const getStartOfWeek = () => moment().startOf('isoWeek').toDate();
   const getEndOfWeek = () => moment().endOf('isoWeek').toDate();
@@ -32,10 +36,14 @@ function FarmerOrder() {
     let params = "?action=farmer-order";
     params += `&startDate=${encodeURIComponent(startDate.trim())}`;
     params += `&endDate=${encodeURIComponent(endDate.trim())}`;
-  
-    const response = await fetch(`${apiKey}${params}`);
-    const data = await response.json();
-    return data; // Return the fetched data
+    params += `&farmName=${encodeURIComponent(farmName)}`; // Add the farmName parameter if it exists
+    
+    if(!!farmName)
+    {
+      const response = await fetch(`${apiKey}${params}`);
+      const data = await response.json();
+      return data; // Return the fetched data
+    }
   };
 
   // Function to handle filtering
@@ -69,8 +77,14 @@ function FarmerOrder() {
       <Link to="/home">
         <img src={Enum.URL_LOGO} alt="Company Logo" className="img-fluid" style={{ maxWidth: '150px' }} />
       </Link>
-      <h2 className="text-center">ยอดจำนวนการสั่งซื้อ</h2>
-      <h2 className="text-center">และส่งจริงแต่ละสัปดาห์</h2>
+
+      {/* Title with spacing */}
+      <h3 className="text-center">ยอดจำนวนการสั่งซื้อ</h3>
+      <h3 className="text-center mb-4">และส่งจริงแต่ละสัปดาห์</h3>
+
+      <h2> {farmName == null ? "-" : "ไร่"} {farmName}</h2>
+   
+
       <div className="mb-6">
         <label htmlFor="startDate" className="form-label mt-3 me-3">วันที่เริ่ม:</label>
         <input
@@ -96,6 +110,7 @@ function FarmerOrder() {
         </button>
         <button className="btn btn-secondary mt-3 mb-3 ml-3 btn-lg btn-block" onClick={handleReset}>รีเซ็ต</button>
       </div>
+      
       <Modal show={loading} centered>
         <Modal.Body className="text-center">
           <Spinner animation="border" role="status">
@@ -104,6 +119,7 @@ function FarmerOrder() {
           <p>Loading...</p>
         </Modal.Body>
       </Modal>
+      
       <table className="table table-striped">
         <thead className="thead-light">
           <tr>
