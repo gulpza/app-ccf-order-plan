@@ -21,6 +21,8 @@ const Profile = () => {
     phone: '-',
     email: '-',
     location: '-',
+    farmName: 'ฟาร์มจระเข้',
+    userName: 'Birth',
     joinDate: '2024-01-15',
     totalOrders: 156,
     completedOrders: 142,
@@ -117,38 +119,29 @@ const Profile = () => {
                     {/* LINE Profile Section */}
                     <div className="mb-4">
                       <h6 className="fw-bold mb-3" style={{ color: '#2d5a3d' }}>
-                        <i className="fab fa-line me-2" style={{ color: '#06c755' }}></i>
-                        ข้อมูล LINE Profile
+                         <i className="fas fa-seedling me-2"></i>
+                        Profile
                       </h6>
                       <div className="row g-3">
                         <div className="col-12 col-md-6">
                           <div className="d-flex align-items-center p-3 bg-light rounded">
                             <i className="fas fa-user text-primary me-3"></i>
                             <div>
-                              <div className="small text-muted">ชื่อผู้ใช้ LINE</div>
-                              <div className="fw-bold">{userProfile?.displayName || 'ไม่พบข้อมูล'}</div>
+                              <div className="small text-muted">ฟาร์ม</div>
+                              <div className="fw-bold">{userData.farmName}</div>
                             </div>
                           </div>
                         </div>
                         <div className="col-12 col-md-6">
                           <div className="d-flex align-items-center p-3 bg-light rounded">
-                            <i className="fas fa-id-card text-info me-3"></i>
+                            <i className="fas fa-user text-primary me-3"></i>
                             <div>
-                              <div className="small text-muted">LINE User ID</div>
-                              <div className="fw-bold small text-break">{userProfile?.userId || 'ไม่พบข้อมูล'}</div>
+                              <div className="small text-muted">ชื่อ</div>
+                              <div className="fw-bold">{userData.userName}</div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-
-                    {/* Farm Information Section */}
-                    <div>
-                      <h6 className="fw-bold mb-3" style={{ color: '#2d5a3d' }}>
-                        <i className="fas fa-seedling me-2"></i>
-                        ข้อมูลฟาร์ม
-                      </h6>
-                      <div className="row g-3">
+                        <div className="row g-3">
                         <div className="col-12 col-md-6">
                           <div className="d-flex align-items-center p-3 bg-light rounded">
                             <i className="fas fa-phone text-primary me-3"></i>
@@ -177,7 +170,19 @@ const Profile = () => {
                           </div>
                         </div>
                       </div>
+                        <div className="col-12 col-md-6">
+                          <div className="d-flex align-items-center p-3 bg-light rounded">
+                            <i className="fas fa-id-card text-info me-3"></i>
+                            <div>
+                              <div className="small text-muted">LINE User ID</div>
+                              <div className="fw-bold small text-break">{userProfile?.userId || 'ไม่พบข้อมูล'}</div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
                     </div>
+
                   </div>
                 )}
 
