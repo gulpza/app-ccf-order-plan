@@ -5,7 +5,7 @@ import BottomNavigation from '../Components/BottomNavigation';
 import LIFFAuthGuard from '../Components/LIFFAuthGuard';
 import AppHeader from '../Components/AppHeader';
 import PlanOrderDetail from './PlanOrderDetail';
-import { formatDate } from '../Utils/dateUtils';
+import { formatDate } from '../utils/dateUtils';
 
 const PlanOrders = () => {
   const navigate = useNavigate();

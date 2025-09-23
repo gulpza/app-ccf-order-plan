@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import AppHeader from '../Components/AppHeader';
-import { formatDate } from '../Utils/dateUtils';
+import { formatDate } from '../utils/dateUtils';
 
 const PlanOrderDetail = ({ 
   showOrderDetail, 
