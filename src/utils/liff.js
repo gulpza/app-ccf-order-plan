@@ -1,7 +1,7 @@
 import liff from '@line/liff';
 
 // LIFF Configuration - Using Vite environment variables
-const LIFF_ID = import.meta.env.VITE_LIFF_ID || '2008159875-zaa3nly3';
+const LIFF_ID = import.meta.env.VITE_LIFF_ID;
 
 class LIFFService {
   constructor() {

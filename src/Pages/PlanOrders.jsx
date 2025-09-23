@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useLIFF } from '../hooks/useLIFF';
 import BottomNavigation from '../Components/BottomNavigation';
 import LIFFAuthGuard from '../Components/LIFFAuthGuard';
+import AppHeader from '../Components/AppHeader';
 import PlanOrderDetail from './PlanOrderDetail';
+import { formatDate } from '../Utils/dateUtils';
 
 const PlanOrders = () => {
   const navigate = useNavigate();
@@ -157,21 +159,6 @@ const PlanOrders = () => {
     }
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.getMonth();
-    const year = date.getFullYear() + 543; // Convert to Buddhist era
-    
-    const monthNames = [
-      'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
-      'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
-    ];
-    
-    return `${day} ${monthNames[month]} ${year}`;
-  };
-
-
   // Get header background color based on status
   const getHeaderBackgroundColor = (status) => {
     const colorMap = {
@@ -198,91 +185,85 @@ const PlanOrders = () => {
 
   return (
     <LIFFAuthGuard>
-      <div className="container-fluid px-2 px-md-3 pt-0">
+      <div className="container-fluid px-2 px-md-3 pt-0 mt-2">
       {/* Header Section - Mobile Optimized */}
-      <div className="row">
-        <div className="col-12">
-          <div className="d-flex align-items-center justify-content-between py-2 py-md-3 position-relative">
-            {/* Logo - ด้านซ้าย */}
-            <div className="flex-shrink-0">
-              <i className="fas fa-leaf" style={{ fontSize: '2rem', color: '#2d5a3d' }}></i>
-            </div>
-            
-            {/* ข้อความกึ่งกลาง */}
-            <div className="position-absolute start-50 translate-middle-x text-center">
-              <h5 className="mb-0 fw-bold" style={{ color: '#2d5a3d',  fontSize: '1.5rem' }}>แผนการส่งผัก</h5>
-            </div>
-            
-            {/* Spacer เพื่อให้สมดุล */}
-            <div className="flex-shrink-0" style={{ width: '2rem' }}></div>
-          </div>
-        </div>
-      </div>
+      <AppHeader title="แผนการส่งผัก" />
 
       {/* Mobile Summary Bar */}
-      <div className="d-md-none mb-3">
-        <div className="card text-white" style={{ background: '#12a308ff' }}>
-          <div className="card-body p-2">
-            <div className="row text-center">
-              <div className="col-3">
-                <div 
-                  className={`p-2 rounded cursor-pointer ${selectedStatus === '' ? 'bg-white bg-opacity-25' : ''}`}
-                  onClick={() => handleStatusFilter('')}
-                  style={{ 
-                    fontSize: '1rem',
-                    cursor: 'pointer', 
-                    transition: 'all 0.2s ease',
-                    border: selectedStatus === '' ? '1px solid rgba(255,255,255,0.5)' : 'none'
-                  }}
-                >
-                  <div className="small">ทั้งหมด</div>
-                  <div className="fw-bold">{orders.length}</div>
-                </div>
+      <div className="d-md-none mb-3 mt-2">
+        <div className="row g-2">
+          {/* ทั้งหมด */}
+           <div className="col-3">
+            <div 
+              className={`card text-white cursor-pointer ${selectedStatus === 'ทั้งหมด' ? 'border border-white border-2' : ''}`}
+              onClick={() => handleStatusFilter('ทั้งหมด')}
+              style={{ 
+                background: 'linear-gradient(to bottom, #4074e3ff 50%, #ffffff 50%)',
+                cursor: 'pointer', 
+                transition: 'all 0.2s ease',
+                transform: selectedStatus === 'ทั้งหมด' ? 'scale(1.02)' : 'scale(1)'
+              }}
+            >
+              <div className="card-body p-2 text-center">
+                <div className="small mb-1" style={{fontSize: '0.9rem', color: '#ffffff'}}>ทั้งหมด</div>
+                <div className="fw-bold pt-2" style={{fontSize: '1.2rem', color: '#000000'}}>{orders.length}</div>
               </div>
-              <div className="col-3">
-                <div 
-                  className={`p-2 rounded cursor-pointer ${selectedStatus === 'รอส่ง' ? 'bg-white bg-opacity-25' : ''}`}
-                  onClick={() => handleStatusFilter('รอส่ง')}
-                  style={{ 
-                     fontSize: '1rem',
-                    cursor: 'pointer', 
-                    transition: 'all 0.2s ease',
-                    border: selectedStatus === 'รอส่ง' ? '1px solid rgba(255,255,255,0.5)' : 'none'
-                  }}
-                >
-                  <div className="small">รอส่ง</div>
-                  <div className="fw-bold">{getStatistics().pendingOrders}</div>
-                </div>
+            </div>
+          </div>
+          
+          {/* รอส่ง */}
+          <div className="col-3">
+            <div 
+              className={`card text-white cursor-pointer ${selectedStatus === 'รอส่ง' ? 'border border-white border-2' : ''}`}
+              onClick={() => handleStatusFilter('รอส่ง')}
+              style={{ 
+                background: 'linear-gradient(to bottom, #deca4bff 50%, #ffffff 50%)',
+                cursor: 'pointer', 
+                transition: 'all 0.2s ease',
+                transform: selectedStatus === 'รอส่ง' ? 'scale(1.02)' : 'scale(1)'
+              }}
+            >
+              <div className="card-body p-2 text-center">
+                <div className="small mb-1" style={{fontSize: '0.9rem', color: '#ffffff'}}>รอส่ง</div>
+                <div className="fw-bold pt-2" style={{fontSize: '1.2rem', color: '#000000'}}>{getStatistics().pendingOrders}</div>
               </div>
-              <div className="col-3">
-                <div 
-                  className={`p-2 rounded cursor-pointer ${selectedStatus === 'ส่งแล้ว' ? 'bg-white bg-opacity-25' : ''}`}
-                  onClick={() => handleStatusFilter('ส่งแล้ว')}
-                  style={{ 
-                    fontSize: '1rem',
-                    cursor: 'pointer', 
-                    transition: 'all 0.2s ease',
-                    border: selectedStatus === 'ส่งแล้ว' ? '1px solid rgba(255,255,255,0.5)' : 'none'
-                  }}
-                >
-                  <div className="small">ส่งแล้ว</div>
-                  <div className="fw-bold">{getStatistics().completedOrders}</div>
-                </div>
+            </div>
+          </div>
+          
+          {/* ส่งแล้ว */}
+          <div className="col-3">
+            <div 
+              className={`card text-white cursor-pointer ${selectedStatus === 'ส่งแล้ว' ? 'border border-white border-2' : ''}`}
+              onClick={() => handleStatusFilter('ส่งแล้ว')}
+              style={{ 
+                background: 'linear-gradient(to bottom, #4caf50 50%, #ffffff 50%)',
+                cursor: 'pointer', 
+                transition: 'all 0.2s ease',
+                transform: selectedStatus === 'ส่งแล้ว' ? 'scale(1.02)' : 'scale(1)'
+              }}
+            >
+              <div className="card-body p-2 text-center">
+                <div className="small mb-1" style={{fontSize: '0.9rem', color: '#ffffff'}}>ส่งแล้ว</div>
+                <div className="fw-bold pt-2" style={{fontSize: '1.2rem', color: '#000000'}}>{getStatistics().completedOrders}</div>
               </div>
-              <div className="col-3">
-                <div 
-                  className={`p-2 rounded cursor-pointer ${selectedStatus === 'ยกเลิก' ? 'bg-white bg-opacity-25' : ''}`}
-                  onClick={() => handleStatusFilter('ยกเลิก')}
-                  style={{ 
-                    fontSize: '1rem',
-                    cursor: 'pointer', 
-                    transition: 'all 0.2s ease',
-                    border: selectedStatus === 'ยกเลิก' ? '1px solid rgba(255,255,255,0.5)' : 'none'
-                  }}
-                >
-                  <div className="small">ยกเลิก</div>
-                  <div className="fw-bold">{getStatistics().cancelledOrders}</div>
-                </div>
+            </div>
+          </div>
+          
+          {/* ยกเลิก */}
+          <div className="col-3">
+            <div 
+              className={`card text-white cursor-pointer ${selectedStatus === 'ยกเลิก' ? 'border border-white border-2' : ''}`}
+              onClick={() => handleStatusFilter('ยกเลิก')}
+              style={{ 
+                background: 'linear-gradient(to bottom, #ef5350 50%, #ffffff 50%)',
+                cursor: 'pointer', 
+                transition: 'all 0.2s ease',
+                transform: selectedStatus === 'ยกเลิก' ? 'scale(1.02)' : 'scale(1)'
+              }}
+            >
+              <div className="card-body p-2 text-center">
+                <div className="small mb-1" style={{fontSize: '0.9rem', color: '#ffffff'}}>ยกเลิก</div>
+                <div className="fw-bold pt-2" style={{fontSize: '1.2rem', color: '#000000'}}>{getStatistics().cancelledOrders}</div>
               </div>
             </div>
           </div>
@@ -309,12 +290,12 @@ const PlanOrders = () => {
                 style={{
                   background: getHeaderBackgroundColor(order.status),
                   borderRadius: '12px 12px 0 0',
-                  minHeight: '50px'
+                  minHeight: '40px'
                 }}
               >
                 {/* วันที่ส่ง - ด้านซ้าย */}
                 <div className="flex-shrink-0">
-                  <h6 className="mb-0 fw-bold text-white" style={{fontSize: '1rem'}}>
+                  <h6 className="mb-0 fw-bold ps-2 text-white " style={{fontSize: '1rem'}}>
                     {formatDate(order.deliveryDate)}
                   </h6>
                 </div>
@@ -331,7 +312,7 @@ const PlanOrders = () => {
               </div>
               
               {/* Body with quantity data */}
-              <div className="card-body p-3" style={{paddingTop: '0.75rem', background: '#ffffffff'}}>
+              <div className="card-body p-2" style={{paddingTop: '0.75rem', background: '#ffffffff'}}>
                 <div className="row text-center g-2">
                   <div className="col-6">
                     <div className="p-2 bg-light rounded">
@@ -358,14 +339,15 @@ const PlanOrders = () => {
                 borderRadius: '0 0 12px 12px'
               }}>
                 <button 
-                  className="btn btn-sm w-100 text-white fw-bold"
+                  className="btn btn-sm w-100 fw-bold"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleOrderClick(order);
                   }}
                   style={{
-                    fontSize: '1rem',
-                    backgroundColor: '#2d5a3d'
+                    color: '#555555ff',
+                    fontSize: '1.4rem',
+                    // backgroundColor: '#2d5a3d'
                   }}
                 >
                   <i className="fas fa-weight me-2 py-2"></i>

@@ -1,3 +1,7 @@
+import React, { useState } from 'react';
+import AppHeader from '../Components/AppHeader';
+import { formatDate } from '../Utils/dateUtils';
+
 const PlanOrderDetail = ({ 
   showOrderDetail, 
   selectedOrder, 
@@ -7,18 +11,13 @@ const PlanOrderDetail = ({
   setShowOrderDetail 
 }) => {
   
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = (date.getFullYear() + 543); // Convert to Buddhist era
-    return `${day}/${month}/${year}`;
-  };
-
+  // State for confirmation modal
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  
   // Get header background color based on status
   const getHeaderBackgroundColor = (status) => {
     const colorMap = {
-      'รอส่ง': '#eada71ff',
+      'รอส่ง': '#deca4bff',
       'ส่งแล้ว': '#4caf50',
       'ยกเลิก': '#ef5350'
     };
@@ -27,6 +26,22 @@ const PlanOrderDetail = ({
 
   // Check if order can be edited (only "รอส่ง" status)
   const canEdit = selectedOrder?.status === 'รอส่ง';
+
+  // Handle save button click - show confirmation modal
+  const handleSaveClick = () => {
+    setShowConfirmModal(true);
+  };
+
+  // Handle confirm save
+  const handleConfirmSave = () => {
+    updateActualQuantity();
+    setShowConfirmModal(false);
+  };
+
+  // Handle cancel confirmation
+  const handleCancelConfirm = () => {
+    setShowConfirmModal(false);
+  };
 
   if (!selectedOrder) return null;
 
@@ -41,31 +56,20 @@ const PlanOrderDetail = ({
           <div className="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
             <div className="modal-content" style={{ borderRadius: '12px' }}>
               
-              {/* Header Section - Same as PlanOrders */}
-              <div className="container-fluid p-0">
-                <div className="row">
-                  <div className="col-12">
-                    <div className="d-flex align-items-center justify-content-between py-3 px-4 position-relative">
-                      {/* Logo - ด้านซ้าย */}
-                      <div className="flex-shrink-0">
-                        <i className="fas fa-leaf" style={{ fontSize: '2rem', color: '#2d5a3d' }}></i>
-                      </div>
-                      
-                      {/* ข้อความกึ่งกลาง */}
-                      <div className="position-absolute start-50 translate-middle-x text-center">
-                        <h5 className="mb-0 fw-bold" style={{ color: '#2d5a3d' }}>กรอกน้ำหนักผัก</h5>
-                      </div>
-                      
-                      {/* Close button */}
-                      <div className="flex-shrink-0">
-                        <button
-                          type="button"
-                          className="btn-close"
-                          onClick={() => setShowOrderDetail(false)}
-                          style={{ fontSize: '1.2rem' }}
-                        ></button>
-                      </div>
-                    </div>
+              {/* Header Section with Close Button */}
+              <div className="container-fluid px-2 px-md-3 pt-2 mt-2">
+                <div className="position-relative">
+                  <div style={{ paddingLeft: '20px' }}>
+                    <AppHeader title="กรอกน้ำหนักผัก" />
+                  </div>
+                  {/* Close button overlay */}
+                  <div className="position-absolute top-0 end-0 pt-2 p-3">
+                    <button
+                      type="button"
+                      className="btn-close"
+                      onClick={() => setShowOrderDetail(false)}
+                      style={{ fontSize: '1.2rem' }}
+                    ></button>
                   </div>
                 </div>
               </div>
@@ -81,15 +85,15 @@ const PlanOrderDetail = ({
                     }}
                   >
                     {/* วันที่ส่ง - ด้านซ้าย */}
-                    <div className="flex-shrink-0">
-                      <h6 className="mb-0 fw-bold text-white" style={{fontSize: '1.1rem'}}>
+                    <div className="flex-shrink-2">
+                      <h6 className="mb-0 fw-bold text-white " style={{fontSize: '1.2rem'}}>
                         {formatDate(selectedOrder.deliveryDate)}
                       </h6>
                     </div>
                     
                     {/* ประเภทผัก - ด้านขวา */}
-                    <div className="flex-shrink-0">
-                      <h6 className="mb-0 fw-bold text-white" style={{fontSize: '1.1rem'}}>
+                    <div className="flex-shrink-0 position-absolute start-50 translate-middle-x">
+                      <h6 className="mb-0 fw-bold text-white text-center" style={{fontSize: '1.2rem'}}>
                         {selectedOrder.vegetableType}
                       </h6>
                     </div>
@@ -106,6 +110,7 @@ const PlanOrderDetail = ({
                           </label>
                           <input
                             type="number"
+                            autoFocus
                             className="form-control form-control-lg"
                             value={actualQuantityInput}
                             onChange={(e) => setActualQuantityInput(e.target.value)}
@@ -121,16 +126,16 @@ const PlanOrderDetail = ({
                           />
                         </div>
                         
-                        <div className="text-muted small mb-3">
-                          <i className="fas fa-info-circle me-1"></i>
+                        <div className="text-muted small mb-3" style={{ fontSize: '1.2rem' }}>
+                          <i className="fas fa-info-circle me-1" ></i>
                           จำนวนแผน: {selectedOrder.plannedQuantity.toLocaleString()} กก.
                         </div>
                       </>
                     ) : (
                       <div className="text-center py-4">
                         <i className="fas fa-check-circle text-success mb-3" style={{ fontSize: '3rem' }}></i>
-                        <h6 className="text-muted">ข้อมูลนี้ไม่สามารถแก้ไขได้</h6>
-                        <p className="text-muted small">
+                        <h5 className="text-muted">ข้อมูลนี้ไม่สามารถแก้ไขได้</h5>
+                        <p className="text-muted small" style={{ fontSize: '1.2rem' }}>
                           สถานะ: {selectedOrder.status}
                           {selectedOrder.actualQuantity && (
                             <><br />น้ำหนักส่งจริง: {selectedOrder.actualQuantity.toLocaleString()} กก.</>
@@ -157,7 +162,7 @@ const PlanOrderDetail = ({
                           style={{
                             borderRadius: '12px',
                             padding: '0.75rem',
-                            fontSize: '1.1rem',
+                            fontSize: '1.5rem',
                             border: '2px solid #6c757d'
                           }}
                           onClick={() => setShowOrderDetail(false)}
@@ -179,9 +184,9 @@ const PlanOrderDetail = ({
                               color: 'white',
                               borderRadius: '12px',
                               padding: '0.75rem',
-                              fontSize: '1.1rem'
+                              fontSize: '1.5rem'
                             }}
-                            onClick={updateActualQuantity}
+                            onClick={handleSaveClick}
                             disabled={!actualQuantityInput}
                           >
                             <i className="fas fa-save me-2"></i>
@@ -190,6 +195,60 @@ const PlanOrderDetail = ({
                         </div>
                       )}
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {showConfirmModal && (
+        <div 
+          className="modal fade show d-block" 
+          style={{ backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 1060 }}
+          tabIndex="-1"
+        >
+          <div className="modal-dialog modal-dialog-centered modal-sm">
+            <div className="modal-content" style={{ borderRadius: '12px' }}>
+              <div className="modal-body text-center py-4">
+                <div className="mb-4">
+                  <i className="fas fa-question-circle text-warning mb-3" style={{ fontSize: '3rem' }}></i>
+                  <h5 className="mb-0">ยืนยันการบันทึกข้อมูล?</h5>
+                </div>
+                
+                <div className="row g-3">
+                  <div className="col-6">
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary w-100 fw-bold"
+                      style={{
+                        borderRadius: '10px',
+                        padding: '0.75rem',
+                        fontSize: '1.1rem'
+                      }}
+                      onClick={handleCancelConfirm}
+                    >
+                      ยกเลิก
+                    </button>
+                  </div>
+                  <div className="col-6">
+                    <button
+                      type="button"
+                      className="btn w-100 fw-bold"
+                      style={{ 
+                        background: '#2d5a3d',
+                        borderColor: '#2d5a3d',
+                        color: 'white',
+                        borderRadius: '10px',
+                        padding: '0.75rem',
+                        fontSize: '1.1rem'
+                      }}
+                      onClick={handleConfirmSave}
+                    >
+                      ยืนยัน
+                    </button>
                   </div>
                 </div>
               </div>

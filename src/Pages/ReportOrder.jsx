@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Spinner } from 'react-bootstrap';
 import moment from 'moment';
 import BottomNavigation from '../Components/BottomNavigation';
+import AppHeader from '../Components/AppHeader';
 import LIFFAuthGuard from '../Components/LIFFAuthGuard';
 
 // Function to format date to YYYY-MM-DD
@@ -30,8 +31,45 @@ function ReportOrder() {
   const [loading, setLoading] = useState(false); // State variable for loading indicator
   const apiKey = import.meta.env.VITE_SHEET_API_KEY;
 
+  // Sample data for demonstration
+  const sampleData = [
+    {
+      'วันที่สั่งผัก': '2025-09-20',
+      'ประเภทผัก': 'กะหล่ำปลี',
+      'ยอดสั่งซื้อ': '150',
+      'ยอดส่งจริง': '145'
+    },
+    {
+      'วันที่สั่งผัก': '2025-09-21',
+      'ประเภทผัก': 'มะเขือเทศ',
+      'ยอดสั่งซื้อ': '200',
+      'ยอดส่งจริง': '195'
+    },
+    {
+      'วันที่สั่งผัก': '2025-09-22',
+      'ประเภทผัก': 'แตงกวา',
+      'ยอดสั่งซื้อ': '120',
+      'ยอดส่งจริง': ''
+    },
+    {
+      'วันที่สั่งผัก': '2025-09-23',
+      'ประเภทผัก': 'ผักกาดขาว',
+      'ยอดสั่งซื้อ': '80',
+      'ยอดส่งจริง': '78'
+    },
+    {
+      'วันที่สั่งผัก': '2025-09-24',
+      'ประเภทผัก': 'หอมใหญ่',
+      'ยอดสั่งซื้อ': '90',
+      'ยอดส่งจริง': ''
+    }
+  ];
+
   // Fetch employee data when the component mounts
-  useEffect(() => {}, []);
+  useEffect(() => {
+    // Set sample data on component mount
+    setFilteredData(sampleData);
+  }, []);
 
   const handleReportOrder = async () => {
     let params = "?action=farmer-order";
@@ -75,22 +113,9 @@ function ReportOrder() {
 
   return (
       <LIFFAuthGuard>
-      <div className="container-fluid px-2 px-md-3">
+      <div className="container-fluid px-2 px-md-3 pt-0 mt-2">
         {/* Header Section */}
-        <div className="row">
-          <div className="col-12">
-            <div className="text-center py-3 py-md-4">
-              <h4 className="mb-0 fw-bold d-none d-md-block" style={{ color: '#2d5a3d' }}>
-                <i className="fas fa-chart-bar me-2"></i>
-                รายงาน
-              </h4>
-              <h5 className="mb-0 fw-bold d-md-none" style={{ color: '#2d5a3d' }}>
-                <i className="fas fa-chart-bar me-2"></i>
-                รายงาน
-              </h5>
-            </div>
-          </div>
-        </div>
+        <AppHeader title="รายงาน"/>
 
         {farmName && (
         <div className="row mb-3">
@@ -210,18 +235,18 @@ function ReportOrder() {
                         ></div>
                       </td>
                       <td>
-                        <i className="fas fa-calendar-alt me-2 text-muted"></i>
+                        <i className="fas me-2 text-muted"></i>
                         {moment(item['วันที่สั่งผัก']).format('DD/MM/YYYY')}
                       </td>
                       <td>
-                        <i className="fas fa-seedling me-2 text-success"></i>
+                        <i className="fas me-2 text-success"></i>
                         {item['ประเภทผัก']}
                       </td>
                       <td className="text-end fw-bold text-primary">
-                        {item['ยอดสั่งซื้อ']} กก.
+                        {item['ยอดสั่งซื้อ']}
                       </td>
                       <td className="text-end fw-bold text-success">
-                        {item['ยอดส่งจริง'] || '-'} {item['ยอดส่งจริง'] && 'กก.'}
+                        {item['ยอดส่งจริง'] || '-'}
                       </td>
                     </tr>
                   ))
