@@ -1,7 +1,8 @@
-import { HashRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
-import Home from './Pages/Home';
-import FarmerOrder from './Pages/FarmerOrder';
+import ReportOrder from './Pages/ReportOrder';
+import PlanOrders from './Pages/PlanOrders';
+import Profile from './Pages/Profile';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
@@ -11,8 +12,10 @@ function App() {
         <div className="text-center mb-8">
         </div>
         <Routes>
-          <Route path="/home" element={<Home />} />
-          <Route path="/farmer-order" element={<FarmerOrder />} />
+          <Route path="/" element={<Navigate to="/plan/orders" replace />} />
+          <Route path="/report/orders" element={<ReportOrder />} />
+          <Route path="/plan/orders" element={<PlanOrders />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
     </Router>
