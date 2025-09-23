@@ -108,20 +108,6 @@ const Profile = () => {
                     ข้อมูลส่วนตัว
                   </button>
                 </li>
-                <li className="nav-item">
-                  <button 
-                    className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('settings')}
-                    style={{
-                      backgroundColor: activeTab === 'settings' ? '#2d5a3d' : 'transparent',
-                      color: activeTab === 'settings' ? 'white' : '#2d5a3d',
-                      borderRadius: '8px'
-                    }}
-                  >
-                    <i className="fas fa-cog me-1"></i>
-                    การตั้งค่า
-                  </button>
-                </li>
               </ul>
 
               {/* Tab Content */}
@@ -195,62 +181,6 @@ const Profile = () => {
                   </div>
                 )}
 
-                {activeTab === 'settings' && (
-                  <div className="tab-pane active">
-                    <div className="row g-3">
-                      <div className="col-12">
-                        <div className="list-group list-group-flush">
-                          <button className="list-group-item list-group-item-action d-flex align-items-center">
-                            <i className="fas fa-bell text-warning me-3"></i>
-                            <div className="flex-grow-1">
-                              <div>การแจ้งเตือน</div>
-                              <small className="text-muted">จัดการการแจ้งเตือนต่างๆ</small>
-                            </div>
-                            <i className="fas fa-chevron-right text-muted"></i>
-                          </button>
-                          <button className="list-group-item list-group-item-action d-flex align-items-center">
-                            <i className="fas fa-language text-info me-3"></i>
-                            <div className="flex-grow-1">
-                              <div>ภาษา</div>
-                              <small className="text-muted">เลือกภาษาที่ต้องการใช้</small>
-                            </div>
-                            <i className="fas fa-chevron-right text-muted"></i>
-                          </button>
-                          <button className="list-group-item list-group-item-action d-flex align-items-center">
-                            <i className="fas fa-shield-alt text-success me-3"></i>
-                            <div className="flex-grow-1">
-                              <div>ความปลอดภัย</div>
-                              <small className="text-muted">รหัสผ่านและการรักษาความปลอดภัย</small>
-                            </div>
-                            <i className="fas fa-chevron-right text-muted"></i>
-                          </button>
-                          <button className="list-group-item list-group-item-action d-flex align-items-center">
-                            <i className="fas fa-question-circle text-primary me-3"></i>
-                            <div className="flex-grow-1">
-                              <div>ช่วยเหลือ</div>
-                              <small className="text-muted">คำถามที่พบบ่อยและการติดต่อ</small>
-                            </div>
-                            <i className="fas fa-chevron-right text-muted"></i>
-                          </button>
-                          
-                          {/* LIFF Specific Actions */}
-                          {liffReady && isInLineClient && (
-                            <button 
-                              className="list-group-item list-group-item-action d-flex align-items-center text-danger"
-                              onClick={closeWindow}
-                            >
-                              <i className="fas fa-times-circle me-3"></i>
-                              <div className="flex-grow-1">
-                                <div>ปิดแอปพลิเคชัน</div>
-                                <small className="text-muted">ปิดหน้าต่างใน LINE</small>
-                              </div>
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
