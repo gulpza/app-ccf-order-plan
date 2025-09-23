@@ -229,7 +229,7 @@ const PlanOrders = () => {
                   className={`p-2 rounded cursor-pointer ${selectedStatus === '' ? 'bg-white bg-opacity-25' : ''}`}
                   onClick={() => handleStatusFilter('')}
                   style={{ 
-                    fontSize: '1.2rem',
+                    fontSize: '1rem',
                     cursor: 'pointer', 
                     transition: 'all 0.2s ease',
                     border: selectedStatus === '' ? '1px solid rgba(255,255,255,0.5)' : 'none'
@@ -298,7 +298,7 @@ const PlanOrders = () => {
               style={{ 
                 minHeight: '200px', 
                 borderRadius: '12px',
-                borderColor: '#a8d5a3',
+                borderColor: '#dbdcdbff',
                 borderWidth: '2px',
                 borderStyle: 'solid'
               }}

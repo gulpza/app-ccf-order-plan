@@ -74,6 +74,7 @@ function ReportOrder() {
   };
 
   return (
+      <LIFFAuthGuard>
       <div className="container-fluid px-2 px-md-3">
         {/* Header Section */}
         <div className="row">
@@ -242,6 +243,7 @@ function ReportOrder() {
 
       <BottomNavigation activeTab="report" />
       </div>
+      </LIFFAuthGuard>
   );
 }
 
