@@ -9,21 +9,11 @@ const PlanOrders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
-  
-  // LINE LIFF Integration
-  const { 
-    isReady: liffReady, 
-    isLoggedIn, 
-    userProfile, 
-    isInLineClient,
-    shareOrder,
-    sendMessage,
-    closeWindow
-  } = useLIFF();
-  
+ 
   // Filter states
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [selectedVegetableType, setSelectedVegetableType] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState(''); // เพิ่ม state สำหรับกรองสถานะ
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showOrderDetail, setShowOrderDetail] = useState(false);
@@ -111,8 +101,13 @@ const PlanOrders = () => {
       filtered = filtered.filter(order => order.vegetableType === selectedVegetableType);
     }
 
+    // Filter by status - เพิ่มการกรองตามสถานะ
+    if (selectedStatus) {
+      filtered = filtered.filter(order => order.status === selectedStatus);
+    }
+
     setFilteredOrders(filtered);
-  }, [orders, dateRange, selectedVegetableType]);
+  }, [orders, dateRange, selectedVegetableType, selectedStatus]);
 
   // Get unique vegetable types for dropdown
   const getVegetableTypes = () => {
@@ -124,8 +119,19 @@ const PlanOrders = () => {
   const clearFilters = () => {
     setDateRange({ start: '', end: '' });
     setSelectedVegetableType('');
+    setSelectedStatus(''); // เพิ่มการล้าง selectedStatus
     setShowDatePicker(false);
     setShowMobileFilters(false); // Hide mobile filters after clearing
+  };
+
+  // Handle status filter - ฟังก์ชันสำหรับจัดการการกรองสถานะ
+  const handleStatusFilter = (status) => {
+    if (selectedStatus === status) {
+      // ถ้ากดสถานะเดิมซ้ำ ให้ยกเลิกการกรอง
+      setSelectedStatus('');
+    } else {
+      setSelectedStatus(status);
+    }
   };
 
   // Handle order click
@@ -151,275 +157,64 @@ const PlanOrders = () => {
     }
   };
 
-
-
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = (date.getFullYear() + 543); // Convert to Buddhist era
-    return `${day}/${month}/${year}`;
-  };
-
-  const getVegetableIcon = (vegetableType) => {
-    // Return appropriate icon based on vegetable type
-    const iconMap = {
-      'กะหล่ำปลี': 'fas fa-leaf',
-      'มะเขือเทศ': 'fas fa-circle',
-      'แตงกวา': 'fas fa-seedling',
-      'ผักกาดขาว': 'fas fa-leaf',
-      'หอมใหญ่': 'fas fa-circle',
-      'มันฝรั่ง': 'fas fa-square'
-    };
-    return iconMap[vegetableType] || 'fas fa-seedling';
-  };
-
-  const getStatusBadge = (status) => {
-    const statusConfig = {
-      'รอส่ง': {
-        class: 'badge rounded-pill px-3 py-1',
-        style: { backgroundColor: '#eada71ff', color: 'white', fontWeight: '600', fontSize: '0.9rem' },
-        icon: 'fas fa-clock',
-      },
-      'ส่งแล้ว': {
-        class: 'badge rounded-pill px-3 py-1',
-        style: { backgroundColor: '#4caf50', color: 'white', fontWeight: '600', fontSize: '0.9rem' },
-        icon: 'fas fa-check-circle',
-      },
-      'ยกเลิก': {
-        class: 'badge rounded-pill px-3 py-1',
-        style: { backgroundColor: '#ef5350', color: 'white', fontWeight: '600', fontSize: '0.9rem' },
-        icon: 'fas fa-times-circle',
-      }
-    };
+    const day = date.getDate();
+    const month = date.getMonth();
+    const year = date.getFullYear() + 543; // Convert to Buddhist era
     
-    const config = statusConfig[status] || statusConfig['รอส่ง'];
-    return (
-      <span className={config.class} style={config.style}>
-        <i className={`${config.icon} me-1`} style={{ fontSize: '0.7rem' }}></i>
-        {status}
-      </span>
-    );
+    const monthNames = [
+      'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+      'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+    ];
+    
+    return `${day} ${monthNames[month]} ${year}`;
   };
 
-  // Get statistics for summary display
+
+  // Get header background color based on status
+  const getHeaderBackgroundColor = (status) => {
+    const colorMap = {
+      'รอส่ง': '#deca4bff',
+      'ส่งแล้ว': '#4caf50',
+      'ยกเลิก': '#ef5350'
+    };
+    return colorMap[status] || '#e4f4e2ff';
+  };
+
+  // Get statistics for summary display - แก้ไขให้คำนวณจาก orders แทน filteredOrders
   const getStatistics = () => {
-    const pendingOrders = filteredOrders.filter(order => order.status === 'รอส่ง').length;
-    const completedOrders = filteredOrders.filter(order => order.status === 'ส่งแล้ว').length;
-    const cancelledOrders = filteredOrders.filter(order => order.status === 'ยกเลิก').length;
+    const pendingOrders = orders.filter(order => order.status === 'รอส่ง').length;
+    const completedOrders = orders.filter(order => order.status === 'ส่งแล้ว').length;
+    const cancelledOrders = orders.filter(order => order.status === 'ยกเลิก').length;
     
     return {
       pendingOrders,
       completedOrders,
       cancelledOrders,
-      totalOrders: filteredOrders.length
+      totalOrders: orders.length
     };
-  };
-
-  // Export orders to CSV
-  const exportToCSV = () => {
-    const headers = ['วันที่ส่ง', 'ชื่อผัก', 'จำนวน (กิโลกรัม)', 'ราคาต่อกิโลกรัม', 'ราคารวม', 'สถานะ', 'จำนวนส่งจริง'];
-    const csvContent = [
-      headers.join(','),
-      ...filteredOrders.map(order => [
-        formatDate(order.deliveryDate),
-        order.vegetableName,
-        order.quantity,
-        order.pricePerKg,
-        order.totalPrice,
-        order.status,
-        order.actualQuantity || ''
-      ].join(','))
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `vegetable-orders-${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // LIFF Share Order Function
-  const handleShareOrder = async (order) => {
-    try {
-      const success = await shareOrder(order);
-      if (success) {
-        console.log('✅ Order shared successfully');
-      }
-    } catch (error) {
-      console.error('❌ Failed to share order:', error);
-      // Fallback to regular share if available
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            title: `แผนการส่งผัก - ${order.vegetableName}`,
-            text: `🥬 ${order.vegetableName} ${order.quantity}กก. วันที่: ${formatDate(order.deliveryDate)} สถานะ: ${order.status}`,
-            url: window.location.href
-          });
-        } catch (shareError) {
-          console.error('❌ Native share also failed:', shareError);
-        }
-      }
-    }
-  };
-
-  // LIFF Send Summary Message
-  const handleSendSummary = async () => {
-    try {
-      const stats = getStatistics();
-      const message = `📊 สรุปแผนการส่งผักก\n\n` +
-        `📦 ทั้งหมด: ${stats.totalOrders} รายการ\n` +
-        `⏳ รอส่ง: ${stats.pendingOrders} รายการ\n` +
-        `✅ ส่งแล้ว: ${stats.completedOrders} รายการ\n` +
-        `❌ ยกเลิก: ${stats.cancelledOrders} รายการ\n\n` +
-        `🌱 ฟาร์มจระเข้ - ${new Date().toLocaleDateString('th-TH')}`;
-        
-      await sendMessage(message);
-      console.log('✅ Summary sent successfully');
-    } catch (error) {
-      console.error('❌ Failed to send summary:', error);
-    }
-  };
-
-  // Handle navigation
-  const handleNavigation = (path) => {
-    navigate(path);
   };
 
   return (
     <LIFFAuthGuard>
-      <div className="container-fluid px-2 px-md-3">
-      {/* LIFF Header */}
-      {/* <LIFFHeader /> */}
+      <div className="container-fluid px-2 px-md-3 pt-0">
       {/* Header Section - Mobile Optimized */}
       <div className="row">
         <div className="col-12">
-          <div className="text-center py-3 py-md-4">
-            <div className="mb-2">
-              <div className="d-inline-flex align-items-center justify-content-center">
-                <i className="fas fa-leaf me-2" style={{ fontSize: '2rem', color: '#2d5a3d' }}></i>
-                <div className="text-start">
-                  <h4 className="mb-0 fw-bold d-none d-md-block" style={{ color: '#2d5a3d' }}>ฟาร์มจระเข้</h4>
-                  <h5 className="mb-0 fw-bold d-md-none" style={{ color: '#2d5a3d' }}>ฟาร์มจระเข้</h5>
-                </div>
-              </div>
+          <div className="d-flex align-items-center justify-content-between py-2 py-md-3 position-relative">
+            {/* Logo - ด้านซ้าย */}
+            <div className="flex-shrink-0">
+              <i className="fas fa-leaf" style={{ fontSize: '2rem', color: '#2d5a3d' }}></i>
             </div>
-            <h5 className="mb-0 d-none d-md-block" style={{ color: '#6cb866' }}>
-              <i className="fas fa-shopping-cart me-2"></i>
-              แผนการส่งผัก
-            </h5>
-            <h6 className="mb-0 d-md-none" style={{ color: '#6cb866' }}>
-              <i className="fas fa-shopping-cart me-1"></i>
-              แผนการส่งผัก
-            </h6>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Filter Toggle Button */}
-      <div className="row mb-3 d-md-none">
-        <div className="col-12">
-          <button 
-            className="btn w-100 py-2 border-2"
-            onClick={() => setShowMobileFilters(!showMobileFilters)}
-            style={{
-              borderRadius: '12px', 
-              fontSize: '0.95rem',
-              background: 'linear-gradient(135deg, #f0f8ef, #ffffff)',
-              border: '2px solid #a8d5a3',
-              color: '#2d5a3d'
-            }}
-          >
-            <i className={`fas ${showMobileFilters ? 'fa-chevron-up' : 'fa-filter'} me-2`}></i>
-            {showMobileFilters ? 'ซ่อนตัวกรอง' : 'แสดงตัวกรอง'}
-            {(dateRange.start || dateRange.end || selectedVegetableType) && (
-              <span className="badge ms-2 px-2" style={{background: '#2d5a3d', color: 'white'}}>
-                {[dateRange.start, dateRange.end, selectedVegetableType].filter(Boolean).length}
-              </span>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Filter Section - Desktop always visible, Mobile collapsible */}
-      <div className={`row mb-4 ${showMobileFilters ? 'd-block' : 'd-none d-md-block'}`}>
-        <div className="col-12">
-          <div className="card filter-card border-0 shadow-sm">
-            <div className="card-header bg-light border-bottom d-none d-md-block">
-              <h6 className="mb-0 text-dark">
-                <i className="fas fa-filter me-2"></i>
-                ตัวกรองข้อมูล
-              </h6>
+            
+            {/* ข้อความกึ่งกลาง */}
+            <div className="position-absolute start-50 translate-middle-x text-center">
+              <h5 className="mb-0 fw-bold" style={{ color: '#2d5a3d',  fontSize: '1.5rem' }}>แผนการส่งผัก</h5>
             </div>
-            <div className="card-body p-2 p-md-3">
-              {/* Date Range Row - Mobile: Stack vertically, Desktop: Side by side */}
-              <div className="row g-2 g-md-3">
-                <div className="col-12 col-md-4">
-                  <label className="form-label fw-bold small">
-                    <i className="fas fa-calendar-day me-1 text-primary"></i>
-                    วันที่เริ่มต้น:
-                  </label>
-                  <input
-                    type="date"
-                    className="form-control form-control-sm"
-                    value={dateRange.start}
-                    onChange={(e) => setDateRange({...dateRange, start: e.target.value})}
-                    placeholder="เลือกวันที่เริ่มต้น"
-                  />
-                </div>
-                <div className="col-12 col-md-4">
-                  <label className="form-label fw-bold small">
-                    <i className="fas fa-calendar-check me-1 text-primary"></i>
-                    วันที่สิ้นสุด:
-                  </label>
-                  <input
-                    type="date"
-                    className="form-control form-control-sm"
-                    value={dateRange.end}
-                    onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
-                    placeholder="เลือกวันที่สิ้นสุด"
-                    min={dateRange.start}
-                  />
-                </div>
-                <div className="col-12 col-md-4">
-                  <label className="form-label fw-bold small">
-                    <i className="fas fa-seedling me-1 text-success"></i>
-                    ประเภทผัก:
-                  </label>
-                  <select
-                    className="form-select form-select-sm"
-                    value={selectedVegetableType}
-                    onChange={(e) => setSelectedVegetableType(e.target.value)}
-                  >
-                    <option value="">ทุกประเภท</option>
-                    {getVegetableTypes().map(type => (
-                      <option key={type} value={type}>{type}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Search Button Row */}
-              <div className="row g-2 mt-3">
-                <div className="col-12 text-center">
-                  <button 
-                    className="btn btn-primary me-2"
-                    onClick={() => {
-                      // The filtering is already applied through useEffect
-                      // This button provides visual feedback for search action
-                    }}
-                  >
-                    <i className="fas fa-search me-2"></i>
-                    ค้นหา
-                  </button>
-          
-                </div>
-              </div>
-            </div>
+            
+            {/* Spacer เพื่อให้สมดุล */}
+            <div className="flex-shrink-0" style={{ width: '2rem' }}></div>
           </div>
         </div>
       </div>
@@ -430,20 +225,64 @@ const PlanOrders = () => {
           <div className="card-body p-2">
             <div className="row text-center">
               <div className="col-3">
-                <div className="small">ทั้งหมด</div>
-                <div className="fw-bold">{filteredOrders.length}</div>
+                <div 
+                  className={`p-2 rounded cursor-pointer ${selectedStatus === '' ? 'bg-white bg-opacity-25' : ''}`}
+                  onClick={() => handleStatusFilter('')}
+                  style={{ 
+                    fontSize: '1.2rem',
+                    cursor: 'pointer', 
+                    transition: 'all 0.2s ease',
+                    border: selectedStatus === '' ? '1px solid rgba(255,255,255,0.5)' : 'none'
+                  }}
+                >
+                  <div className="small">ทั้งหมด</div>
+                  <div className="fw-bold">{orders.length}</div>
+                </div>
               </div>
               <div className="col-3">
-                <div className="small">รอส่ง</div>
-                <div className="fw-bold" >{getStatistics().pendingOrders}</div>
+                <div 
+                  className={`p-2 rounded cursor-pointer ${selectedStatus === 'รอส่ง' ? 'bg-white bg-opacity-25' : ''}`}
+                  onClick={() => handleStatusFilter('รอส่ง')}
+                  style={{ 
+                     fontSize: '1.2rem',
+                    cursor: 'pointer', 
+                    transition: 'all 0.2s ease',
+                    border: selectedStatus === 'รอส่ง' ? '1px solid rgba(255,255,255,0.5)' : 'none'
+                  }}
+                >
+                  <div className="small">รอส่ง</div>
+                  <div className="fw-bold">{getStatistics().pendingOrders}</div>
+                </div>
               </div>
               <div className="col-3">
-                <div className="small" >ส่งแล้ว</div>
-                <div className="fw-bold" >{getStatistics().completedOrders}</div>
+                <div 
+                  className={`p-2 rounded cursor-pointer ${selectedStatus === 'ส่งแล้ว' ? 'bg-white bg-opacity-25' : ''}`}
+                  onClick={() => handleStatusFilter('ส่งแล้ว')}
+                  style={{ 
+                    fontSize: '1.2rem',
+                    cursor: 'pointer', 
+                    transition: 'all 0.2s ease',
+                    border: selectedStatus === 'ส่งแล้ว' ? '1px solid rgba(255,255,255,0.5)' : 'none'
+                  }}
+                >
+                  <div className="small">ส่งแล้ว</div>
+                  <div className="fw-bold">{getStatistics().completedOrders}</div>
+                </div>
               </div>
               <div className="col-3">
-                <div className="small">ยกเลิก</div>
-                <div className="fw-bold">{getStatistics().cancelledOrders}</div>
+                <div 
+                  className={`p-2 rounded cursor-pointer ${selectedStatus === 'ยกเลิก' ? 'bg-white bg-opacity-25' : ''}`}
+                  onClick={() => handleStatusFilter('ยกเลิก')}
+                  style={{ 
+                    fontSize: '1.2rem',
+                    cursor: 'pointer', 
+                    transition: 'all 0.2s ease',
+                    border: selectedStatus === 'ยกเลิก' ? '1px solid rgba(255,255,255,0.5)' : 'none'
+                  }}
+                >
+                  <div className="small">ยกเลิก</div>
+                  <div className="fw-bold">{getStatistics().cancelledOrders}</div>
+                </div>
               </div>
             </div>
           </div>
@@ -456,66 +295,83 @@ const PlanOrders = () => {
           <div key={order.id} className="col-12 col-sm-6 col-lg-4 col-xl-3 mb-2 mb-md-3">
             <div 
               className="card h-100 compact-order-card shadow-sm border-2"
-              onClick={() => handleOrderClick(order)}
               style={{ 
-                cursor: 'pointer', 
-                minHeight: '140px', 
+                minHeight: '200px', 
                 borderRadius: '12px',
                 borderColor: '#a8d5a3',
                 borderWidth: '2px',
                 borderStyle: 'solid'
               }}
             >
-              {/* Header with vegetable name and status */}
+              {/* Header with date and vegetable type */}
               <div 
-                className="card-header d-flex justify-content-between align-items-center p-2 border-0" 
+                className="card-header d-flex justify-content-between align-items-center p-2 border-0 position-relative" 
                 style={{
-                  background: '#e4f4e2ff',
+                  background: getHeaderBackgroundColor(order.status),
                   borderRadius: '12px 12px 0 0',
                   minHeight: '50px'
                 }}
               >
-                <div className="d-flex align-items-center flex-grow-1">
-            
-                  <h6 className="mb-0 fw-bold text-dark text-truncate" style={{fontSize: '1rem'}}>
+                {/* วันที่ส่ง - ด้านซ้าย */}
+                <div className="flex-shrink-0">
+                  <h6 className="mb-0 fw-bold text-white" style={{fontSize: '1rem'}}>
                     {formatDate(order.deliveryDate)}
                   </h6>
                 </div>
-                <div className="ms-2" >
-                  {getStatusBadge(order.status)}
+                
+                {/* ประเภทผัก - กึ่งกลาง */}
+                <div className="position-absolute start-50 translate-middle-x">
+                  <h6 className="mb-0 fw-bold text-white text-center" style={{fontSize: '1.2rem'}}>
+                    {order.vegetableType}
+                  </h6>
                 </div>
+                
+                {/* Spacer เพื่อให้สมดุล */}
+                <div className="flex-shrink-0" style={{ width: '1rem' }}></div>
               </div>
               
-              {/* Body with date and quantity - Mobile optimized */}
-              <div className="card-body p-3" style={{paddingTop: '0.75rem', background: '#ffffffff', borderRadius: '0 0 12px 12px'}}>
+              {/* Body with quantity data */}
+              <div className="card-body p-3" style={{paddingTop: '0.75rem', background: '#ffffffff'}}>
                 <div className="row text-center g-2">
-                  <div className="col-12 mb-2">
-                    <div className="fw-bold text-dark" style={{fontSize: '1.2rem'}}>
-             
-                      {order.vegetableType}
-                    </div>
-                  </div>
                   <div className="col-6">
                     <div className="p-2 bg-light rounded">
-                      <div className="text-muted small"  style={{fontSize: '1.2rem'}}>แผน</div>
-                      <div className="fw-bold text-primary" style={{fontSize: '1.2rem'}}>
+                      <div className="text-muted small" style={{fontSize: '1.2rem'}}>แผน</div>
+                      <div className="fw-bold text-primary" style={{fontSize: '1.5rem'}}>
                         {order.plannedQuantity.toLocaleString()}
                       </div>
                     </div>
                   </div>
                   <div className="col-6">
                     <div className="p-2 bg-light rounded">
-                      <div className="text-muted small"  style={{fontSize: '1.2rem'}}>ส่งจริง</div>
-                      <div className="fw-bold text-success" style={{fontSize: '1.2rem'}}>
+                      <div className="text-muted small" style={{fontSize: '1.2rem'}}>ส่งจริง</div>
+                      <div className="fw-bold text-success" style={{fontSize: '1.5rem'}}>
                         {order.actualQuantity ? order.actualQuantity.toLocaleString() : '-'}
                       </div>
                     </div>
                   </div>
                 </div>
-            
               </div>
 
-              
+              {/* Footer with action button */}
+              <div className="card-footer border-0 p-2" style={{
+                background: '#f8f9faff',
+                borderRadius: '0 0 12px 12px'
+              }}>
+                <button 
+                  className="btn btn-sm w-100 text-white fw-bold"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOrderClick(order);
+                  }}
+                  style={{
+                    fontSize: '1rem',
+                    backgroundColor: '#2d5a3d'
+                  }}
+                >
+                  <i className="fas fa-weight me-2 py-2"></i>
+                  กรอกน้ำหนัก
+                </button>
+              </div>
             </div>
           </div>
         ))}
@@ -552,25 +408,7 @@ const PlanOrders = () => {
         setShowOrderDetail={setShowOrderDetail}
       />
 
-      {filteredOrders.length === 0 && orders.length > 0 && (
-        <div className="text-center mt-5">
-          <i className="fas fa-search fa-3x text-muted mb-3"></i>
-          <h4 className="text-muted">ไม่พบข้อมูลที่ตรงกับการค้นหา</h4>
-          <p className="text-muted">ลองปรับเปลี่ยนเงื่อนไขการกรองข้อมูล</p>
-  
-        </div>
-      )}
-
-      {orders.length === 0 && (
-        <div className="text-center mt-5">
-          <i className="fas fa-exclamation-triangle fa-3x text-muted mb-3"></i>
-          <h4 className="text-muted">ไม่มีข้อมูลการสั่งซื้อ</h4>
-          <p className="text-muted">กรุณาเพิ่มข้อมูลการสั่งซื้อผัก</p>
-        </div>
-      )}
-
       <BottomNavigation activeTab="plan" />
-     
       </div>
     </LIFFAuthGuard>
   );

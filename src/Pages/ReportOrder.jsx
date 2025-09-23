@@ -195,7 +195,7 @@ function ReportOrder() {
                   <th scope="col">วันที่สั่ง</th>
                   <th scope="col">ประเภทผัก</th>
                   <th scope="col" className="text-end">แผน</th>
-                  <th scope="col" className="text-end">ส่ง</th>
+                  <th scope="col" className="text-end">ส่งจริง</th>
                 </tr>
               </thead>
               <tbody>
