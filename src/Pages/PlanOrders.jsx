@@ -244,7 +244,7 @@ const PlanOrders = () => {
                   className={`p-2 rounded cursor-pointer ${selectedStatus === 'รอส่ง' ? 'bg-white bg-opacity-25' : ''}`}
                   onClick={() => handleStatusFilter('รอส่ง')}
                   style={{ 
-                     fontSize: '1.2rem',
+                     fontSize: '1rem',
                     cursor: 'pointer', 
                     transition: 'all 0.2s ease',
                     border: selectedStatus === 'รอส่ง' ? '1px solid rgba(255,255,255,0.5)' : 'none'
@@ -259,7 +259,7 @@ const PlanOrders = () => {
                   className={`p-2 rounded cursor-pointer ${selectedStatus === 'ส่งแล้ว' ? 'bg-white bg-opacity-25' : ''}`}
                   onClick={() => handleStatusFilter('ส่งแล้ว')}
                   style={{ 
-                    fontSize: '1.2rem',
+                    fontSize: '1rem',
                     cursor: 'pointer', 
                     transition: 'all 0.2s ease',
                     border: selectedStatus === 'ส่งแล้ว' ? '1px solid rgba(255,255,255,0.5)' : 'none'
@@ -274,7 +274,7 @@ const PlanOrders = () => {
                   className={`p-2 rounded cursor-pointer ${selectedStatus === 'ยกเลิก' ? 'bg-white bg-opacity-25' : ''}`}
                   onClick={() => handleStatusFilter('ยกเลิก')}
                   style={{ 
-                    fontSize: '1.2rem',
+                    fontSize: '1rem',
                     cursor: 'pointer', 
                     transition: 'all 0.2s ease',
                     border: selectedStatus === 'ยกเลิก' ? '1px solid rgba(255,255,255,0.5)' : 'none'
