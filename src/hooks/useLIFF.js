@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import LIFFService from '../Utils/liff';
+import LIFFService from '../utils/liff';
 
 export const useLIFF = () => {
   const [isReady, setIsReady] = useState(false);
