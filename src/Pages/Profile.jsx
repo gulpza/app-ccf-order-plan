@@ -18,9 +18,9 @@ const Profile = () => {
   // Sample user data - in a real app, this would come from an API
   const userData = {
     name: userProfile?.displayName || 'ชาวไร่ฟาร์มจระเข้',
-    phone: '089-123-4567',
-    email: 'farmer@crocodilefarm.com',
-    location: 'เชียงใหม่, ประเทศไทย',
+    phone: '-',
+    email: '-',
+    location: '-',
     joinDate: '2024-01-15',
     totalOrders: 156,
     completedOrders: 142,
@@ -67,12 +67,6 @@ const Profile = () => {
                     </h5>
                     <i className="fab fa-line fa-lg" style={{ color: '#06c755' }}></i>
                   </div>
-                  {userProfile?.userId && (
-                    <p className="text-muted mb-1 small">
-                      <i className="fas fa-id-card me-1"></i>
-                      User ID: {userProfile.userId}
-                    </p>
-                  )}
                   <p className="text-muted mb-1">
                     <i className="fas fa-calendar-alt me-1"></i>
                     เข้าร่วมเมื่อ {new Date(userData.joinDate).toLocaleDateString('th-TH')}
@@ -156,29 +150,6 @@ const Profile = () => {
                             <div>
                               <div className="small text-muted">LINE User ID</div>
                               <div className="fw-bold small text-break">{userProfile?.userId || 'ไม่พบข้อมูล'}</div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-12">
-                          <div className="d-flex align-items-center p-3 bg-light rounded">
-                            <i className="fas fa-image text-success me-3"></i>
-                            <div className="flex-grow-1">
-                              <div className="small text-muted">รูปโปรไฟล์ LINE</div>
-                              <div className="fw-bold">
-                                {userProfile?.pictureUrl ? (
-                                  <div className="d-flex align-items-center mt-2">
-                                    <img 
-                                      src={userProfile.pictureUrl} 
-                                      alt="LINE Profile" 
-                                      className="rounded-circle me-2"
-                                      style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-                                    />
-                                    <span className="text-success">มีรูปโปรไฟล์</span>
-                                  </div>
-                                ) : (
-                                  <span className="text-muted">ไม่มีรูปโปรไฟล์</span>
-                                )}
-                              </div>
                             </div>
                           </div>
                         </div>
