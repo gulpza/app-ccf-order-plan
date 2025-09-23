@@ -433,7 +433,7 @@ const PlanOrders = () => {
                   }}
                 >
                   <i className="fas fa-weight me-2 py-2"></i>
-                  กรอกน้ำหนัก
+                  กดเพื่อกรอกน้ำหนัก
                 </button>
               </div>
             </div>
