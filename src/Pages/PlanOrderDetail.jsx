@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AppHeader from '../Components/AppHeader';
 import { formatDate } from '../utils/dateUtils';
+import { getHeaderBackgroundColor } from '../config/statusColors';
 
 const PlanOrderDetail = ({ 
   showOrderDetail, 
@@ -14,18 +15,8 @@ const PlanOrderDetail = ({
   // State for confirmation modal
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   
-  // Get header background color based on status
-  const getHeaderBackgroundColor = (status) => {
-    const colorMap = {
-      'รอส่ง': '#deca4bff',
-      'ส่งแล้ว': '#4caf50',
-      'ยกเลิก': '#ef5350'
-    };
-    return colorMap[status] || '#e4f4e2ff';
-  };
-
   // Check if order can be edited (only "รอส่ง" status)
-  const canEdit = selectedOrder?.status === 'รอส่ง';
+  const canEdit = selectedOrder?.status === 'รอส่ง' || selectedOrder?.status === 'ส่งแล้ว';
 
   // Handle save button click - show confirmation modal
   const handleSaveClick = () => {
@@ -78,10 +69,12 @@ const PlanOrderDetail = ({
               <div className="container-fluid px-4 pb-3">
                 <div className="card border-0 shadow-sm" style={{ borderRadius: '12px' }}>
                   <div 
-                    className="card-header d-flex justify-content-between align-items-center p-3 border-0" 
+                    className="card-header d-flex justify-content-between align-items-center border-0 position-relative" 
                     style={{
                       background: getHeaderBackgroundColor(selectedOrder.status),
-                      borderRadius: '12px 12px 0 0'
+                      borderRadius: '12px 12px 0 0',
+                      height: '40px',
+                      padding: '8px 16px'
                     }}
                   >
                     {/* วันที่ส่ง - ด้านซ้าย */}
@@ -92,8 +85,8 @@ const PlanOrderDetail = ({
                     </div>
                     
                     {/* ประเภทผัก - ด้านขวา */}
-                    <div className="flex-shrink-0 position-absolute start-50 translate-middle-x">
-                      <h6 className="mb-0 fw-bold text-white text-center" style={{fontSize: '1.2rem'}}>
+                    <div className="flex-shrink-0">
+                      <h6 className="mb-0 fw-bold text-white text-end pe-2" style={{fontSize: '1.2rem'}}>
                         {selectedOrder.vegetableType}
                       </h6>
                     </div>
@@ -110,13 +103,15 @@ const PlanOrderDetail = ({
                           </label>
                           <input
                             type="number"
+                            inputMode="decimal"
+                            pattern="[0-9]*(\.[0-9]{0,2})?"
                             autoFocus
                             className="form-control form-control-lg"
                             value={actualQuantityInput}
                             onChange={(e) => setActualQuantityInput(e.target.value)}
                             placeholder="กรอกน้ำหนักส่งจริง"
                             min="0"
-                            step="0.1"
+                            step="0.01"
                             style={{
                               borderRadius: '10px',
                               border: '2px solid #a8d5a3',
@@ -128,17 +123,19 @@ const PlanOrderDetail = ({
                         
                         <div className="text-muted small mb-3" style={{ fontSize: '1.2rem' }}>
                           <i className="fas fa-info-circle me-1" ></i>
-                          จำนวนแผน: {selectedOrder.plannedQuantity.toLocaleString()} กก.
+                          จำนวนแผน: {Number(selectedOrder.plannedQuantity).toFixed(2)} กก.
                         </div>
                       </>
                     ) : (
                       <div className="text-center py-4">
-                        <i className="fas fa-check-circle text-success mb-3" style={{ fontSize: '3rem' }}></i>
+                        <i className="fas fa-solid fa-circle-xmark text-danger mb-3" style={{ fontSize: '3rem' }}></i>
                         <h5 className="text-muted">ข้อมูลนี้ไม่สามารถแก้ไขได้</h5>
                         <p className="text-muted small" style={{ fontSize: '1.2rem' }}>
                           สถานะ: {selectedOrder.status}
                           {selectedOrder.actualQuantity && (
-                            <><br />น้ำหนักส่งจริง: {selectedOrder.actualQuantity.toLocaleString()} กก.</>
+                            <>
+                            <br />น้ำหนักส่งจริง: {Number(selectedOrder.actualQuantity).toFixed(2)} กก.
+                            </>
                           )}
                         </p>
                       </div>

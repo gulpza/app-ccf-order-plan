@@ -3,18 +3,11 @@ import { Link, useLocation } from 'react-router-dom'; // Import useLocation
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Spinner } from 'react-bootstrap';
 import moment from 'moment';
+import { formatDate, formatDateForInput, formatDateForInputThai, convertBuddhistToGregorian } from '../utils/dateUtils';
 import BottomNavigation from '../Components/BottomNavigation';
 import AppHeader from '../Components/AppHeader';
 import LIFFAuthGuard from '../Components/LIFFAuthGuard';
 
-// Function to format date to YYYY-MM-DD
-function formatDate(date) {
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
-  
-  return `${year}-${month}-${day}`;
-}
 
 function ReportOrder() {
   const location = useLocation(); // Get the location object to access the URL query parameters
@@ -26,8 +19,10 @@ function ReportOrder() {
   const getEndOfWeek = () => moment().endOf('isoWeek').toDate();
 
   const [filteredData, setFilteredData] = useState([]);
-  const [startDate, setStartDate] = useState(formatDate(getStartOfWeek())); // Start date as the first day of the week
-  const [endDate, setEndDate] = useState(formatDate(getEndOfWeek())); // End date as the last day of the week
+  const [startDate, setStartDate] = useState(formatDateForInput(getStartOfWeek())); // Start date for API calls
+  const [endDate, setEndDate] = useState(formatDateForInput(getEndOfWeek())); // End date for API calls
+  const [startDateDisplay, setStartDateDisplay] = useState(formatDateForInputThai(getStartOfWeek())); // Start date display in Thai
+  const [endDateDisplay, setEndDateDisplay] = useState(formatDateForInputThai(getEndOfWeek())); // End date display in Thai
   const [loading, setLoading] = useState(false); // State variable for loading indicator
   const apiKey = import.meta.env.VITE_SHEET_API_KEY;
 
@@ -73,8 +68,9 @@ function ReportOrder() {
 
   const handleReportOrder = async () => {
     let params = "?action=farmer-order";
-    params += `&startDate=${encodeURIComponent(startDate.trim())}`;
-    params += `&endDate=${encodeURIComponent(endDate.trim())}`;
+    // Convert Buddhist era dates back to Gregorian for API call
+    params += `&startDate=${encodeURIComponent(convertBuddhistToGregorian(startDate).trim())}`;
+    params += `&endDate=${encodeURIComponent(convertBuddhistToGregorian(endDate).trim())}`;
     params += `&farmName=${encodeURIComponent(farmName)}`; // Add the farmName parameter if it exists
     
     if(!!farmName)
@@ -101,8 +97,8 @@ function ReportOrder() {
 
   // Function to handle form reset
   const handleReset = () => {
-    setStartDate(formatDate(getStartOfWeek())); // Reset to the first day of the current week
-    setEndDate(formatDate(getEndOfWeek())); // Reset to the last day of the current week
+    setStartDate(formatDateForInput(getStartOfWeek())); // Reset to the first day of the current week (Buddhist era)
+    setEndDate(formatDateForInput(getEndOfWeek())); // Reset to the last day of the current week (Buddhist era)
     setFilteredData([]);
   };
 
@@ -217,7 +213,6 @@ function ReportOrder() {
             <table className="table table-hover mb-0">
               <thead style={{ backgroundColor: '#e4f4e2' }}>
                 <tr>
-                  <th scope="col" className="text-center">สถานะ</th>
                   <th scope="col">วันที่สั่ง</th>
                   <th scope="col">ประเภทผัก</th>
                   <th scope="col" className="text-end">แผน</th>
@@ -228,18 +223,10 @@ function ReportOrder() {
                 {filteredData.length > 0 ? (
                   filteredData.map((item, index) => (
                     <tr key={index}>
-                      <td className="text-center">
-                        <div 
-                          className={`rounded-circle d-inline-block ${getCircleColor(item)}`}
-                          style={{ width: '12px', height: '12px' }}
-                        ></div>
+                      <td>
+                        {formatDate(item['วันที่สั่งผัก'])}
                       </td>
                       <td>
-                        <i className="fas me-2 text-muted"></i>
-                        {moment(item['วันที่สั่งผัก']).format('DD/MM/YYYY')}
-                      </td>
-                      <td>
-                        <i className="fas me-2 text-success"></i>
                         {item['ประเภทผัก']}
                       </td>
                       <td className="text-end fw-bold text-primary">

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLIFF } from '../hooks/useLIFF';
 import BottomNavigation from '../Components/BottomNavigation';
 import LIFFAuthGuard from '../Components/LIFFAuthGuard';
 import AppHeader from '../Components/AppHeader';
 import PlanOrderDetail from './PlanOrderDetail';
 import { formatDate } from '../utils/dateUtils';
+import { getHeaderBackgroundColor, getGradientBackground, getShadowColor } from '../config/statusColors';
 
 const PlanOrders = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const PlanOrders = () => {
   // Filter states
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [selectedVegetableType, setSelectedVegetableType] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState(''); // เพิ่ม state สำหรับกรองสถานะ
+  const [selectedStatus, setSelectedStatus] = useState('ทั้งหมด'); // เพิ่ม state สำหรับกรองสถานะ
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showOrderDetail, setShowOrderDetail] = useState(false);
@@ -27,8 +27,8 @@ const PlanOrders = () => {
     {
       id: 1,
       deliveryDate: '2025-09-22',
-      vegetableType: 'กะหล่ำปลี',
-      plannedQuantity: 150,
+      vegetableType: 'กะหล่ำปลีก',
+      plannedQuantity: 150.20,
       actualQuantity: null,
       unit: 'กก.',
       status: 'รอส่ง'
@@ -104,7 +104,7 @@ const PlanOrders = () => {
     }
 
     // Filter by status - เพิ่มการกรองตามสถานะ
-    if (selectedStatus) {
+    if (selectedStatus && selectedStatus !== 'ทั้งหมด') {
       filtered = filtered.filter(order => order.status === selectedStatus);
     }
 
@@ -129,8 +129,8 @@ const PlanOrders = () => {
   // Handle status filter - ฟังก์ชันสำหรับจัดการการกรองสถานะ
   const handleStatusFilter = (status) => {
     if (selectedStatus === status) {
-      // ถ้ากดสถานะเดิมซ้ำ ให้ยกเลิกการกรอง
-      setSelectedStatus('');
+      // ถ้ากดสถานะเดิมซ้ำ ให้ยกเลิกการกรอง (แสดงทั้งหมด)
+      setSelectedStatus('ทั้งหมด');
     } else {
       setSelectedStatus(status);
     }
@@ -146,10 +146,14 @@ const PlanOrders = () => {
   // Update actual quantity
   const updateActualQuantity = () => {
     if (selectedOrder) {
-      const updatedQuantity = actualQuantityInput ? parseInt(actualQuantityInput) : null;
+      const updatedQuantity = actualQuantityInput ? parseFloat(actualQuantityInput) : null;
       const updatedOrders = orders.map(order => 
         order.id === selectedOrder.id 
-          ? { ...order, actualQuantity: updatedQuantity }
+          ? { 
+              ...order, 
+              actualQuantity: updatedQuantity,
+              status: updatedQuantity ? 'ส่งแล้ว' : order.status // เปลี่ยนสถานะเป็น "ส่งแล้ว" เมื่อกรอกน้ำหนัก
+            }
           : order
       );
       setOrders(updatedOrders);
@@ -157,16 +161,6 @@ const PlanOrders = () => {
       setSelectedOrder(null);
       setActualQuantityInput('');
     }
-  };
-
-  // Get header background color based on status
-  const getHeaderBackgroundColor = (status) => {
-    const colorMap = {
-      'รอส่ง': '#deca4bff',
-      'ส่งแล้ว': '#4caf50',
-      'ยกเลิก': '#ef5350'
-    };
-    return colorMap[status] || '#e4f4e2ff';
   };
 
   // Get statistics for summary display - แก้ไขให้คำนวณจาก orders แทน filteredOrders
@@ -192,8 +186,49 @@ const PlanOrders = () => {
       {/* Mobile Summary Bar */}
       <div className="d-md-none mb-3 mt-2">
         <div className="row g-2">
+          {/* ทั้งหมด */}
+          <div className="col-3">
+            <div 
+              className={`card text-white cursor-pointer border border-2 ${
+                selectedStatus === 'ทั้งหมด' 
+                  ? 'border-dark shadow-lg' 
+                  : 'border-secondary'
+              }`}
+              onClick={() => handleStatusFilter('ทั้งหมด')}
+              style={{ 
+                background: getGradientBackground('ทั้งหมด', selectedStatus === 'ทั้งหมด'),
+                cursor: 'pointer', 
+                transition: 'all 0.3s ease',
+                transform: selectedStatus === 'ทั้งหมด' ? 'scale(1.05)' : 'scale(1)',
+                borderRadius: '8px',
+                boxShadow: selectedStatus === 'ทั้งหมด' 
+                  ? `0 4px 12px ${getShadowColor('ทั้งหมด')}` 
+                  : 'none'
+              }}
+            >
+              <div className="card-body p-2 text-center">
+                <div className="small mb-1" style={{
+                  fontSize: '0.9rem', 
+                  color: selectedStatus === 'ทั้งหมด' ? '#ffffff' : '#ffffff',
+                  fontWeight: selectedStatus === 'ทั้งหมด' ? 'bold' : 'normal'
+                }}>
+                  {selectedStatus === 'ทั้งหมด' && <i className="fas fa-check-circle me-1"></i>}
+                  ทั้งหมด
+                </div>
+                <div className="fw-bold pt-2" style={{
+                  fontSize: selectedStatus === 'ทั้งหมด' ? '1.4rem' : '1.2rem', 
+                  color: selectedStatus === 'ทั้งหมด' ? '#ffffff' : '#000000',
+                  transition: 'all 0.3s ease',
+                  transform: selectedStatus === 'ทั้งหมด' ? 'scale(1.1)' : 'scale(1)'
+                }}>
+                  {getStatistics().totalOrders}
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* รอส่ง */}
-          <div className="col-4">
+          <div className="col-3">
             <div 
               className={`card text-white cursor-pointer border border-2 ${
                 selectedStatus === 'รอส่ง' 
@@ -202,15 +237,13 @@ const PlanOrders = () => {
               }`}
               onClick={() => handleStatusFilter('รอส่ง')}
               style={{ 
-                background: selectedStatus === 'รอส่ง' 
-                  ? 'linear-gradient(to bottom, #deca4bff 100%, #f8f9fa 100%)'
-                  : 'linear-gradient(to bottom, #deca4bff 50%, #ffffff 50%)',
+                background: getGradientBackground('รอส่ง', selectedStatus === 'รอส่ง'),
                 cursor: 'pointer', 
                 transition: 'all 0.3s ease',
                 transform: selectedStatus === 'รอส่ง' ? 'scale(1.05)' : 'scale(1)',
                 borderRadius: '8px',
                 boxShadow: selectedStatus === 'รอส่ง' 
-                  ? '0 4px 12px rgba(222, 202, 75, 0.4)' 
+                  ? `0 4px 12px ${getShadowColor('รอส่ง')}` 
                   : 'none'
               }}
             >
@@ -223,7 +256,12 @@ const PlanOrders = () => {
                   {selectedStatus === 'รอส่ง' && <i className="fas fa-check-circle me-1"></i>}
                   รอส่ง
                 </div>
-                <div className="fw-bold pt-2" style={{fontSize: '1.2rem', color: selectedStatus === 'รอส่ง' ? '#ffffff' : '#000000ff'}}>
+                <div className="fw-bold pt-2" style={{
+                  fontSize: selectedStatus === 'รอส่ง' ? '1.4rem' : '1.2rem', 
+                  color: selectedStatus === 'รอส่ง' ? '#ffffff' : '#000000',
+                  transition: 'all 0.3s ease',
+                  transform: selectedStatus === 'รอส่ง' ? 'scale(1.1)' : 'scale(1)'
+                }}>
                   {getStatistics().pendingOrders}
                 </div>
               </div>
@@ -231,7 +269,7 @@ const PlanOrders = () => {
           </div>
           
           {/* ส่งแล้ว */}
-          <div className="col-4">
+          <div className="col-3">
             <div 
               className={`card text-white cursor-pointer border border-2 ${
                 selectedStatus === 'ส่งแล้ว' 
@@ -240,28 +278,31 @@ const PlanOrders = () => {
               }`}
               onClick={() => handleStatusFilter('ส่งแล้ว')}
               style={{ 
-                background: selectedStatus === 'ส่งแล้ว' 
-                  ? 'linear-gradient(to bottom, #4caf50 100%, #f8f9fa 100%)'
-                  : 'linear-gradient(to bottom, #4caf50 50%, #ffffff 50%)',
+                background: getGradientBackground('ส่งแล้ว', selectedStatus === 'ส่งแล้ว'),
                 cursor: 'pointer', 
                 transition: 'all 0.3s ease',
                 transform: selectedStatus === 'ส่งแล้ว' ? 'scale(1.05)' : 'scale(1)',
                 borderRadius: '8px',
                 boxShadow: selectedStatus === 'ส่งแล้ว' 
-                  ? '0 4px 12px rgba(76, 175, 80, 0.4)' 
+                  ? `0 4px 12px ${getShadowColor('ส่งแล้ว')}` 
                   : 'none'
               }}
             >
               <div className="card-body p-2 text-center">
                 <div className="small mb-1" style={{
                   fontSize: '0.9rem', 
-                  color: '#ffffff',
+                  color: selectedStatus === 'ส่งแล้ว' ? '#ffffff' : '#ffffff',
                   fontWeight: selectedStatus === 'ส่งแล้ว' ? 'bold' : 'normal'
                 }}>
                   {selectedStatus === 'ส่งแล้ว' && <i className="fas fa-check-circle me-1"></i>}
                   ส่งแล้ว
                 </div>
-                <div className="fw-bold pt-2" style={{fontSize: '1.2rem', color: selectedStatus === 'ส่งแล้ว' ? '#ffffff' : '#000000'}}>
+                <div className="fw-bold pt-2" style={{
+                  fontSize: selectedStatus === 'ส่งแล้ว' ? '1.4rem' : '1.2rem', 
+                  color: selectedStatus === 'ส่งแล้ว' ? '#ffffff' : '#000000',
+                  transition: 'all 0.3s ease',
+                  transform: selectedStatus === 'ส่งแล้ว' ? 'scale(1.1)' : 'scale(1)'
+                }}>
                   {getStatistics().completedOrders}
                 </div>
               </div>
@@ -269,7 +310,7 @@ const PlanOrders = () => {
           </div>
           
           {/* ยกเลิก */}
-          <div className="col-4">
+          <div className="col-3">
             <div 
               className={`card text-white cursor-pointer border border-2 ${
                 selectedStatus === 'ยกเลิก' 
@@ -278,28 +319,31 @@ const PlanOrders = () => {
               }`}
               onClick={() => handleStatusFilter('ยกเลิก')}
               style={{ 
-                background: selectedStatus === 'ยกเลิก' 
-                  ? 'linear-gradient(to bottom, #ef5350 100%, #f8f9fa 100%)'
-                  : 'linear-gradient(to bottom, #ef5350 50%, #ffffff 50%)',
+                background: getGradientBackground('ยกเลิก', selectedStatus === 'ยกเลิก'),
                 cursor: 'pointer', 
                 transition: 'all 0.3s ease',
                 transform: selectedStatus === 'ยกเลิก' ? 'scale(1.05)' : 'scale(1)',
                 borderRadius: '8px',
                 boxShadow: selectedStatus === 'ยกเลิก' 
-                  ? '0 4px 12px rgba(239, 83, 80, 0.4)' 
+                  ? `0 4px 12px ${getShadowColor('ยกเลิก')}` 
                   : 'none'
               }}
             >
               <div className="card-body p-2 text-center">
                 <div className="small mb-1" style={{
                   fontSize: '0.9rem', 
-                  color: '#ffffff',
+                  color: selectedStatus === 'ยกเลิก' ? '#ffffff' : '#ffffff',
                   fontWeight: selectedStatus === 'ยกเลิก' ? 'bold' : 'normal'
                 }}>
                   {selectedStatus === 'ยกเลิก' && <i className="fas fa-check-circle me-1"></i>}
                   ยกเลิก
                 </div>
-                <div className="fw-bold pt-2" style={{fontSize: '1.2rem', color:selectedStatus === 'ยกเลิก' ? '#ffffff' : '#000000'}}>
+                <div className="fw-bold pt-2" style={{
+                  fontSize: selectedStatus === 'ยกเลิก' ? '1.4rem' : '1.2rem', 
+                  color: selectedStatus === 'ยกเลิก' ? '#ffffff' : '#000000',
+                  transition: 'all 0.3s ease',
+                  transform: selectedStatus === 'ยกเลิก' ? 'scale(1.1)' : 'scale(1)'
+                }}>
                   {getStatistics().cancelledOrders}
                 </div>
               </div>
@@ -314,6 +358,10 @@ const PlanOrders = () => {
           <div key={order.id} className="col-12 col-sm-6 col-lg-4 col-xl-3 mb-2 mb-md-3">
             <div 
               className="card h-100 compact-order-card shadow-sm border-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOrderClick(order);
+              }}
               style={{ 
                 minHeight: '200px', 
                 borderRadius: '12px',
@@ -333,14 +381,14 @@ const PlanOrders = () => {
               >
                 {/* วันที่ส่ง - ด้านซ้าย */}
                 <div className="flex-shrink-0">
-                  <h6 className="mb-0 fw-bold ps-2 text-white " style={{fontSize: '1rem'}}>
+                  <h6 className="mb-0 fw-bold ps-2 text-white " style={{fontSize: '1.2rem'}}>
                     {formatDate(order.deliveryDate)}
                   </h6>
                 </div>
                 
-                {/* ประเภทผัก - กึ่งกลาง */}
-                <div className="position-absolute start-50 translate-middle-x">
-                  <h6 className="mb-0 fw-bold text-white text-center" style={{fontSize: '1.2rem'}}>
+                {/* ประเภทผัก - ชิดขวา */}
+                <div className="position-absolute end-0 top-50 translate-middle-y">
+                  <h6 className="mb-0 fw-bold text-white text-end pe-3" style={{fontSize: '1.2rem'}}>
                     {order.vegetableType}
                   </h6>
                 </div>
@@ -356,7 +404,7 @@ const PlanOrders = () => {
                     <div className="p-2 bg-light rounded">
                       <div className="text-muted small" style={{fontSize: '1.2rem'}}>แผน</div>
                       <div className="fw-bold text-primary" style={{fontSize: '1.5rem'}}>
-                        {order.plannedQuantity.toLocaleString()}
+                        {Number(order.plannedQuantity).toFixed(2)}
                       </div>
                     </div>
                   </div>
@@ -364,7 +412,7 @@ const PlanOrders = () => {
                     <div className="p-2 bg-light rounded">
                       <div className="text-muted small" style={{fontSize: '1.2rem'}}>ส่งจริง</div>
                       <div className="fw-bold text-success" style={{fontSize: '1.5rem'}}>
-                        {order.actualQuantity ? order.actualQuantity.toLocaleString() : '-'}
+                        {order.actualQuantity ? Number(order.actualQuantity).toFixed(2) : '-'}
                       </div>
                     </div>
                   </div>
@@ -378,10 +426,6 @@ const PlanOrders = () => {
               }}>
                 <button 
                   className="btn btn-sm w-100 fw-bold"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleOrderClick(order);
-                  }}
                   style={{
                     color: '#555555ff',
                     fontSize: '1.4rem',

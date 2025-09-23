@@ -22,3 +22,38 @@ export const formatDateShort = (dateString) => {
   
   return `${day}/${month}/${year}`;
 };
+
+// Convert date to Buddhist era format for input field (YYYY-MM-DD with Buddhist year)
+export const formatDateForInput = (dateString) => {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear() + 543; // Convert to Buddhist era
+  
+  return `${year}-${month}-${day}`;
+};
+
+// Convert date to Buddhist era format with Thai month names for display
+export const formatDateForInputThai = (dateString) => {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = date.getMonth();
+  const year = date.getFullYear() + 543; // Convert to Buddhist era
+  
+  const monthNamesFull = [
+    'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+  ];
+  
+  return `${day} ${monthNamesFull[month]} ${year}`;
+};
+
+// Convert Buddhist era date back to Gregorian for processing
+export const convertBuddhistToGregorian = (buddhistDateString) => {
+  if (!buddhistDateString) return '';
+  
+  const [year, month, day] = buddhistDateString.split('-');
+  const gregorianYear = parseInt(year) - 543; // Convert back to Gregorian
+  
+  return `${gregorianYear}-${month}-${day}`;
+};
