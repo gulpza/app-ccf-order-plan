@@ -192,78 +192,116 @@ const PlanOrders = () => {
       {/* Mobile Summary Bar */}
       <div className="d-md-none mb-3 mt-2">
         <div className="row g-2">
-          {/* ทั้งหมด */}
-           <div className="col-3">
-            <div 
-              className={`card text-white cursor-pointer ${selectedStatus === 'ทั้งหมด' ? 'border border-white border-2' : ''}`}
-              onClick={() => handleStatusFilter('ทั้งหมด')}
-              style={{ 
-                background: 'linear-gradient(to bottom, #4074e3ff 50%, #ffffff 50%)',
-                cursor: 'pointer', 
-                transition: 'all 0.2s ease',
-                transform: selectedStatus === 'ทั้งหมด' ? 'scale(1.02)' : 'scale(1)'
-              }}
-            >
-              <div className="card-body p-2 text-center">
-                <div className="small mb-1" style={{fontSize: '0.9rem', color: '#ffffff'}}>ทั้งหมด</div>
-                <div className="fw-bold pt-2" style={{fontSize: '1.2rem', color: '#000000'}}>{orders.length}</div>
-              </div>
-            </div>
-          </div>
-          
           {/* รอส่ง */}
-          <div className="col-3">
+          <div className="col-4">
             <div 
-              className={`card text-white cursor-pointer ${selectedStatus === 'รอส่ง' ? 'border border-white border-2' : ''}`}
+              className={`card text-white cursor-pointer border border-2 ${
+                selectedStatus === 'รอส่ง' 
+                  ? 'border-dark shadow-lg' 
+                  : 'border-secondary'
+              }`}
               onClick={() => handleStatusFilter('รอส่ง')}
               style={{ 
-                background: 'linear-gradient(to bottom, #deca4bff 50%, #ffffff 50%)',
+                background: selectedStatus === 'รอส่ง' 
+                  ? 'linear-gradient(to bottom, #deca4bff 100%, #f8f9fa 100%)'
+                  : 'linear-gradient(to bottom, #deca4bff 50%, #ffffff 50%)',
                 cursor: 'pointer', 
-                transition: 'all 0.2s ease',
-                transform: selectedStatus === 'รอส่ง' ? 'scale(1.02)' : 'scale(1)'
+                transition: 'all 0.3s ease',
+                transform: selectedStatus === 'รอส่ง' ? 'scale(1.05)' : 'scale(1)',
+                borderRadius: '8px',
+                boxShadow: selectedStatus === 'รอส่ง' 
+                  ? '0 4px 12px rgba(222, 202, 75, 0.4)' 
+                  : 'none'
               }}
             >
               <div className="card-body p-2 text-center">
-                <div className="small mb-1" style={{fontSize: '0.9rem', color: '#ffffff'}}>รอส่ง</div>
-                <div className="fw-bold pt-2" style={{fontSize: '1.2rem', color: '#000000'}}>{getStatistics().pendingOrders}</div>
+                <div className="small mb-1" style={{
+                  fontSize: '0.9rem', 
+                  color: selectedStatus === 'รอส่ง' ? '#ffffff' : '#ffffff',
+                  fontWeight: selectedStatus === 'รอส่ง' ? 'bold' : 'normal'
+                }}>
+                  {selectedStatus === 'รอส่ง' && <i className="fas fa-check-circle me-1"></i>}
+                  รอส่ง
+                </div>
+                <div className="fw-bold pt-2" style={{fontSize: '1.2rem', color: selectedStatus === 'รอส่ง' ? '#ffffff' : '#000000ff'}}>
+                  {getStatistics().pendingOrders}
+                </div>
               </div>
             </div>
           </div>
           
           {/* ส่งแล้ว */}
-          <div className="col-3">
+          <div className="col-4">
             <div 
-              className={`card text-white cursor-pointer ${selectedStatus === 'ส่งแล้ว' ? 'border border-white border-2' : ''}`}
+              className={`card text-white cursor-pointer border border-2 ${
+                selectedStatus === 'ส่งแล้ว' 
+                  ? 'border-dark shadow-lg' 
+                  : 'border-secondary'
+              }`}
               onClick={() => handleStatusFilter('ส่งแล้ว')}
               style={{ 
-                background: 'linear-gradient(to bottom, #4caf50 50%, #ffffff 50%)',
+                background: selectedStatus === 'ส่งแล้ว' 
+                  ? 'linear-gradient(to bottom, #4caf50 100%, #f8f9fa 100%)'
+                  : 'linear-gradient(to bottom, #4caf50 50%, #ffffff 50%)',
                 cursor: 'pointer', 
-                transition: 'all 0.2s ease',
-                transform: selectedStatus === 'ส่งแล้ว' ? 'scale(1.02)' : 'scale(1)'
+                transition: 'all 0.3s ease',
+                transform: selectedStatus === 'ส่งแล้ว' ? 'scale(1.05)' : 'scale(1)',
+                borderRadius: '8px',
+                boxShadow: selectedStatus === 'ส่งแล้ว' 
+                  ? '0 4px 12px rgba(76, 175, 80, 0.4)' 
+                  : 'none'
               }}
             >
               <div className="card-body p-2 text-center">
-                <div className="small mb-1" style={{fontSize: '0.9rem', color: '#ffffff'}}>ส่งแล้ว</div>
-                <div className="fw-bold pt-2" style={{fontSize: '1.2rem', color: '#000000'}}>{getStatistics().completedOrders}</div>
+                <div className="small mb-1" style={{
+                  fontSize: '0.9rem', 
+                  color: '#ffffff',
+                  fontWeight: selectedStatus === 'ส่งแล้ว' ? 'bold' : 'normal'
+                }}>
+                  {selectedStatus === 'ส่งแล้ว' && <i className="fas fa-check-circle me-1"></i>}
+                  ส่งแล้ว
+                </div>
+                <div className="fw-bold pt-2" style={{fontSize: '1.2rem', color: selectedStatus === 'ส่งแล้ว' ? '#ffffff' : '#000000'}}>
+                  {getStatistics().completedOrders}
+                </div>
               </div>
             </div>
           </div>
           
           {/* ยกเลิก */}
-          <div className="col-3">
+          <div className="col-4">
             <div 
-              className={`card text-white cursor-pointer ${selectedStatus === 'ยกเลิก' ? 'border border-white border-2' : ''}`}
+              className={`card text-white cursor-pointer border border-2 ${
+                selectedStatus === 'ยกเลิก' 
+                  ? 'border-dark shadow-lg' 
+                  : 'border-secondary'
+              }`}
               onClick={() => handleStatusFilter('ยกเลิก')}
               style={{ 
-                background: 'linear-gradient(to bottom, #ef5350 50%, #ffffff 50%)',
+                background: selectedStatus === 'ยกเลิก' 
+                  ? 'linear-gradient(to bottom, #ef5350 100%, #f8f9fa 100%)'
+                  : 'linear-gradient(to bottom, #ef5350 50%, #ffffff 50%)',
                 cursor: 'pointer', 
-                transition: 'all 0.2s ease',
-                transform: selectedStatus === 'ยกเลิก' ? 'scale(1.02)' : 'scale(1)'
+                transition: 'all 0.3s ease',
+                transform: selectedStatus === 'ยกเลิก' ? 'scale(1.05)' : 'scale(1)',
+                borderRadius: '8px',
+                boxShadow: selectedStatus === 'ยกเลิก' 
+                  ? '0 4px 12px rgba(239, 83, 80, 0.4)' 
+                  : 'none'
               }}
             >
               <div className="card-body p-2 text-center">
-                <div className="small mb-1" style={{fontSize: '0.9rem', color: '#ffffff'}}>ยกเลิก</div>
-                <div className="fw-bold pt-2" style={{fontSize: '1.2rem', color: '#000000'}}>{getStatistics().cancelledOrders}</div>
+                <div className="small mb-1" style={{
+                  fontSize: '0.9rem', 
+                  color: '#ffffff',
+                  fontWeight: selectedStatus === 'ยกเลิก' ? 'bold' : 'normal'
+                }}>
+                  {selectedStatus === 'ยกเลิก' && <i className="fas fa-check-circle me-1"></i>}
+                  ยกเลิก
+                </div>
+                <div className="fw-bold pt-2" style={{fontSize: '1.2rem', color:selectedStatus === 'ยกเลิก' ? '#ffffff' : '#000000'}}>
+                  {getStatistics().cancelledOrders}
+                </div>
               </div>
             </div>
           </div>
