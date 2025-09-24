@@ -21,8 +21,6 @@ function ReportOrder() {
   const [filteredData, setFilteredData] = useState([]);
   const [startDate, setStartDate] = useState(formatDateForInput(getStartOfWeek())); // Start date for API calls
   const [endDate, setEndDate] = useState(formatDateForInput(getEndOfWeek())); // End date for API calls
-  const [startDateDisplay, setStartDateDisplay] = useState(formatDateForInputThai(getStartOfWeek())); // Start date display in Thai
-  const [endDateDisplay, setEndDateDisplay] = useState(formatDateForInputThai(getEndOfWeek())); // End date display in Thai
   const [loading, setLoading] = useState(false); // State variable for loading indicator
   const apiKey = import.meta.env.VITE_SHEET_API_KEY;
 
@@ -111,7 +109,7 @@ function ReportOrder() {
       <LIFFAuthGuard>
       <div className="container-fluid px-2 px-md-3 pt-0 mt-2">
         {/* Header Section */}
-        <AppHeader title="รายงาน"/>
+        <AppHeader title="รายงานการส่งผัก"/>
 
         {farmName && (
         <div className="row mb-3">

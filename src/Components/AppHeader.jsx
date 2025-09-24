@@ -1,4 +1,5 @@
 import React from 'react';
+import logo from '../assets/logo.png';
 
 const AppHeader = ({ title = 'แผนการส่งผัก', iconClass = 'fas fa-leaf', iconColor = '#2d5a3d' }) => {
   return (
@@ -7,7 +8,15 @@ const AppHeader = ({ title = 'แผนการส่งผัก', iconClass =
         <div className="d-flex align-items-center justify-content-between py-2 py-md-3 position-relative">
           {/* Logo - ด้านซ้าย */}
           <div className="flex-shrink-0">
-            <i className={iconClass} style={{ fontSize: '2rem', color: iconColor }}></i>
+            <img 
+              src={logo} 
+              alt="Logo" 
+              style={{ 
+                height: '3.4rem', 
+                width: 'auto',
+                objectFit: 'contain' 
+              }} 
+            />
           </div>
           
           {/* ข้อความกึ่งกลาง */}

@@ -21,9 +21,10 @@ const Profile = () => {
     phone: '-',
     email: '-',
     location: '-',
-    farmName: 'ฟาร์มจระเข้',
+    farmName: 'จระเข้',
     userName: 'Birth',
     joinDate: '2024-01-15',
+    status: 'พร้อมใช้งาน',
     totalOrders: 156,
     completedOrders: 142,
     rating: 4.8
@@ -65,13 +66,12 @@ const Profile = () => {
                 <div className="col">
                   <div className="d-flex align-items-center mb-2">
                     <h5 className="mb-0 fw-bold me-2" style={{ color: '#2d5a3d' }}>
-                      {userProfile?.displayName || 'ชาวไร่ฟาร์มจระเข้'}
+                      ฟาร์ม: {userData?.farmName}
                     </h5>
-                    <i className="fab fa-line fa-lg" style={{ color: '#06c755' }}></i>
                   </div>
                   <p className="text-muted mb-1">
                     <i className="fas fa-calendar-alt me-1"></i>
-                    เข้าร่วมเมื่อ {new Date(userData.joinDate).toLocaleDateString('th-TH')}
+                    สถานะ: {userData.status}
                   </p>
                   <div className="d-flex align-items-center">
                     <span className="badge px-2 py-1 me-2" style={{ 
@@ -81,15 +81,7 @@ const Profile = () => {
                       <i className="fas fa-star me-1"></i>
                       {userData.rating}
                     </span>
-                    {isLoggedIn && (
-                      <span className="badge px-2 py-1" style={{ 
-                        backgroundColor: '#06c755', 
-                        color: 'white' 
-                      }}>
-                        <i className="fab fa-line me-1"></i>
-                        LINE Connected
-                      </span>
-                    )}
+                    
                   </div>
                 </div>
               </div>
@@ -123,15 +115,6 @@ const Profile = () => {
                         Profile
                       </h6>
                       <div className="row g-3">
-                        <div className="col-12 col-md-6">
-                          <div className="d-flex align-items-center p-3 bg-light rounded">
-                            <i className="fas fa-user text-primary me-3"></i>
-                            <div>
-                              <div className="small text-muted">ฟาร์ม</div>
-                              <div className="fw-bold">{userData.farmName}</div>
-                            </div>
-                          </div>
-                        </div>
                         <div className="col-12 col-md-6">
                           <div className="d-flex align-items-center p-3 bg-light rounded">
                             <i className="fas fa-user text-primary me-3"></i>

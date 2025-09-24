@@ -10,7 +10,7 @@ const BottomNavigation = ({ activeTab = 'plan' }) => {
   };
 
   const getButtonStyle = (isActive) => ({
-    color: isActive ? '#2d5a3d' : '#6c757d'
+    color: isActive ? '#00822eff' : '#000000ff'
   });
 
   return (
