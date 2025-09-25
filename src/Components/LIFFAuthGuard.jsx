@@ -13,9 +13,9 @@ const LIFFAuthGuard = ({ children }) => {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
         <div className="text-center">
-          <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
-            {/* <span className="visually-hidden">กำลังโหลด...</span> */}
-          </div>
+          {/* <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
+            <span className="visually-hidden">กำลังโหลด...</span>
+          </div> */}
           {/* <h5 className="text-muted">กำลังเชื่อมต่อ LINE...</h5> */}
           {/* <p className="small text-muted">กรุณารอสักครู่</p> */}
         </div>

@@ -2,7 +2,7 @@
 
 export const formatDate = (dateString) => {
   const date = new Date(dateString);
-  const day = date.getDate();
+  const day = date.getDate() + 1;
   const month = date.getMonth();
   const year = date.getFullYear() + 543; // Convert to Buddhist era
   
@@ -16,7 +16,7 @@ export const formatDate = (dateString) => {
 
 export const formatDateShort = (dateString) => {
   const date = new Date(dateString);
-  const day = date.getDate().toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0') + 1;
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const year = date.getFullYear() + 543; // Convert to Buddhist era
   
@@ -26,7 +26,7 @@ export const formatDateShort = (dateString) => {
 // Convert date to Buddhist era format for input field (YYYY-MM-DD with Buddhist year)
 export const formatDateForInput = (dateString) => {
   const date = new Date(dateString);
-  const day = date.getDate().toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0') + 1;
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const year = date.getFullYear() + 543; // Convert to Buddhist era
   
@@ -36,7 +36,7 @@ export const formatDateForInput = (dateString) => {
 // Convert date to Buddhist era format with Thai month names for display
 export const formatDateForInputThai = (dateString) => {
   const date = new Date(dateString);
-  const day = date.getDate().toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0') + 1;
   const month = date.getMonth();
   const year = date.getFullYear() + 543; // Convert to Buddhist era
   
@@ -55,5 +55,5 @@ export const convertBuddhistToGregorian = (buddhistDateString) => {
   const [year, month, day] = buddhistDateString.split('-');
   const gregorianYear = parseInt(year) - 543; // Convert back to Gregorian
   
-  return `${gregorianYear}-${month}-${day}`;
+  return `${gregorianYear}-${month}-${day+1}`;
 };
