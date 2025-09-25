@@ -1,9 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLIFF } from '../hooks/useLIFF';
 import BottomNavigation from '../Components/BottomNavigation';
 import LIFFAuthGuard from '../Components/LIFFAuthGuard';
+import userService from '../services/userService.js';
 
 const Profile = () => {
+
+    useEffect(() => {
+
+    // const verifyUser = async () => {
+    //   const lineUserId = '68cc5367-6689-461b-a60c-1e99ce9eb02e-1'; // จาก LINE LIFF
+
+    //   try {
+    //     const result = await userService.checkUserExists(lineUserId);
+    //     if (!result.status) {
+    //       window.location.href = '/register';
+    //     }
+    //   } catch (error) {
+    //     console.error('User verification failed:', error);
+    //   }
+    // };
+
+    // verifyUser();
+
+  }, []);
+
+
   const [activeTab, setActiveTab] = useState('personal');
   
   // LINE LIFF Integration
@@ -15,14 +37,14 @@ const Profile = () => {
     closeWindow
   } = useLIFF();
 
-  // Sample user data - in a real app, this would come from an API
+  // Sample user data - in a real app, this would come from an API or user context
   const userData = {
-    name: userProfile?.displayName || 'ชาวไร่ฟาร์มจระเข้',
-    phone: '-',
-    email: '-',
-    location: '-',
-    farmName: 'จระเข้',
-    userName: 'Birth',
+    name: 'Birth', // This would come from registered user data
+    phone: '089-123-4567', // This would come from registered user data
+    email: userProfile?.email || '-',
+    location: 'จังหวัดกรุงเทพมหานคร', // This would come from registered user data
+    farmName: 'จระเข้', // This would come from registered user data
+    userName: userProfile?.displayName || 'Birth',
     joinDate: '2024-01-15',
     status: 'พร้อมใช้งาน',
     totalOrders: 156,
@@ -31,7 +53,6 @@ const Profile = () => {
   };
 
   return (
-    <LIFFAuthGuard>
       <div className="container-fluid px-2 px-md-3 py-3">
       {/* Profile Card */}
       <div className="row mb-4">
@@ -177,7 +198,6 @@ const Profile = () => {
 
       <BottomNavigation activeTab="profile" />
       </div>
-      </LIFFAuthGuard>
   );
 };
 

@@ -3,100 +3,77 @@ import { Link, useLocation } from 'react-router-dom'; // Import useLocation
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Spinner } from 'react-bootstrap';
 import moment from 'moment';
-import { formatDate, formatDateForInput, formatDateForInputThai, convertBuddhistToGregorian } from '../utils/dateUtils';
+import { formatDate, formatDateForInput, convertBuddhistToGregorian } from '../utils/dateUtils';
 import BottomNavigation from '../Components/BottomNavigation';
 import AppHeader from '../Components/AppHeader';
-import LIFFAuthGuard from '../Components/LIFFAuthGuard';
+import axios from "axios";
 
 
 function ReportOrder() {
   const location = useLocation(); // Get the location object to access the URL query parameters
   const searchParams = new URLSearchParams(location.search); // Parse query parameters
-  const farmName = searchParams.get('farmName'); // Extract the 'farmName' parameter
 
-  // Get the start and end of the current week
-  const getStartOfWeek = () => moment().startOf('isoWeek').toDate();
-  const getEndOfWeek = () => moment().endOf('isoWeek').toDate();
+  // Get the start and end of the current month
+  const getStartOfMonth = () => moment().startOf('month').toDate(); // ✅ แก้เป็น 'month'
+  const getEndOfMonth = () => moment().endOf('month').toDate();     // ✅ แก้เป็น 'month'
 
   const [filteredData, setFilteredData] = useState([]);
-  const [startDate, setStartDate] = useState(formatDateForInput(getStartOfWeek())); // Start date for API calls
-  const [endDate, setEndDate] = useState(formatDateForInput(getEndOfWeek())); // End date for API calls
+  const [startDate, setStartDate] = useState(formatDateForInput(getStartOfMonth())); // Start date for API calls
+  const [endDate, setEndDate] = useState(formatDateForInput(getEndOfMonth())); // End date for API calls
   const [loading, setLoading] = useState(false); // State variable for loading indicator
-  const apiKey = import.meta.env.VITE_SHEET_API_KEY;
+  const apiUrl = import.meta.env.VITE_SHEET_API_KEY;
 
-  // Sample data for demonstration
-  const sampleData = [
-    {
-      'วันที่สั่งผัก': '2025-09-20',
-      'ประเภทผัก': 'กะหล่ำปลี',
-      'ยอดสั่งซื้อ': '150',
-      'ยอดส่งจริง': '145'
-    },
-    {
-      'วันที่สั่งผัก': '2025-09-21',
-      'ประเภทผัก': 'มะเขือเทศ',
-      'ยอดสั่งซื้อ': '200',
-      'ยอดส่งจริง': '195'
-    },
-    {
-      'วันที่สั่งผัก': '2025-09-22',
-      'ประเภทผัก': 'แตงกวา',
-      'ยอดสั่งซื้อ': '120',
-      'ยอดส่งจริง': ''
-    },
-    {
-      'วันที่สั่งผัก': '2025-09-23',
-      'ประเภทผัก': 'ผักกาดขาว',
-      'ยอดสั่งซื้อ': '80',
-      'ยอดส่งจริง': '78'
-    },
-    {
-      'วันที่สั่งผัก': '2025-09-24',
-      'ประเภทผัก': 'หอมใหญ่',
-      'ยอดสั่งซื้อ': '90',
-      'ยอดส่งจริง': ''
+  const onGetOrderReport = async () => { 
+    try {
+      // ✅ แปลง Buddhist date string เป็น Gregorian date string ก่อนส่ง API
+      const gregorianStartDate = convertBuddhistToGregorian(startDate);
+      const gregorianEndDate = convertBuddhistToGregorian(endDate);
+      const response = await axios.get(apiUrl, {
+       params: {
+        action: "get-order-report",
+        farmCode: '12',
+        startDate: gregorianStartDate, // ✅ ใช้ string ที่แปลงแล้ว
+        endDate: gregorianEndDate,     // ✅ ใช้ string ที่แปลงแล้ว
+      },
+        timeout: 30000,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      return []; // ✅ return empty array แทน null
     }
-  ];
+  };
 
   // Fetch employee data when the component mounts
   useEffect(() => {
     // Set sample data on component mount
-    setFilteredData(sampleData);
+    handleFilter();
   }, []);
-
-  const handleReportOrder = async () => {
-    let params = "?action=farmer-order";
-    // Convert Buddhist era dates back to Gregorian for API call
-    params += `&startDate=${encodeURIComponent(convertBuddhistToGregorian(startDate).trim())}`;
-    params += `&endDate=${encodeURIComponent(convertBuddhistToGregorian(endDate).trim())}`;
-    params += `&farmName=${encodeURIComponent(farmName)}`; // Add the farmName parameter if it exists
-    
-    if(!!farmName)
-    {
-      const response = await fetch(`${apiKey}${params}`);
-      const data = await response.json();
-      return data; // Return the fetched data
-    }
-  };
 
   // Function to handle filtering
   const handleFilter = async () => {
-    setLoading(true); // Set loading state to true before fetching data
+    setLoading(true);
     try {
-      const result = await handleReportOrder();
-      
-      // Sort data by order date
-      result.sort((a, b) => new Date(a['วันที่สั่งผัก']) - new Date(b['วันที่สั่งผัก']));
+      let result = await onGetOrderReport();
+      result = result.map(item => ({
+        deliveryDate: item['วันที่สั่ง'], // ✅ เก็บวันที่จาก API ตรงๆ (ยังเป็น ISO format)
+        vegetableType: item["ประเภทผัก"] || '',
+        plannedQuantity: parseFloat(item["แผน"]) || 0,
+        actualQuantity: item["ยอดชั่งหน้าสวน"] ? parseFloat(item["ยอดชั่งหน้าสวน"]) : null
+      }));
+
+      // ✅ Sort โดยแปลง string date เป็น Date object ชั่วคราว
+      result.sort((a, b) => new Date(a.deliveryDate) - new Date(b.deliveryDate));
       setFilteredData(result);
     } finally {
-      setLoading(false); // Set loading state to false after fetching data
+      setLoading(false);
     }
   };
 
   // Function to handle form reset
   const handleReset = () => {
-    setStartDate(formatDateForInput(getStartOfWeek())); // Reset to the first day of the current week (Buddhist era)
-    setEndDate(formatDateForInput(getEndOfWeek())); // Reset to the last day of the current week (Buddhist era)
+    setStartDate(formatDateForInput(getStartOfMonth())); // ✅ รีเซ็ตเป็นวันแรกของเดือน
+    setEndDate(formatDateForInput(getEndOfMonth()));     // ✅ รีเซ็ตเป็นวันสุดท้ายของเดือน
     setFilteredData([]);
   };
 
@@ -106,22 +83,26 @@ function ReportOrder() {
   };
 
   return (
-      <LIFFAuthGuard>
       <div className="container-fluid px-2 px-md-3 pt-0 mt-2">
         {/* Header Section */}
         <AppHeader title="รายงานการส่งผัก"/>
-
-        {farmName && (
-        <div className="row mb-3">
-          <div className="col-12 text-center">
-            <h5 className="fw-bold" style={{ color: '#2d5a3d' }}>
-              <i className="fas fa-seedling me-2"></i>
-              ไร่ {farmName}
-            </h5>
+         {loading && (
+        <div 
+          className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+          style={{
+            backgroundColor: 'rgba(217, 215, 215, 0.6)',
+            zIndex: 9999,
+            backdropFilter: 'blur(2px)'
+          }}
+        >
+          <div className="text-center bg-white rounded-3 shadow-lg p-4" style={{ minWidth: '200px' }}>
+            <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
+              <span className="visually-hidden">กำลังโหลด...</span>
+            </div>
+            <div className="text-muted fw-medium">กำลังโหลดข้อมูล...</div>
           </div>
         </div>
       )}
-   
 
       <div className="mb-6">
         <div className="card border-2 shadow-sm mb-4" style={{
@@ -187,15 +168,6 @@ function ReportOrder() {
         </div>
       </div>
       
-      <Modal show={loading} centered>
-        <Modal.Body className="text-center">
-          <Spinner animation="border" role="status">
-            <span className="sr-only"></span>
-          </Spinner>
-          <p>Loading...</p>
-        </Modal.Body>
-      </Modal>
-      
       <div className="card border-2 shadow-sm" style={{
         borderColor: '#a8d5a3',
         borderRadius: '12px'
@@ -222,16 +194,16 @@ function ReportOrder() {
                   filteredData.map((item, index) => (
                     <tr key={index}>
                       <td>
-                        {formatDate(item['วันที่สั่งผัก'])}
+                        {formatDate(item.deliveryDate)}
                       </td>
                       <td>
-                        {item['ประเภทผัก']}
+                        {item.vegetableType}
                       </td>
                       <td className="text-end fw-bold text-primary">
-                        {item['ยอดสั่งซื้อ']}
+                        {item.plannedQuantity}
                       </td>
                       <td className="text-end fw-bold text-success">
-                        {item['ยอดส่งจริง'] || '-'}
+                        {item.actualQuantity || '-'}
                       </td>
                     </tr>
                   ))
@@ -253,7 +225,6 @@ function ReportOrder() {
 
       <BottomNavigation activeTab="report" />
       </div>
-      </LIFFAuthGuard>
   );
 }
 

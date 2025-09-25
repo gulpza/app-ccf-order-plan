@@ -6,11 +6,13 @@ import AppHeader from '../Components/AppHeader';
 import PlanOrderDetail from './PlanOrderDetail';
 import { formatDate } from '../utils/dateUtils';
 import { getHeaderBackgroundColor, getGradientBackground, getShadowColor } from '../config/statusColors';
+import axios from "axios";
 
 const PlanOrders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
  
   // Filter states
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
@@ -21,69 +23,76 @@ const PlanOrders = () => {
   const [showOrderDetail, setShowOrderDetail] = useState(false);
   const [actualQuantityInput, setActualQuantityInput] = useState('');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const apiUrl = import.meta.env.VITE_SHEET_API_KEY; 
 
-  // Sample order data - in a real app, this would come from an API
-  const sampleOrders = [
-    {
-      id: 1,
-      deliveryDate: '2025-09-22',
-      vegetableType: 'กะหล่ำปลีก',
-      plannedQuantity: 150.20,
-      actualQuantity: null,
-      unit: 'กก.',
-      status: 'รอส่ง'
-    },
-    {
-      id: 2,
-      deliveryDate: '2025-09-22',
-      vegetableType: 'มะเขือเทศ',
-      plannedQuantity: 200,
-      actualQuantity: 195,
-      unit: 'กก.',
-      status: 'ส่งแล้ว'
-    },
-    {
-      id: 3,
-      deliveryDate: '2025-09-23',
-      vegetableType: 'แตงกวา',
-      plannedQuantity: 120,
-      actualQuantity: null,
-      unit: 'กก.',
-      status: 'รอส่ง'
-    },
-    {
-      id: 4,
-      deliveryDate: '2025-09-23',
-      vegetableType: 'ผักกาดขาว',
-      plannedQuantity: 80,
-      actualQuantity: null,
-      unit: 'กก.',
-      status: 'ยกเลิก'
-    },
-    {
-      id: 5,
-      deliveryDate: '2025-09-24',
-      vegetableType: 'หอมใหญ่',
-      plannedQuantity: 90,
-      actualQuantity: 88,
-      unit: 'กก.',
-      status: 'รอส่ง'
-    },
-    {
-      id: 6,
-      deliveryDate: '2025-09-24',
-      vegetableType: 'มันฝรั่ง',
-      plannedQuantity: 180,
-      actualQuantity: 175,
-      unit: 'กก.',
-      status: 'ส่งแล้ว'
+   const onGetOrders = async () => { 
+    try {
+      const today = new Date();
+      const startDate = new Date(today);
+      startDate.setDate(today.getDate() - 7); // ย้อนหลัง 7 วัน
+      
+      const endDate = new Date(today);
+      endDate.setFullYear(today.getFullYear() + 1); // บวก 1 ปี
+      
+      const response = await axios.get(apiUrl, {
+       params: {
+        action: "get-plan-orders",
+        farmCode: '12',
+        startDate: startDate.toISOString().split('T')[0], // YYYY-MM-DD format
+        endDate: endDate.toISOString().split('T')[0], // YYYY-MM-DD format
+      },
+        timeout: 30000,
+      });
+      return response.data; // ✅ return data จริง
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      return null;
     }
-  ];
+  };
 
   useEffect(() => {
-    // Simulate loading data
-    setOrders(sampleOrders);
-    setFilteredOrders(sampleOrders);
+
+    const transformApiData = (apiData) => {
+    if (!apiData || !Array.isArray(apiData)) return [];
+    
+    return apiData.map(item => ({
+      id: item.GenId,
+      deliveryDate: item["วันที่สั่ง"] ? new Date(item["วันที่สั่ง"]).toISOString().split('T')[0] : '',
+      vegetableType: item["ประเภทผัก"] || '',
+      plannedQuantity: parseFloat(item["แผน"]) || 0,
+      actualQuantity: item["ยอดชั่งหน้าสวน"] ? parseFloat(item["ยอดชั่งหน้าสวน"]) : null,
+      unit: 'กก.',
+      status: item["สถานะการส่ง"] || '',
+      farmCode: item["รหัสไร่"] || '',
+      farmName: item["ชื่อไร่"] || ''
+    }));
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const data = await onGetOrders();
+
+      if (data && Array.isArray(data)) {
+        const transformedData = transformApiData(data);
+        setOrders(transformedData);
+        setFilteredOrders(transformedData);
+      } else {
+        // fallback ถ้า API ล้มเหลว ใช้ข้อมูลตัวอย่าง
+        setOrders([]);
+        setFilteredOrders([]);
+      }
+    } catch (error) {
+      console.error("Error in fetchData:", error);
+      setOrders([]);
+      setFilteredOrders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+
   }, []);
 
   // Filter function
@@ -110,12 +119,6 @@ const PlanOrders = () => {
 
     setFilteredOrders(filtered);
   }, [orders, dateRange, selectedVegetableType, selectedStatus]);
-
-  // Get unique vegetable types for dropdown
-  const getVegetableTypes = () => {
-    const types = [...new Set(orders.map(order => order.vegetableType))];
-    return types.sort();
-  };
 
   // Clear all filters
   const clearFilters = () => {
@@ -183,49 +186,69 @@ const PlanOrders = () => {
       {/* Header Section - Mobile Optimized */}
       <AppHeader title="แผนการส่งผัก" />
 
+      {/* Loading State */}
+      {loading && (
+        <div 
+          className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+          style={{
+            backgroundColor: 'rgba(217, 215, 215, 0.6)',
+            zIndex: 9999,
+            backdropFilter: 'blur(2px)'
+          }}
+        >
+          <div className="text-center bg-white rounded-3 shadow-lg p-4" style={{ minWidth: '200px' }}>
+            <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
+              <span className="visually-hidden">กำลังโหลด...</span>
+            </div>
+            <div className="text-muted fw-medium">กำลังโหลดข้อมูล...</div>
+          </div>
+        </div>
+      )}
+
       {/* Mobile Summary Bar */}
-      <div className="d-md-none mb-3 mt-2">
-        <div className="row g-2">
-          {/* ทั้งหมด */}
-          <div className="col-3">
-            <div 
-              className={`card text-white cursor-pointer border border-2 ${
-                selectedStatus === 'ทั้งหมด' 
-                  ? 'border-dark shadow-lg' 
-                  : 'border-secondary'
-              }`}
-              onClick={() => handleStatusFilter('ทั้งหมด')}
-              style={{ 
-                background: getGradientBackground('ทั้งหมด', selectedStatus === 'ทั้งหมด'),
-                cursor: 'pointer', 
-                transition: 'all 0.3s ease',
-                transform: selectedStatus === 'ทั้งหมด' ? 'scale(1.05)' : 'scale(1)',
-                borderRadius: '8px',
-                boxShadow: selectedStatus === 'ทั้งหมด' 
-                  ? `0 4px 12px ${getShadowColor('ทั้งหมด')}` 
-                  : 'none'
-              }}
-            >
-              <div className="card-body p-2 text-center">
-                <div className="small mb-1" style={{
-                  fontSize: '0.9rem', 
-                  color: selectedStatus === 'ทั้งหมด' ? '#ffffff' : '#ffffff',
-                  fontWeight: selectedStatus === 'ทั้งหมด' ? 'bold' : 'normal'
-                }}>
-                  {selectedStatus === 'ทั้งหมด' && <i className="fas fa-check-circle me-1"></i>}
-                  ทั้งหมด
-                </div>
-                <div className="fw-bold pt-2" style={{
-                  fontSize: selectedStatus === 'ทั้งหมด' ? '1.4rem' : '1.2rem', 
-                  color: selectedStatus === 'ทั้งหมด' ? '#ffffff' : '#000000',
+      {(
+        <div className="d-md-none mb-3 mt-2">
+          <div className="row g-2">
+            {/* ทั้งหมด */}
+            <div className="col-3">
+              <div 
+                className={`card text-white cursor-pointer border border-2 ${
+                  selectedStatus === 'ทั้งหมด' 
+                    ? 'border-dark shadow-lg' 
+                    : 'border-secondary'
+                }`}
+                onClick={() => handleStatusFilter('ทั้งหมด')}
+                style={{ 
+                  background: getGradientBackground('ทั้งหมด', selectedStatus === 'ทั้งหมด'),
+                  cursor: 'pointer', 
                   transition: 'all 0.3s ease',
-                  transform: selectedStatus === 'ทั้งหมด' ? 'scale(1.1)' : 'scale(1)'
-                }}>
-                  {getStatistics().totalOrders}
+                  transform: selectedStatus === 'ทั้งหมด' ? 'scale(1.05)' : 'scale(1)',
+                  borderRadius: '8px',
+                  boxShadow: selectedStatus === 'ทั้งหมด' 
+                    ? `0 4px 12px ${getShadowColor('ทั้งหมด')}` 
+                    : 'none'
+                }}
+              >
+                <div className="card-body p-2 text-center">
+                  <div className="small mb-1" style={{
+                    fontSize: '0.9rem', 
+                    color: selectedStatus === 'ทั้งหมด' ? '#ffffff' : '#ffffff',
+                    fontWeight: selectedStatus === 'ทั้งหมด' ? 'bold' : 'normal'
+                  }}>
+                    {selectedStatus === 'ทั้งหมด' && <i className="fas fa-check-circle me-1"></i>}
+                    ทั้งหมด
+                  </div>
+                  <div className="fw-bold pt-2" style={{
+                    fontSize: selectedStatus === 'ทั้งหมด' ? '1.4rem' : '1.2rem', 
+                    color: selectedStatus === 'ทั้งหมด' ? '#ffffff' : '#000000',
+                    transition: 'all 0.3s ease',
+                    transform: selectedStatus === 'ทั้งหมด' ? 'scale(1.1)' : 'scale(1)'
+                  }}>
+                    {getStatistics().totalOrders}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
           {/* รอส่ง */}
           <div className="col-3">
@@ -349,10 +372,12 @@ const PlanOrders = () => {
               </div>
             </div>
           </div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Cards Grid */}
+      {!loading && (
       <div className="row g-2 g-md-3">
         {filteredOrders.map((order) => (
           <div key={order.id} className="col-12 col-sm-6 col-lg-4 col-xl-3 mb-2 mb-md-3">
@@ -440,9 +465,10 @@ const PlanOrders = () => {
           </div>
         ))}
       </div>
+      )}
 
       {/* Empty States - Mobile Optimized */}
-      {filteredOrders.length === 0 && orders.length > 0 && (
+      {!loading && filteredOrders.length === 0 && orders.length > 0 && (
         <div className="text-center mt-4 px-3">
           <i className="fas fa-search fa-2x fa-md-3x text-muted mb-3"></i>
           <h5 className="text-muted h6 h-md-5">ไม่พบข้อมูลที่ตรงกับการค้นหา</h5>
@@ -454,7 +480,7 @@ const PlanOrders = () => {
         </div>
       )}
 
-      {orders.length === 0 && (
+      {!loading && orders.length === 0 && (
         <div className="text-center mt-4 px-3">
           <i className="fas fa-exclamation-triangle fa-2x fa-md-3x text-muted mb-3"></i>
           <h5 className="text-muted h6 h-md-5">ไม่มีข้อมูลการสั่งซื้อ</h5>
@@ -463,14 +489,16 @@ const PlanOrders = () => {
       )}
 
       {/* Order Detail Modal Component */}
-      <PlanOrderDetail
-        showOrderDetail={showOrderDetail}
-        selectedOrder={selectedOrder}
-        actualQuantityInput={actualQuantityInput}
-        setActualQuantityInput={setActualQuantityInput}
-        updateActualQuantity={updateActualQuantity}
-        setShowOrderDetail={setShowOrderDetail}
-      />
+      {!loading && (
+        <PlanOrderDetail
+          showOrderDetail={showOrderDetail}
+          selectedOrder={selectedOrder}
+          actualQuantityInput={actualQuantityInput}
+          setActualQuantityInput={setActualQuantityInput}
+          updateActualQuantity={updateActualQuantity}
+          setShowOrderDetail={setShowOrderDetail}
+        />
+      )}
 
       <BottomNavigation activeTab="plan" />
       </div>
