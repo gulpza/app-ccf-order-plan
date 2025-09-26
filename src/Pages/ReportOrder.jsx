@@ -30,7 +30,7 @@ function ReportOrder() {
       const gregorianEndDate = convertBuddhistToGregorian(endDate);
       const response = await axios.get(apiUrl, {
        params: {
-        action: "get-order-report",
+        action: "get-farm-order-report",
         farmCode: '12',
         startDate: gregorianStartDate, // ✅ ใช้ string ที่แปลงแล้ว
         endDate: gregorianEndDate,     // ✅ ใช้ string ที่แปลงแล้ว

@@ -36,7 +36,7 @@ const PlanOrders = () => {
       
       const response = await axios.get(apiUrl, {
        params: {
-        action: "get-plan-orders",
+        action: "get-plan-farm-orders",
         farmCode: '12',
         startDate: startDate.toISOString().split('T')[0], // YYYY-MM-DD format
         endDate: endDate.toISOString().split('T')[0], // YYYY-MM-DD format
@@ -57,7 +57,7 @@ const PlanOrders = () => {
     
     return apiData.map(item => ({
       id: item.GenId,
-      deliveryDate: item["วันที่สั่ง"] ? new Date(item["วันที่สั่ง"]).toISOString().split('T')[0] : '',
+      deliveryDate: item["วันที่สั่ง"],
       vegetableType: item["ประเภทผัก"] || '',
       plannedQuantity: parseFloat(item["แผน"]) || 0,
       actualQuantity: item["ยอดชั่งหน้าสวน"] ? parseFloat(item["ยอดชั่งหน้าสวน"]) : null,
