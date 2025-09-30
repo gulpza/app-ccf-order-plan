@@ -37,7 +37,7 @@ const PlanOrders = () => {
       const response = await axios.get(apiUrl, {
        params: {
         action: "get-plan-farm-orders",
-        farmCode: '12',
+        farmCode: '',
         startDate: startDate.toISOString().split('T')[0], // YYYY-MM-DD format
         endDate: endDate.toISOString().split('T')[0], // YYYY-MM-DD format
       },

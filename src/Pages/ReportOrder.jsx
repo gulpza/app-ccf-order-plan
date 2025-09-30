@@ -31,7 +31,7 @@ function ReportOrder() {
       const response = await axios.get(apiUrl, {
        params: {
         action: "get-farm-order-report",
-        farmCode: '12',
+        farmCode: '',
         startDate: gregorianStartDate, // ✅ ใช้ string ที่แปลงแล้ว
         endDate: gregorianEndDate,     // ✅ ใช้ string ที่แปลงแล้ว
       },
