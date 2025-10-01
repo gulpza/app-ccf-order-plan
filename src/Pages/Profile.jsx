@@ -30,11 +30,13 @@ const Profile = () => {
     location: '',
     farmName: '',
     userName: userProfile?.displayName ?? '-',
+    displayName: '',
     joinDate: '',
     status: '',
     farmCode: '',
     userType: '',
     latestDate: '',
+    lineId: '',
     rating: 0
   });
   const [loading, setLoading] = useState(false);
@@ -84,7 +86,10 @@ const Profile = () => {
           status: apiUserData.Status || '',
           farmCode: apiUserData.FarmCode || '',
           userType: apiUserData.UserType || '',
-          lineId: apiUserData.LineId || ''
+          lineId: apiUserData.LineId || '',
+          displayName: apiUserData.DisplayName || '',
+          joinDate: apiUserData.CreatedDate || '',
+          latestDate: apiUserData.LatestDate || ''
         }));
       } else {
         console.error('API Error: No user data found or invalid response structure');
@@ -101,9 +106,9 @@ const Profile = () => {
   // Load user data when component mounts and userProfile is available
   useEffect(() => {
       getUserAPI("68cc5367-6689-461b-a60c-1e99ce9eb02e-1");
-    if (userProfile?.userId) {
-      getUserAPI(userProfile.userId);
-    }
+    // if (userProfile?.userId) {
+    //   getUserAPI(userProfile.userId);
+    // }
   }, [userProfile]);
 
   // Loading overlay
@@ -163,7 +168,7 @@ const Profile = () => {
             <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
               <span className="visually-hidden">กำลังโหลด...</span>
             </div>
-            <div className="text-muted fw-medium">กำลังโหลดข้อมูลโปรไฟล์...</div>
+            <div className="text-muted fw-medium">กำลังโหลดข้อมูล</div>
           </div>
         </div>
       )}
@@ -269,6 +274,15 @@ const Profile = () => {
                             </div>
                           </div>
                         </div>
+                        <div className="col-12 col-md-6">
+                          <div className="d-flex align-items-center p-3 bg-light rounded">
+                            <i className="fas fa-user-tag text-secondary me-3"></i>
+                            <div>
+                              <div className="small text-muted">ชื่อผู้ใช้ LINE</div>
+                              <div className="fw-bold">{userData.displayName}</div>
+                            </div>
+                          </div>
+                        </div>
                         <div className="row g-3">
                         <div className="col-12 col-md-6">
                           <div className="d-flex align-items-center p-3 bg-light rounded">
@@ -303,6 +317,42 @@ const Profile = () => {
                             <div>
                               <div className="small text-muted">LINE User ID</div>
                               <div className="fw-bold small text-break">{userData?.lineId || 'ไม่พบข้อมูล'}</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-12 col-md-6">
+                          <div className="d-flex align-items-center p-3 bg-light rounded">
+                            <i className="fas fa-calendar-plus text-success me-3"></i>
+                            <div>
+                              <div className="small text-muted">วันที่สมัคร</div>
+                              <div className="fw-bold">{userData?.joinDate ? new Date(userData.joinDate).toLocaleDateString('th-TH') : 'ไม่พบข้อมูล'}</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-12 col-md-6">
+                          <div className="d-flex align-items-center p-3 bg-light rounded">
+                            <i className="fas fa-clock text-warning me-3"></i>
+                            <div>
+                              <div className="small text-muted">เข้าใช้ล่าสุด</div>
+                              <div className="fw-bold">{userData?.latestDate ? new Date(userData.latestDate).toLocaleDateString('th-TH') : 'ไม่พบข้อมูล'}</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-12 col-md-6">
+                          <div className="d-flex align-items-center p-3 bg-light rounded">
+                            <i className="fas fa-building text-primary me-3"></i>
+                            <div>
+                              <div className="small text-muted">รหัสฟาร์ม</div>
+                              <div className="fw-bold">{userData?.farmCode || 'ไม่พบข้อมูล'}</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-12 col-md-6">
+                          <div className="d-flex align-items-center p-3 bg-light rounded">
+                            <i className="fas fa-user-cog text-secondary me-3"></i>
+                            <div>
+                              <div className="small text-muted">ประเภทผู้ใช้</div>
+                              <div className="fw-bold">{userData?.userType || 'ไม่พบข้อมูล'}</div>
                             </div>
                           </div>
                         </div>
