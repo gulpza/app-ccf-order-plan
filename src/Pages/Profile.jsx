@@ -6,9 +6,7 @@ import axios from 'axios';
 
 const Profile = () => {
   const navigate = useNavigate();
-
-    useEffect(() => {
-
+  useEffect(() => {
   }, []);
 
   const [activeTab, setActiveTab] = useState('personal');

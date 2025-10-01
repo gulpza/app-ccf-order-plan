@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import React from 'react';
 import './App.css';
 import ReportOrder from './Pages/ReportOrder';
@@ -9,10 +9,11 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import LIFFAuthGuard from './Components/LIFFAuthGuard';
 
 const ProtectedRoute = ({ children }) => {
+  const navigate = useNavigate();
   const isAuthenticated = !!localStorage.getItem("userId"); // สมมติว่า token เก็บใน localStorage
 
   if (!isAuthenticated) {
-    return <Navigate to="/register" replace />;
+    return navigate('/register');
   }
   return <>{children}</>;
 };
