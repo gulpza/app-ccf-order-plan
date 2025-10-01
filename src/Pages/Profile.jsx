@@ -95,7 +95,7 @@ const Profile = () => {
         }));
       } else {
         console.error('API Error: No user data found or invalid response structure');
-        setError('ไม่พบข้อมูลผู้ใช้...');
+        navigate('/register');
       }
     } catch (error) {
       console.error('Error retrieving user data:', error);
@@ -108,13 +108,8 @@ const Profile = () => {
   // Load user data when component mounts and userProfile is available
   useEffect(() => {
     const userId = localStorage.getItem('userId');
-    if (userId) {
-       getUserAPI(userId);
-    } else {
-      // Redirect to register if no userId found
-      navigate('/register');
-    }
-  }, [userProfile, navigate]);
+      getUserAPI(userId);
+  }, []);
 
   // Loading overlay
   // if (loading) {
