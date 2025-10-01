@@ -66,8 +66,6 @@ const UserRegistration = ({ userProfile, onCancel }) => {
     }
 
     setIsSubmitting(true);
-    setError(null);
-
     try {
       // เรียก API เพื่อลงทะเบียนผู้ใช้
       const apiResult = await registerUserAPI({
