@@ -35,8 +35,6 @@ const Profile = () => {
     farmCode: '',
     userType: '',
     latestDate: '',
-    totalOrders: 0,
-    completedOrders: 0,
     rating: 0
   });
   const [loading, setLoading] = useState(false);
@@ -76,28 +74,21 @@ const Profile = () => {
 
       console.log({response})
 
-      if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+      if (response.data && response.data.length > 0) {
         const apiUserData = response.data[0]; // Get first user from array
         setUserData(prevData => ({
           ...prevData,
           name: apiUserData.Name || '',
           phone: apiUserData.Phone || '',
-          location: apiUserData.Location || '',
           farmName: apiUserData.FarmName || '',
-          joinDate: apiUserData.CreatedDate || '',
           status: apiUserData.Status || '',
           farmCode: apiUserData.FarmCode || '',
           userType: apiUserData.UserType || '',
-          latestDate: apiUserData.LatestDate || '',
-          totalOrders: apiUserData.totalOrders || 0,
-          completedOrders: apiUserData.completedOrders || 0,
-          lineId: apiUserData.LineId || lineId,
-          rating: apiUserData.rating || 4.5
+          lineId: apiUserData.LineId || ''
         }));
-        console.log('User data retrieved successfully:', apiUserData);
       } else {
         console.error('API Error: No user data found or invalid response structure');
-        setError('ไม่พบข้อมูลผู้ใช้');
+        setError('ไม่พบข้อมูลผู้ใช้...');
       }
     } catch (error) {
       console.error('Error retrieving user data:', error);
