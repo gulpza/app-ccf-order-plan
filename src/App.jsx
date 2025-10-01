@@ -9,11 +9,11 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import LIFFAuthGuard from './Components/LIFFAuthGuard';
 
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = !!localStorage.getItem("token"); // สมมติว่า token เก็บใน localStorage
+  const isAuthenticated = !!localStorage.getItem("userId"); // สมมติว่า token เก็บใน localStorage
 
-  // if (!isAuthenticated) {
-  //   return <Navigate to="/register" replace />;
-  // }
+  if (!isAuthenticated) {
+    return <Navigate to="/register" replace />;
+  }
   return <>{children}</>;
 };
 

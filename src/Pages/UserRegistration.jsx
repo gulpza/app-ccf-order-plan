@@ -113,8 +113,7 @@ const UserRegistration = ({  }) => {
     <div className="min-vh-100" style={{ backgroundColor: '#f0f8ef' }}>
       <div className="container-fluid px-2 px-md-3 pt-2 mt-2">
         {/* Header */}
-        <AppHeader title="ลงทะเบียนผู้ใช้งาน" />
-
+        {/* <AppHeader title="ลงทะเบียนผู้ใช้งาน" /> */}
         {/* Registration Form */}
         <div className="row justify-content-center mt-4">
           <div className="col-12 col-md-8 col-lg-6">
@@ -146,7 +145,7 @@ const UserRegistration = ({  }) => {
                     ยินดีต้อนรับ!
                   </h4>
                   <p className="text-muted">
-                    กรุณากรอกข้อมูลเพิ่มเติมเพื่อใช้งานระบบ
+                    กรุณากรอกข้อมูลลงทะเบียนใช้งานระบบ
                   </p>
                 </div>
 
