@@ -14,19 +14,31 @@ const PlanOrderDetail = ({
   
   // State for confirmation modal
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [saving, setSaving] = useState(false);
   
   // Check if order can be edited (only "รอส่ง" status)
   const canEdit = selectedOrder?.status === 'รอส่ง' || selectedOrder?.status === 'ส่งแล้ว';
 
   // Handle save button click - show confirmation modal
   const handleSaveClick = () => {
+    if (!actualQuantityInput || parseFloat(actualQuantityInput) <= 0) {
+      alert('กรุณากรอกน้ำหนักที่ถูกต้อง');
+      return;
+    }
     setShowConfirmModal(true);
   };
 
   // Handle confirm save
-  const handleConfirmSave = () => {
-    updateActualQuantity();
-    setShowConfirmModal(false);
+  const handleConfirmSave = async () => {
+    setSaving(true);
+    try {
+      await updateActualQuantity();
+      setShowConfirmModal(false);
+    } catch (error) {
+      console.error('Error saving:', error);
+    } finally {
+      setSaving(false);
+    }
   };
 
   // Handle cancel confirmation
@@ -243,8 +255,16 @@ const PlanOrderDetail = ({
                         fontSize: '1.1rem'
                       }}
                       onClick={handleConfirmSave}
+                      disabled={saving}
                     >
-                      ยืนยัน
+                      {saving ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                          กำลังบันทึก...
+                        </>
+                      ) : (
+                        'ยืนยัน'
+                      )}
                     </button>
                   </div>
                 </div>

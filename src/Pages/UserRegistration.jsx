@@ -1,17 +1,50 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppHeader from '../Components/AppHeader';
-import userService from '../services/userService';
+import axios from 'axios';
 
-const UserRegistration = ({ userProfile, onRegistrationComplete, onCancel }) => {
+const UserRegistration = ({ userProfile, onCancel }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: userProfile?.displayName || '',
+    displayName: userProfile?.displayName || '',
     phone: '',
     farmName: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const apiUrl = import.meta.env.VITE_SHEET_API_KEY;
+
+  const registerUserAPI = async (userData) => {
+    try {
+     const response = await axios.post(apiUrl, new URLSearchParams({
+      action: 'add-user-line',
+        lineId: userData.lineUserId,
+        displayName: userData.displayName,
+        name: userData.name,
+        phone: userData.phone,
+        farmName: userData.farmName
+    }), {
+      timeout: 15000,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }
+    });
+      
+      console.log('✅ Registration response:', response.data);
+      return {
+        success: true,
+        data: response.data
+      };
+      
+    } catch (error) {
+      console.error('❌ Error registering user:', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  };
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -36,30 +69,35 @@ const UserRegistration = ({ userProfile, onRegistrationComplete, onCancel }) => 
     setError(null);
 
     try {
-         localStorage.setItem("token", "fake-jwt-token");
+      // เรียก API เพื่อลงทะเบียนผู้ใช้
+      const apiResult = await registerUserAPI({
+        lineUserId: userProfile?.userId || 'ok',
+        displayName: userProfile?.displayName || 'ok',
+        name: formData.name?.trim() || '',
+        phone: formData.phone?.trim() || '',
+        farmName: formData.farmName?.trim() || '' 
+      });
 
-      // Register user with the API
-    //   const response = await userService.registerUser({
-    //     lineUserId: userProfile.userId,
-    //     displayName: userProfile.displayName,
-    //     pictureUrl: userProfile.pictureUrl,
-    //     name: formData.name.trim(),
-    //     phone: formData.phone.trim(),
-    //     farmName: formData.farmName.trim()
-    //   });
+      if (!apiResult.success) {
+        throw new Error('ไม่สามารถลงทะเบียนได้ กรุณาลองใหม่อีกครั้ง');
+      }
 
-    //   if (response.success) {
-    //     console.log('✅ User registered successfully:', response.user);
-        // onRegistrationComplete("registered");
-    //   } else {
-    //     throw new Error(response.message || 'การลงทะเบียนไม่สำเร็จ');
-    //   }
+      // แสดง modal สำเร็จ
+      setShowSuccessModal(true);
+
     } catch (error) {
       console.error('❌ Registration error:', error);
       setError(error.message || 'เกิดข้อผิดพลาดในการลงทะเบียน กรุณาลองใหม่อีกครั้ง');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Handle success modal confirm
+  const handleSuccessConfirm = () => {
+    setShowSuccessModal(false);
+    // Redirect ไปหน้า profile
+    navigate('/profile');
   };
 
   return (
@@ -261,6 +299,44 @@ const UserRegistration = ({ userProfile, onRegistrationComplete, onCancel }) => 
           </div>
         </div>
       </div>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div 
+          className="modal fade show d-block" 
+          style={{ backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 1060 }}
+          tabIndex="-1"
+        >
+          <div className="modal-dialog modal-dialog-centered modal-sm">
+            <div className="modal-content" style={{ borderRadius: '12px' }}>
+              <div className="modal-body text-center py-4">
+                <div className="mb-3">
+                  <i className="fas fa-check-circle text-success mb-3" style={{ fontSize: '3rem' }}></i>
+                  <h5 className="mb-2">ลงทะเบียนสำเร็จ!</h5>
+                  <p className="text-muted mb-0">ยินดีต้อนรับเข้าสู่ระบบ</p>
+                </div>
+                
+                <button
+                  type="button"
+                  className="btn w-100 fw-bold"
+                  style={{ 
+                    background: '#2d5a3d',
+                    borderColor: '#2d5a3d',
+                    color: 'white',
+                    borderRadius: '8px',
+                    padding: '0.75rem',
+                    fontSize: '1.1rem'
+                  }}
+                  onClick={handleSuccessConfirm}
+                >
+                  <i className="fas fa-arrow-right me-2"></i>
+                  ไปยังหน้าโปรไฟล์
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

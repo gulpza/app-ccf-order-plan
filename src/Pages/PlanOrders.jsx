@@ -25,6 +25,38 @@ const PlanOrders = () => {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const apiUrl = import.meta.env.VITE_SHEET_API_KEY; 
 
+  // API function สำหรับอัปเดตน้ำหนักส่งจริง
+  const updateFarmOrderAPI = async (genId, actualQuantity) => {
+    try {
+      console.log('🔄 Updating farm order:', { genId, actualQuantity });
+      
+    const response = await axios.post(apiUrl, new URLSearchParams({
+      action: 'update-farm-order',
+      GenId: genId,
+      'ส่งจริง': actualQuantity.toString(),
+      'สถานะการส่ง': 'ส่งแล้ว'
+    }), {
+      timeout: 15000,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }
+    });
+      
+      console.log('✅ Update response:', response.data);
+      return {
+        success: true,
+        data: response.data
+      };
+      
+    } catch (error) {
+      console.error('❌ Error updating farm order:', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }; 
+
    const onGetOrders = async () => { 
     try {
       const today = new Date();
@@ -51,7 +83,6 @@ const PlanOrders = () => {
   };
 
   useEffect(() => {
-
     const transformApiData = (apiData) => {
     if (!apiData || !Array.isArray(apiData)) return [];
     
@@ -147,22 +178,45 @@ const PlanOrders = () => {
   };
 
   // Update actual quantity
-  const updateActualQuantity = () => {
+  const updateActualQuantity = async () => {
     if (selectedOrder) {
-      const updatedQuantity = actualQuantityInput ? parseFloat(actualQuantityInput) : null;
-      const updatedOrders = orders.map(order => 
-        order.id === selectedOrder.id 
-          ? { 
-              ...order, 
+      try {
+        const updatedQuantity = actualQuantityInput ? parseFloat(actualQuantityInput) : null;
+        
+        if (!updatedQuantity) {
+          alert('กรุณากรอกน้ำหนักที่ถูกต้อง');
+          return;
+        }
+        
+        // เรียก API เพื่อบันทึกข้อมูล
+        const apiResult = await updateFarmOrderAPI(selectedOrder.id, updatedQuantity);
+        
+        if (!apiResult.success) {
+          alert('ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง');
+          return;
+        }
+        
+        // อัปเดต local state เมื่อ API สำเร็จ
+        const updatedOrders = orders.map(order => {
+          if (order.id === selectedOrder.id) {
+            return {
+              ...order,
               actualQuantity: updatedQuantity,
-              status: updatedQuantity ? 'ส่งแล้ว' : order.status // เปลี่ยนสถานะเป็น "ส่งแล้ว" เมื่อกรอกน้ำหนัก
-            }
-          : order
-      );
-      setOrders(updatedOrders);
-      setShowOrderDetail(false);
-      setSelectedOrder(null);
-      setActualQuantityInput('');
+              status: 'ส่งแล้ว'
+            };
+          }
+          return order;
+        });
+        
+        setOrders(updatedOrders);
+        setShowOrderDetail(false);
+        setSelectedOrder(null);
+        setActualQuantityInput('');
+    
+      } catch (error) {
+        console.error('Error updating quantity:', error);
+        alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+      }
     }
   };
 

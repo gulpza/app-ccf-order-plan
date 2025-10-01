@@ -3,31 +3,17 @@ import { useLIFF } from '../hooks/useLIFF';
 import BottomNavigation from '../Components/BottomNavigation';
 import LIFFAuthGuard from '../Components/LIFFAuthGuard';
 import userService from '../services/userService.js';
+import axios from 'axios';
 
 const Profile = () => {
 
     useEffect(() => {
 
-    // const verifyUser = async () => {
-    //   const lineUserId = '68cc5367-6689-461b-a60c-1e99ce9eb02e-1'; // จาก LINE LIFF
-
-    //   try {
-    //     const result = await userService.checkUserExists(lineUserId);
-    //     if (!result.status) {
-    //       window.location.href = '/register';
-    //     }
-    //   } catch (error) {
-    //     console.error('User verification failed:', error);
-    //   }
-    // };
-
-    // verifyUser();
-
   }, []);
 
 
   const [activeTab, setActiveTab] = useState('personal');
-  
+  const apiUrl = import.meta.env.VITE_SHEET_API_KEY; 
   // LINE LIFF Integration
   const { 
     isReady: liffReady, 
@@ -37,23 +23,161 @@ const Profile = () => {
     closeWindow
   } = useLIFF();
 
-  // Sample user data - in a real app, this would come from an API or user context
-  const userData = {
-    name: 'Birth', // This would come from registered user data
-    phone: '089-123-4567', // This would come from registered user data
+  const [userData, setUserData] = useState({
+    name: '',
+    phone: '',
     email: userProfile?.email || '-',
-    location: 'จังหวัดกรุงเทพมหานคร', // This would come from registered user data
-    farmName: 'จระเข้', // This would come from registered user data
-    userName: userProfile?.displayName || 'Birth',
-    joinDate: '2024-01-15',
-    status: 'พร้อมใช้งาน',
-    totalOrders: 156,
-    completedOrders: 142,
-    rating: 4.8
+    location: '',
+    farmName: '',
+    userName: userProfile?.displayName ?? '-',
+    joinDate: '',
+    status: '',
+    farmCode: '',
+    userType: '',
+    latestDate: '',
+    totalOrders: 0,
+    completedOrders: 0,
+    rating: 0
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Status mapping function
+  const getStatusLabel = (status) => {
+    const statusMap = {
+      'active': 'ปกติ',
+      'inactive': 'ยกเลิก',
+      'wait-approve': 'รออนุมัติ'
+    };
+    return statusMap[status] || status;
   };
 
-  return (
+  // Status color mapping function
+  const getStatusColor = (status) => {
+    const colorMap = {
+      'active': '#28a745',      // green
+      'inactive': '#dc3545',    // red
+      'wait-approve': '#ffc107' // yellow
+    };
+    return colorMap[status] || '#6c757d'; // default gray
+  };
+
+  // API function to get user data
+  const getUserAPI = async (lineId) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(apiUrl, {
+        params: {
+          action: "get-user-line",
+          lineId
+        },
+        timeout: 30000,
+      });
+
+      console.log({response})
+
+      if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+        const apiUserData = response.data[0]; // Get first user from array
+        setUserData(prevData => ({
+          ...prevData,
+          name: apiUserData.Name || '',
+          phone: apiUserData.Phone || '',
+          location: apiUserData.Location || '',
+          farmName: apiUserData.FarmName || '',
+          joinDate: apiUserData.CreatedDate || '',
+          status: apiUserData.Status || '',
+          farmCode: apiUserData.FarmCode || '',
+          userType: apiUserData.UserType || '',
+          latestDate: apiUserData.LatestDate || '',
+          totalOrders: apiUserData.totalOrders || 0,
+          completedOrders: apiUserData.completedOrders || 0,
+          lineId: apiUserData.LineId || lineId,
+          rating: apiUserData.rating || 4.5
+        }));
+        console.log('User data retrieved successfully:', apiUserData);
+      } else {
+        console.error('API Error: No user data found or invalid response structure');
+        setError('ไม่พบข้อมูลผู้ใช้');
+      }
+    } catch (error) {
+      console.error('Error retrieving user data:', error);
+      setError('เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load user data when component mounts and userProfile is available
+  useEffect(() => {
+      getUserAPI("68cc5367-6689-461b-a60c-1e99ce9eb02e-1");
+    if (userProfile?.userId) {
+      getUserAPI(userProfile.userId);
+    }
+  }, [userProfile]);
+
+  // Loading overlay
+  // if (loading) {
+  //   return ((
+  //       <div 
+  //         className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+  //         style={{
+  //           backgroundColor: 'rgba(217, 215, 215, 0.6)',
+  //           zIndex: 9999,
+  //           backdropFilter: 'blur(2px)'
+  //         }}
+  //       >
+  //         <div className="text-center bg-white rounded-3 shadow-lg p-4" style={{ minWidth: '200px' }}>
+  //           <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
+  //             <span className="visually-hidden">กำลังโหลด...</span>
+  //           </div>
+  //           <div className="text-muted fw-medium">กำลังโหลดข้อมูล...</div>
+  //         </div>
+  //       </div>
+  //     ));
+  // }
+
+  // Error state
+  if (error) {
+    return (
       <div className="container-fluid px-2 px-md-3 py-3">
+        <div className="alert alert-danger" role="alert">
+          <h4 className="alert-heading">เกิดข้อผิดพลาด</h4>
+          <p>{error}</p>
+          <hr />
+          <button 
+            className="btn btn-outline-danger" 
+            onClick={() => userProfile?.userId && getUserAPI(userProfile.userId)}
+          >
+            ลองใหม่
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+      <div className="container-fluid px-2 px-md-3 py-3 position-relative">
+      
+      {/* Loading Overlay - shows over UI like PlanOrders */}
+      {loading && (
+        <div 
+          className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+          style={{
+            backgroundColor: 'rgba(217, 215, 215, 0.6)',
+            zIndex: 9999,
+            backdropFilter: 'blur(2px)'
+          }}
+        >
+          <div className="text-center bg-white rounded-3 shadow-lg p-4" style={{ minWidth: '200px' }}>
+            <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
+              <span className="visually-hidden">กำลังโหลด...</span>
+            </div>
+            <div className="text-muted fw-medium">กำลังโหลดข้อมูลโปรไฟล์...</div>
+          </div>
+        </div>
+      )}
+
       {/* Profile Card */}
       <div className="row mb-4">
         <div className="col-12">
@@ -92,7 +216,17 @@ const Profile = () => {
                   </div>
                   <p className="text-muted mb-1">
                     <i className="fas fa-calendar-alt me-1"></i>
-                    สถานะ: {userData.status}
+                    สถานะ: 
+                    <span 
+                      className="badge ms-1 px-2 py-1" 
+                      style={{ 
+                        backgroundColor: getStatusColor(userData.status),
+                        color: 'white',
+                        fontSize: '0.75rem'
+                      }}
+                    >
+                      {getStatusLabel(userData.status)}
+                    </span>
                   </p>
                   <div className="d-flex align-items-center">
                     <span className="badge px-2 py-1 me-2" style={{ 
@@ -141,7 +275,7 @@ const Profile = () => {
                             <i className="fas fa-user text-primary me-3"></i>
                             <div>
                               <div className="small text-muted">ชื่อ</div>
-                              <div className="fw-bold">{userData.userName}</div>
+                              <div className="fw-bold">{userData.name}</div>
                             </div>
                           </div>
                         </div>
@@ -173,16 +307,17 @@ const Profile = () => {
                             </div>
                           </div>
                         </div>
-                      </div>
-                        <div className="col-12 col-md-6">
+                             <div className="col-12 col-md-6">
                           <div className="d-flex align-items-center p-3 bg-light rounded">
                             <i className="fas fa-id-card text-info me-3"></i>
                             <div>
                               <div className="small text-muted">LINE User ID</div>
-                              <div className="fw-bold small text-break">{userProfile?.userId || 'ไม่พบข้อมูล'}</div>
+                              <div className="fw-bold small text-break">{userData?.lineId || 'ไม่พบข้อมูล'}</div>
                             </div>
                           </div>
                         </div>
+                      </div>
+                   
 
                       </div>
                     </div>
