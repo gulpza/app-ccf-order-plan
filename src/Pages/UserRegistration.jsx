@@ -2,8 +2,19 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppHeader from '../Components/AppHeader';
 import axios from 'axios';
+import { useLIFF } from '../hooks/useLIFF';
 
-const UserRegistration = ({ userProfile }) => {
+const UserRegistration = ({  }) => {
+
+    // LINE LIFF Integration
+    const { 
+      isReady: liffReady, 
+      isLoggedIn, 
+      userProfile, 
+      isInLineClient,
+      closeWindow
+    } = useLIFF();
+  
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     displayName: userProfile?.displayName || '',

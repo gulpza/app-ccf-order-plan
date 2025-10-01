@@ -64,7 +64,6 @@ export const useLIFF = () => {
         localStorage.setItem('userId', profile.userId);
       }
       
-      console.log('✅ Login successful:', profile);
     } catch (error) {
       console.error('❌ Login error:', error);
       setError(error.message);
@@ -81,9 +80,6 @@ export const useLIFF = () => {
       
       // Clear userId from localStorage when logout
       localStorage.removeItem('userId');
-      console.log('🗑️ UserId removed from localStorage');
-      
-      console.log('✅ Logout successful');
     } catch (error) {
       console.error('❌ Logout error:', error);
       setError(error.message);

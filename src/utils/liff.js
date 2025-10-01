@@ -13,14 +13,14 @@ class LIFFService {
   // Initialize LIFF
   async init() {
     try {
-      console.log('🚀 Initializing LIFF...');
+      // console.log('🚀 Initializing LIFF...');
       await liff.init({ liffId: LIFF_ID });
       this.isInitialized = true;
       this.isInClient = liff.isInClient();
       
-      console.log('✅ LIFF initialized successfully');
-      console.log('📱 Running in LINE client:', this.isInClient);
-      console.log('🔐 User logged in:', liff.isLoggedIn());
+      // console.log('✅ LIFF initialized successfully');
+      // console.log('📱 Running in LINE client:', this.isInClient);
+      // console.log('🔐 User logged in:', liff.isLoggedIn());
       
       return true;
     } catch (error) {

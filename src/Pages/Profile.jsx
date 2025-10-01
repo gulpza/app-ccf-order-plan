@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLIFF } from '../hooks/useLIFF';
 import BottomNavigation from '../Components/BottomNavigation';
-import LIFFAuthGuard from '../Components/LIFFAuthGuard';
-import userService from '../services/userService.js';
 import axios from 'axios';
 
 const Profile = () => {
@@ -12,7 +10,6 @@ const Profile = () => {
     useEffect(() => {
 
   }, []);
-
 
   const [activeTab, setActiveTab] = useState('personal');
   const apiUrl = import.meta.env.VITE_SHEET_API_KEY; 
