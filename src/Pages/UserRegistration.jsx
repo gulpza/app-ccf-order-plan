@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AppHeader from '../Components/AppHeader';
 import axios from 'axios';
 
-const UserRegistration = ({ userProfile, onCancel }) => {
+const UserRegistration = ({ userProfile }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     displayName: userProfile?.displayName || '',
@@ -69,8 +69,8 @@ const UserRegistration = ({ userProfile, onCancel }) => {
     try {
       // เรียก API เพื่อลงทะเบียนผู้ใช้
       const apiResult = await registerUserAPI({
-        lineUserId: userProfile?.userId || 'ok',
-        displayName: userProfile?.displayName || 'ok',
+        lineUserId: userProfile?.userId || '',
+        displayName: userProfile?.displayName || '',
         name: formData.name?.trim() || '',
         phone: formData.phone?.trim() || '',
         farmName: formData.farmName?.trim() || '' 
@@ -112,24 +112,24 @@ const UserRegistration = ({ userProfile, onCancel }) => {
                 {/* Welcome Message */}
                 <div className="text-center mb-4">
                   <div className="mb-3">
-                    {userProfile?.pictureUrl ? (
-                      <img 
-                        src={userProfile.pictureUrl} 
-                        alt="LINE Profile" 
-                        className="rounded-circle"
-                        style={{ width: '80px', height: '80px', objectFit: 'cover' }}
-                      />
-                    ) : (
-                      <div className="rounded-circle d-inline-flex align-items-center justify-content-center"
-                        style={{
-                          width: '80px',
-                          height: '80px',
-                          background: 'linear-gradient(135deg, #2d5a3d, #6cb866)',
-                          color: 'white'
-                        }}>
+                    <div className="rounded-circle d-inline-flex align-items-center justify-content-center"
+                      style={{
+                        width: '80px',
+                        height: '80px',
+                        background: 'linear-gradient(135deg, #2d5a3d, #6cb866)',
+                        color: 'white'
+                      }}>
+                      {userProfile?.pictureUrl ? (
+                        <img 
+                          src={userProfile.pictureUrl} 
+                          alt="LINE Profile" 
+                          className="rounded-circle w-100 h-100"
+                          style={{ objectFit: 'cover' }}
+                        />
+                      ) : (
                         <i className="fas fa-user fa-2x"></i>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                   <h4 className="fw-bold mb-2" style={{ color: '#2d5a3d' }}>
                     ยินดีต้อนรับ!
@@ -211,7 +211,7 @@ const UserRegistration = ({ userProfile, onCancel }) => {
                         name="farmName"
                         value={formData.farmName}
                         onChange={handleInputChange}
-                        placeholder="กรอกชื่อฟาร์ม เช่น ฟาร์มจระเข้"
+                        placeholder="กรอกชื่อฟาร์ม"
                         required
                         style={{
                           borderRadius: '10px',
@@ -224,17 +224,23 @@ const UserRegistration = ({ userProfile, onCancel }) => {
 
                     {/* LINE Info Display */}
                     <div className="col-12">
-                      <div className="bg-light p-3 rounded" style={{ borderRadius: '10px' }}>
-                        <h6 className="fw-bold mb-2 text-muted">
+                      <div className="bg-light p-4 rounded" style={{ borderRadius: '10px', border: '2px solid #e8f5e8' }}>
+                        <h6 className="fw-bold mb-3 text-success">
                           <i className="fab fa-line me-2"></i>
-                          ข้อมูล LINE
+                          ข้อมูล LINE ของคุณ
                         </h6>
-                        <div className="small text-muted">
-                          <div className="mb-1">
-                            <strong>ชื่อแสดง:</strong> {userProfile?.displayName || 'ไม่พบข้อมูล'}
-                          </div>
-                          <div>
-                            <strong>LINE ID:</strong> {userProfile?.userId || 'ไม่พบข้อมูล'}
+                        
+                        {/* LINE User ID */}
+                        <div className="border-top pt-3">
+                          <div className="row">
+                            <div className="col-4 col-sm-3">
+                              <strong className="text-muted">LINE ID:</strong>
+                            </div>
+                            <div className="col-8 col-sm-9">
+                              <code className="bg-white px-2 py-1 rounded border text-dark small">
+                                {userProfile?.userId || 'ไม่พบข้อมูล'}
+                              </code>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -243,23 +249,7 @@ const UserRegistration = ({ userProfile, onCancel }) => {
                     {/* Submit Buttons */}
                     <div className="col-12">
                       <div className="row g-2 mt-3">
-                        <div className="col-6">
-                          <button
-                            type="button"
-                            className="btn btn-outline-secondary w-100 fw-bold"
-                            onClick={onCancel}
-                            disabled={isSubmitting}
-                            style={{
-                              borderRadius: '12px',
-                              padding: '12px',
-                              fontSize: '1.1rem'
-                            }}
-                          >
-                            <i className="fas fa-arrow-left me-2"></i>
-                            ยกเลิก
-                          </button>
-                        </div>
-                        <div className="col-6">
+                        <div className="col-12">
                           <button
                             type="submit"
                             className="btn w-100 fw-bold"
