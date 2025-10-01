@@ -37,7 +37,7 @@ const Profile = () => {
     userType: '',
     latestDate: '',
     lineId: '',
-    rating: 0
+    rating: 5
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -320,45 +320,7 @@ const Profile = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="col-12 col-md-6">
-                          <div className="d-flex align-items-center p-3 bg-light rounded">
-                            <i className="fas fa-calendar-plus text-success me-3"></i>
-                            <div>
-                              <div className="small text-muted">วันที่สมัคร</div>
-                              <div className="fw-bold">{userData?.joinDate ? new Date(userData.joinDate).toLocaleDateString('th-TH') : 'ไม่พบข้อมูล'}</div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-12 col-md-6">
-                          <div className="d-flex align-items-center p-3 bg-light rounded">
-                            <i className="fas fa-clock text-warning me-3"></i>
-                            <div>
-                              <div className="small text-muted">เข้าใช้ล่าสุด</div>
-                              <div className="fw-bold">{userData?.latestDate ? new Date(userData.latestDate).toLocaleDateString('th-TH') : 'ไม่พบข้อมูล'}</div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-12 col-md-6">
-                          <div className="d-flex align-items-center p-3 bg-light rounded">
-                            <i className="fas fa-building text-primary me-3"></i>
-                            <div>
-                              <div className="small text-muted">รหัสฟาร์ม</div>
-                              <div className="fw-bold">{userData?.farmCode || 'ไม่พบข้อมูล'}</div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-12 col-md-6">
-                          <div className="d-flex align-items-center p-3 bg-light rounded">
-                            <i className="fas fa-user-cog text-secondary me-3"></i>
-                            <div>
-                              <div className="small text-muted">ประเภทผู้ใช้</div>
-                              <div className="fw-bold">{userData?.userType || 'ไม่พบข้อมูล'}</div>
-                            </div>
-                          </div>
-                        </div>
                       </div>
-                   
-
                       </div>
                     </div>
 
