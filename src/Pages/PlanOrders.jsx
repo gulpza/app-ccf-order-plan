@@ -83,9 +83,8 @@ const PlanOrders = () => {
     const transformApiData = (apiData) => {
     if (!apiData || !Array.isArray(apiData)) return [];
     
-    return apiData.map((item, index) => ({
-      id: `${item.GenId}-${item["ประเภทผัก"]}-${item["วันที่สั่ง"]}-${index}`,
-      genId: item.GenId, // Keep original GenId for API calls
+    return apiData.map(item => ({
+      id: item.GenId,
       deliveryDate: item["วันที่สั่ง"],
       vegetableType: item["ประเภทผัก"] || '',
       plannedQuantity: parseFloat(item["แผน"]) || 0,
@@ -187,7 +186,7 @@ const PlanOrders = () => {
         }
         
         // เรียก API เพื่อบันทึกข้อมูล
-        const apiResult = await updateFarmOrderAPI(selectedOrder.genId, updatedQuantity);
+        const apiResult = await updateFarmOrderAPI(selectedOrder.id, updatedQuantity);
         
         if (!apiResult.success) {
           alert('ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง');
@@ -431,8 +430,8 @@ const PlanOrders = () => {
       {/* Cards Grid */}
       {!loading && (
       <div className="row g-2 g-md-3">
-        {filteredOrders.map((order, index) => (
-          <div key={`${order.id}-${order.vegetableType}-${order.deliveryDate}-${index}`} className="col-12 col-sm-6 col-lg-4 col-xl-3 mb-2 mb-md-3">
+        {filteredOrders.map((order) => (
+          <div key={order.id} className="col-12 col-sm-6 col-lg-4 col-xl-3 mb-2 mb-md-3">
             <div 
               className="card h-100 compact-order-card shadow-sm border-2"
               onClick={(e) => {

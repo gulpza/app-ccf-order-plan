@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLIFF } from '../hooks/useLIFF';
 import BottomNavigation from '../Components/BottomNavigation';
 import LIFFAuthGuard from '../Components/LIFFAuthGuard';
@@ -6,6 +7,7 @@ import userService from '../services/userService.js';
 import axios from 'axios';
 
 const Profile = () => {
+  const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -105,11 +107,14 @@ const Profile = () => {
 
   // Load user data when component mounts and userProfile is available
   useEffect(() => {
-      getUserAPI("68cc5367-6689-461b-a60c-1e99ce9eb02e-1");
-    // if (userProfile?.userId) {
-    //   getUserAPI(userProfile.userId);
-    // }
-  }, [userProfile]);
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+       getUserAPI(userId);
+    } else {
+      // Redirect to register if no userId found
+      navigate('/register');
+    }
+  }, [userProfile, navigate]);
 
   // Loading overlay
   // if (loading) {

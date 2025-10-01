@@ -9,10 +9,8 @@ class UserService {
   // Check if user exists in the system by LINE User ID
   async checkUserExists(lineUserId) {
     try {
-
-
       const params = new URLSearchParams({
-        action: 'get-user-by-line-id',
+        action: 'get-user-line',
         lineId: lineUserId
       });
 

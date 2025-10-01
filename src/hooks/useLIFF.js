@@ -14,8 +14,6 @@ export const useLIFF = () => {
       try {
         setIsLoading(true);
         setError(null);
-
-        console.log('🔄 Initializing LIFF...');
         const success = await LIFFService.init();
         
         if (success) {
@@ -27,9 +25,16 @@ export const useLIFF = () => {
             setIsLoggedIn(true);
             const profile = await LIFFService.getUserProfile();
             setUserProfile(profile);
-            console.log('✅ User is logged in:', profile);
+            
+            // Store userId in localStorage when logged in
+            if (profile?.userId) {
+              localStorage.setItem('userId', profile.userId);
+            }
+            
           } else {
-            console.log('ℹ️ User is not logged in');
+            // Clear userId from localStorage when not logged in
+            localStorage.removeItem('userId');
+            //  localStorage.setItem('userId', 1234);
           }
         } else {
           throw new Error('LIFF initialization failed');
@@ -54,6 +59,11 @@ export const useLIFF = () => {
       setIsLoggedIn(true);
       setUserProfile(profile);
       
+      // Store userId in localStorage when login successful
+      if (profile?.userId) {
+        localStorage.setItem('userId', profile.userId);
+      }
+      
       console.log('✅ Login successful:', profile);
     } catch (error) {
       console.error('❌ Login error:', error);
@@ -68,6 +78,11 @@ export const useLIFF = () => {
       LIFFService.logout();
       setIsLoggedIn(false);
       setUserProfile(null);
+      
+      // Clear userId from localStorage when logout
+      localStorage.removeItem('userId');
+      console.log('🗑️ UserId removed from localStorage');
+      
       console.log('✅ Logout successful');
     } catch (error) {
       console.error('❌ Logout error:', error);
