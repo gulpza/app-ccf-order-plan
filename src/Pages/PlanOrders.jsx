@@ -33,7 +33,7 @@ const PlanOrders = () => {
     const response = await axios.post(apiUrl, new URLSearchParams({
       action: 'update-farm-order',
       GenId: genId,
-      'ส่งจริง': actualQuantity.toString(),
+      'ยอดชั่งหน้าสวน': actualQuantity.toString(),
       'สถานะการส่ง': 'ส่งแล้ว'
     }), {
       timeout: 15000,
