@@ -65,7 +65,6 @@ const Profile = () => {
   // API function to get user data
   const getUserAPI = async (lineId) => {
     setLoading(true);
-    setError(null);
     try {
       const response = await axios.get(apiUrl, {
         params: {
