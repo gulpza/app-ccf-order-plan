@@ -21,14 +21,13 @@ function App() {
   // Initialize VConsole for mobile debugging
   useEffect(() => {
     // Only load VConsole in development or when debug=true is in URL
-    if (process.env.NODE_ENV === 'development' || window.location.search.includes('debug=true')) {
+    // if (process.env.NODE_ENV === 'development' || window.location.search.includes('debug=true')) {
       // Try to load vconsole dynamically
       import('vconsole').then((VConsole) => {
         new VConsole.default();
         console.log('📱 VConsole initialized for mobile debugging');
       }).catch((error) => {
-        console.warn('VConsole not available, loading from CDN:', error);
-        
+        console.warn('VConsole not available, loading from CDN:', error);     
         // Fallback: Load VConsole from CDN
         const script = document.createElement('script');
         script.src = 'https://unpkg.com/vconsole@latest/dist/vconsole.min.js';
@@ -39,7 +38,7 @@ function App() {
         };
         document.head.appendChild(script);
       });
-    }
+    // }
   }, []);
 
   return (
