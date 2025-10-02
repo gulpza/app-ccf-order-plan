@@ -62,10 +62,27 @@ const PlanOrders = () => {
       
       const endDate = new Date(today);
       endDate.setFullYear(today.getFullYear() + 1); // บวก 1 ปี
+      
       const profile = localStorage.getItem('profile');
-      console.log("ok: ",{profile})
-      const farmCode = profile ? JSON.parse(profile).farmCode : null;
-      console.log("farmCode: ",{farmCode})
+      console.log("Profile from localStorage:", profile);
+      
+      let farmCode = null;
+      if (profile) {
+        try {
+          const profileData = JSON.parse(profile);
+          console.log("Parsed profile data:", profileData);
+          // ตรวจสอบทั้ง farmCode และ FarmCode (case sensitive)
+          farmCode = profileData.farmCode || profileData.FarmCode || null;
+          console.log("FarmCode extracted:", farmCode);
+        } catch (error) {
+          console.error("Error parsing profile:", error);
+        }
+      }
+      
+      if (!farmCode) { 
+        return null;
+      }
+      
       const response = await axios.get(apiUrl, {
        params: {
         action: "get-plan-farm-orders",
