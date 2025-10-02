@@ -36,7 +36,9 @@ function ReportOrder() {
         }
       }
       
-      if (!farmCode) return null;
+      if (!farmCode) { 
+        return null;
+      }
 
       // ✅ แปลง Buddhist date string เป็น Gregorian date string ก่อนส่ง API
       const gregorianStartDate = convertBuddhistToGregorian(startDate);

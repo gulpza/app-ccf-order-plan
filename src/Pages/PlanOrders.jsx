@@ -79,7 +79,9 @@ const PlanOrders = () => {
         }
       }
       
-      if (!farmCode) return null;
+      if (!farmCode) { 
+        return null;
+      }
       
       const response = await axios.get(apiUrl, {
        params: {
