@@ -13,7 +13,35 @@ const LIFFAuthGuard = ({ children }) => {
   
   // Show loading while LIFF is initializing
   if (!liffReady) {
-    return null;
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh', backgroundColor: '#f0f8ef' }}>
+        <div className="text-center">
+          {/* ✅ ใบกระเพรา pulse animation */}
+          <div className="mb-3" style={{ 
+            animation: 'leafPulse 1.5s ease-in-out infinite',
+            display: 'inline-block'
+          }}>
+            <i className="fas fa-leaf" style={{ 
+              fontSize: '3rem', 
+              color: '#2d5a3d'
+            }}></i>
+          </div>
+          {/* CSS Animation */}
+          <style>{`
+            @keyframes leafPulse {
+              0%, 100% { 
+                transform: scale(1);
+                opacity: 1;
+              }
+              50% { 
+                transform: scale(1.2);
+                opacity: 0.7;
+              }
+            }
+          `}</style>
+        </div>
+      </div>
+    );
   }
 
   // ✅ เช็คว่าต้องเปิดผ่าน LINE app เท่านั้น
