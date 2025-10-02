@@ -65,6 +65,7 @@ const PlanOrders = () => {
       const profile = localStorage.getItem('profile');
       console.log("ok: ",{profile})
       const farmCode = profile ? JSON.parse(profile).farmCode : null;
+      console.log("farmCode: ",{farmCode})
       const response = await axios.get(apiUrl, {
        params: {
         action: "get-plan-farm-orders",
