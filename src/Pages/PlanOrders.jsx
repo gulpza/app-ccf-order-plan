@@ -66,16 +66,18 @@ const PlanOrders = () => {
       const profile = localStorage.getItem('profile');
 
       let farmCode = null;
+      let userStatus = null;
       if (profile) {
         try {
           const profileData = JSON.parse(profile);
           farmCode = profileData.farmCode || profileData.FarmCode || null;
+          userStatus = profileData.userStatus || null;
         } catch (error) {
           console.error("Error parsing profile:", error);
         }
       }
       
-      if (!farmCode) { 
+      if (!farmCode || !userStatus || userStatus !== 'active') { 
         return null;
       }
       

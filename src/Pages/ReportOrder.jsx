@@ -27,16 +27,18 @@ function ReportOrder() {
     try {
       const profile = localStorage.getItem('profile');
       let farmCode = null;
+       let userStatus = null;
       if (profile) {
         try {
           const profileData = JSON.parse(profile);
           farmCode = profileData.farmCode || profileData.FarmCode || null;
+          userStatus = profileData.userStatus || null;
         } catch (error) {
            return null;
         }
       }
-      
-      if (!farmCode) { 
+
+      if (!farmCode || !userStatus || userStatus !== 'active') {
         return null;
       }
 
