@@ -64,16 +64,12 @@ const PlanOrders = () => {
       endDate.setFullYear(today.getFullYear() + 1); // บวก 1 ปี
       
       const profile = localStorage.getItem('profile');
-      console.log("Profile from localStorage:", profile);
-      
+
       let farmCode = null;
       if (profile) {
         try {
           const profileData = JSON.parse(profile);
-          console.log("Parsed profile data:", profileData);
-          // ตรวจสอบทั้ง farmCode และ FarmCode (case sensitive)
           farmCode = profileData.farmCode || profileData.FarmCode || null;
-          console.log("FarmCode extracted:", farmCode);
         } catch (error) {
           console.error("Error parsing profile:", error);
         }

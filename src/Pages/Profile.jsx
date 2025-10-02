@@ -59,51 +59,42 @@ const Profile = () => {
     return colorMap[status] || '#6c757d'; // default gray
   };
 
-  // API function to get user data
-  const getUserAPI = async (lineId) => {
-    setLoading(true);
-    try {
-      const response = await axios.get(apiUrl, {
-        params: {
-          action: "get-user-line",
-          lineId
-        },
-        timeout: 30000,
-      });
-
-      console.log({response})
-
-      if (response.data && response.data.length > 0) {
-        const apiUserData = response.data[0]; // Get first user from array
-        setUserData(prevData => ({
-          ...prevData,
-          name: apiUserData.Name || '',
-          phone: apiUserData.Phone || '',
-          farmName: apiUserData.FarmName || '',
-          status: apiUserData.Status || '',
-          farmCode: apiUserData.FarmCode || '',
-          userType: apiUserData.UserType || '',
-          lineId: apiUserData.LineId || '',
-          displayName: apiUserData.DisplayName || '',
-          joinDate: apiUserData.CreatedDate || '',
-          latestDate: apiUserData.LatestDate || ''
-        }));
-      } else {
-        console.error('API Error: No user data found or invalid response structure');
-        navigate('/register');
-      }
-    } catch (error) {
-      console.error('Error retrieving user data:', error);
-      setError('เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Load user data when component mounts and userProfile is available
+  // Load user data from localStorage
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
-      getUserAPI(userId);
+    const loadProfileFromLocalStorage = () => {
+      try {
+        const profileData = localStorage.getItem('profile');
+        console.log('📥 Loading profile from localStorage:', profileData);
+        
+        if (profileData) {
+          const parsedProfile = JSON.parse(profileData);
+          console.log('✅ Parsed profile:', parsedProfile);
+          
+          setUserData(prevData => ({
+            ...prevData,
+            name: parsedProfile.Name || '',
+            phone: parsedProfile.Phone || '',
+            farmName: parsedProfile.FarmName || '',
+            status: parsedProfile.Status || '',
+            farmCode: parsedProfile.FarmCode || '',
+            userType: parsedProfile.UserType || '',
+            lineId: parsedProfile.LineId || '',
+            displayName: parsedProfile.DisplayName || '',
+            joinDate: parsedProfile.CreatedDate || '',
+            latestDate: parsedProfile.LatestDate || ''
+          }));
+        } else {
+          console.error('❌ No profile found in localStorage');
+          setError('ไม่พบข้อมูลผู้ใช้');
+          navigate('/register');
+        }
+      } catch (error) {
+        console.error('❌ Error loading profile from localStorage:', error);
+        setError('เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ใช้');
+      }
+    };
+
+    loadProfileFromLocalStorage();
   }, []);
 
   // Loading overlay
@@ -137,9 +128,9 @@ const Profile = () => {
           <hr />
           <button 
             className="btn btn-outline-danger" 
-            onClick={() => userProfile?.userId && getUserAPI(userProfile.userId)}
+            onClick={() => navigate('/register')}
           >
-            ลองใหม่
+            ไปหน้าลงทะเบียน
           </button>
         </div>
       </div>
@@ -149,25 +140,6 @@ const Profile = () => {
   return (
       <div className="container-fluid px-2 px-md-3 py-3 position-relative">
       
-      {/* Loading Overlay - shows over UI like PlanOrders */}
-      {loading && (
-        <div 
-          className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-          style={{
-            backgroundColor: 'rgba(217, 215, 215, 0.6)',
-            zIndex: 9999,
-            backdropFilter: 'blur(2px)'
-          }}
-        >
-          <div className="text-center bg-white rounded-3 shadow-lg p-4" style={{ minWidth: '200px' }}>
-            <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
-              <span className="visually-hidden">กำลังโหลด...</span>
-            </div>
-            <div className="text-muted fw-medium">กำลังโหลดข้อมูล</div>
-          </div>
-        </div>
-      )}
-
       {/* Profile Card */}
       <div className="row mb-4">
         <div className="col-12">
