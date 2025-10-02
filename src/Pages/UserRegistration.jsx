@@ -42,7 +42,6 @@ const UserRegistration = ({  }) => {
       }
     });
       
-      console.log('✅ Registration response:', response.data);
       return {
         success: true,
         data: response.data

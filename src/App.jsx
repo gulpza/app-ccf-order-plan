@@ -20,35 +20,29 @@ const ProtectedRoute = ({ children }) => {
     const checkUserProfile = async () => {
       // Wait for userProfile to be loaded
       if (!userProfile?.userId) {
-        console.log('⏳ Waiting for userProfile...');
         return;
       }
 
       // Check if already has profile in localStorage
-      const existingProfile = localStorage.getItem('profile');
-      if (existingProfile) {
-        console.log('✅ Profile already exists in localStorage');
-        setProfileChecked(true);
-        return;
-      }
+      // const existingProfile = localStorage.getItem('profile');
+      // if (existingProfile) {
+      //   setProfileChecked(true);
+      //   return;
+      // }
 
       setIsCheckingProfile(true);
+      setHasChecked(true);
       const userId = userProfile.userId;
-      console.log('🔍 Checking user profile for:', userId);
    
       try {
         const res = await getUserProfile(userId);
-        console.log('📥 getUserProfile result:', res);
         
-        if (res.success && res.data) {
-          // User found - store profile
+        if (res.success && res.data) {          // User found - store profile
           localStorage.setItem('profile', JSON.stringify(res.data));
           localStorage.setItem('userId', userId);
-          console.log('✅ Profile stored successfully');
           setProfileChecked(true);
         } else {
           // User not found - redirect to register
-          console.log('❌ User not found, redirecting to register');
           window.location.href = '/register';
         }
       } catch (err) {

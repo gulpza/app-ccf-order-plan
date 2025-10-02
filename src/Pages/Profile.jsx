@@ -14,10 +14,7 @@ const Profile = () => {
   // LINE LIFF Integration
   const { 
     isReady: liffReady, 
-    isLoggedIn, 
-    userProfile, 
-    isInLineClient,
-    closeWindow
+    userProfile,
   } = useLIFF();
 
   const [userData, setUserData] = useState({
@@ -64,11 +61,9 @@ const Profile = () => {
     const loadProfileFromLocalStorage = () => {
       try {
         const profileData = localStorage.getItem('profile');
-        console.log('📥 Loading profile from localStorage:', profileData);
         
         if (profileData) {
           const parsedProfile = JSON.parse(profileData);
-          console.log('✅ Parsed profile:', parsedProfile);
           
           setUserData(prevData => ({
             ...prevData,

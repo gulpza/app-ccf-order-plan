@@ -11,7 +11,6 @@ const useUser = () => {
     setLoading(true);
     setError(null);
     try {
-      console.log('🔍 Getting user profile for lineId:', lineId);
       
       const response = await axios.get(apiUrl, {
         params: {
@@ -21,11 +20,8 @@ const useUser = () => {
         timeout: 30000,
       });
 
-      console.log('📥 getUserProfile response:', response.data);
-
       if (response.data && response.data.length > 0) {
         const userData = response.data[0]; // Get first user from array
-        console.log('✅ User profile found:', userData);
         
         // Store in localStorage for future use
         localStorage.setItem('profile', JSON.stringify(userData));
@@ -47,7 +43,6 @@ const useUser = () => {
           }
         };
       } else {
-        console.log('❌ No user profile found');
         return {
           success: false,
           message: 'ไม่พบข้อมูลผู้ใช้',
@@ -72,7 +67,6 @@ const useUser = () => {
     setLoading(true);
     setError(null);
     try {
-      console.log('📝 Registering user:', userData);
       
       const response = await axios.post(apiUrl, new URLSearchParams({
         action: 'add-user-line',
@@ -88,10 +82,7 @@ const useUser = () => {
         }
       });
       
-      console.log('📥 registerUser response:', response.data);
-      
       if (response.data) {
-        console.log('✅ User registered successfully');
         
         // After successful registration, store userId
         if (userData.lineUserId) {
@@ -128,7 +119,6 @@ const useUser = () => {
     localStorage.removeItem('userId');
     localStorage.removeItem('profile');
     setError(null);
-    console.log('🗑️ User data cleared');
   };
 
   // Function to check if user is registered
