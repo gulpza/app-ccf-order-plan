@@ -27,12 +27,12 @@ function ReportOrder() {
     try {
       const profile = localStorage.getItem('profile');
       let farmCode = null;
-       let userStatus = null;
+      let userStatus = null;
       if (profile) {
         try {
           const profileData = JSON.parse(profile);
           farmCode = profileData.farmCode || profileData.FarmCode || null;
-          userStatus = profileData.userStatus || null;
+          userStatus = profileData.status || null;
         } catch (error) {
            return null;
         }

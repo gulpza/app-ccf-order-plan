@@ -71,7 +71,7 @@ const PlanOrders = () => {
         try {
           const profileData = JSON.parse(profile);
           farmCode = profileData.farmCode || profileData.FarmCode || null;
-          userStatus = profileData.userStatus || null;
+          userStatus = profileData.status || null;
         } catch (error) {
           console.error("Error parsing profile:", error);
         }
