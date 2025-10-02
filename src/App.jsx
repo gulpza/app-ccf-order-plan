@@ -55,12 +55,35 @@ const ProtectedRoute = ({ children }) => {
   // Show loading while checking profile
   if (!profileChecked || isCheckingProfile) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh', backgroundColor: '#f0f8ef' }}>
         <div className="text-center">
-          <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
-            <span className="visually-hidden">Loading...</span>
+          {/* ✅ ใบกระเพรา pulse animation */}
+          <div className="mb-3" style={{ 
+            animation: 'leafPulse 1.5s ease-in-out infinite',
+            display: 'inline-block'
+          }}>
+            <i className="fas fa-leaf" style={{ 
+              fontSize: '3rem', 
+              color: '#2d5a3d'
+            }}></i>
           </div>
-          <p className="text-muted">กำลังตรวจสอบข้อมูลผู้ใช้...</p>
+          <p className="text-muted fw-bold" style={{ color: '#2d5a3d' }}>
+            กำลังตรวจสอบข้อมูลผู้ใช้...
+          </p>
+          
+          {/* CSS Animation */}
+          <style>{`
+            @keyframes leafPulse {
+              0%, 100% { 
+                transform: scale(1);
+                opacity: 1;
+              }
+              50% { 
+                transform: scale(1.2);
+                opacity: 0.7;
+              }
+            }
+          `}</style>
         </div>
       </div>
     );
