@@ -64,24 +64,18 @@ const PlanOrders = () => {
       endDate.setFullYear(today.getFullYear() + 1); // บวก 1 ปี
       
       const profile = localStorage.getItem('profile');
-      console.log("Profile from localStorage:", profile);
       
       let farmCode = null;
       if (profile) {
         try {
           const profileData = JSON.parse(profile);
-          console.log("Parsed profile data:", profileData);
-          // ตรวจสอบทั้ง farmCode และ FarmCode (case sensitive)
           farmCode = profileData.farmCode || profileData.FarmCode || null;
-          console.log("FarmCode extracted:", farmCode);
         } catch (error) {
-          console.error("Error parsing profile:", error);
+          return null;
         }
       }
       
-      if (!farmCode) { 
-        return null;
-      }
+      if (!farmCode) return null;
       
       const response = await axios.get(apiUrl, {
        params: {
@@ -554,8 +548,7 @@ const PlanOrders = () => {
       {!loading && orders.length === 0 && (
         <div className="text-center mt-4 px-3">
           <i className="fas fa-exclamation-triangle fa-2x fa-md-3x text-muted mb-3"></i>
-          <h5 className="text-muted h6 h-md-5">ไม่มีข้อมูลการสั่งซื้อ</h5>
-          <p className="text-muted small">กรุณาเพิ่มข้อมูลการสั่งซื้อผัก</p>
+          <h5 className="text-muted h6 h-md-5">ไม่มีแผนส่งผัก</h5>
         </div>
       )}
 

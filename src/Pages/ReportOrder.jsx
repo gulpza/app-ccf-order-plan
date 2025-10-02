@@ -25,13 +25,26 @@ function ReportOrder() {
 
   const onGetOrderReport = async () => { 
     try {
+      const profile = localStorage.getItem('profile');
+      let farmCode = null;
+      if (profile) {
+        try {
+          const profileData = JSON.parse(profile);
+          farmCode = profileData.farmCode || profileData.FarmCode || null;
+        } catch (error) {
+           return null;
+        }
+      }
+      
+      if (!farmCode) return null;
+
       // ✅ แปลง Buddhist date string เป็น Gregorian date string ก่อนส่ง API
       const gregorianStartDate = convertBuddhistToGregorian(startDate);
       const gregorianEndDate = convertBuddhistToGregorian(endDate);
       const response = await axios.get(apiUrl, {
        params: {
         action: "get-farm-order-report",
-        farmCode: '',
+        farmCode: farmCode,
         startDate: gregorianStartDate, // ✅ ใช้ string ที่แปลงแล้ว
         endDate: gregorianEndDate,     // ✅ ใช้ string ที่แปลงแล้ว
       },
