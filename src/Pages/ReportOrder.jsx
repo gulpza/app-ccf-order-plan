@@ -31,8 +31,8 @@ function ReportOrder() {
       if (profile) {
         try {
           const profileData = JSON.parse(profile);
-          farmCode = profileData.farmCode || profileData.FarmCode || null;
-          userStatus = profileData.status || null;
+          farmCode = profileData.FarmCode || null;
+          userStatus = profileData.Status || null;
         } catch (error) {
            return null;
         }
