@@ -23,21 +23,15 @@ const ProtectedRoute = ({ children }) => {
         return;
       }
 
-      // Check if already has profile in localStorage
-      // const existingProfile = localStorage.getItem('profile');
-      // if (existingProfile) {
-      //   setProfileChecked(true);
-      //   return;
-      // }
-
+      // ✅ Always fetch fresh profile data on page load
       setIsCheckingProfile(true);
-      setHasChecked(true);
       const userId = userProfile.userId;
    
       try {
         const res = await getUserProfile(userId);
         
-        if (res.success && res.data) {          // User found - store profile
+        if (res.success && res.data) {
+          // User found - store profile
           localStorage.setItem('profile', JSON.stringify(res.data));
           localStorage.setItem('userId', userId);
           setProfileChecked(true);
