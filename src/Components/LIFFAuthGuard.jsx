@@ -14,7 +14,7 @@ const LIFFAuthGuard = ({ children }) => {
   // Show loading while LIFF is initializing
   if (!liffReady) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh', backgroundColor: '#f0f8ef' }}>
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh', backgroundColor: '#ffffffff' }}>
         <div className="text-center">
           {/* ✅ ใบกระเพรา pulse animation */}
           <div className="mb-3" style={{ 
