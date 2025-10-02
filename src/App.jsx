@@ -7,13 +7,41 @@ import Profile from './Pages/Profile';
 import UserRegistration from './Pages/UserRegistration';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import LIFFAuthGuard from './Components/LIFFAuthGuard';
-
+import { useLIFF } from './hooks/useLIFF';
+import useUser from './hooks/useUser';
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = !!localStorage.getItem("userId"); // Check if userId exists in localStorage
+  const { userProfile } = useLIFF();
+  const { getUserProfile } = useUser();
+  const [isCheckingProfile, setIsCheckingProfile] = React.useState(false);
 
-  if (!isAuthenticated) {
-    return <Navigate to="/register" replace />;
-  }
+  // Check user profile if not exists
+  React.useEffect(() => {
+    const checkUserProfile = async () => {
+      // if (!profile && userProfile?.userId && !isCheckingProfile) {
+      if(true){
+        setIsCheckingProfile(true);
+        const userId = userProfile.userId;
+        // const userId = "U121ff51ca1ab3a45adb403fe4cf18f671";
+        try {
+          const res = await getUserProfile(userId);
+          if (res.success && res.data) {
+            // User found - store profile and continue
+            localStorage.setItem('profile', JSON.stringify(res.data));
+            localStorage.setItem('userId', userId);
+          } else {
+            // User not found - redirect to register
+            window.location.href = '/register';
+          }
+        } catch (err) {
+          console.error('❌ Error fetching user profile:', err);
+        } finally {
+          setIsCheckingProfile(false);
+        }
+      }
+    };
+    checkUserProfile();
+  }, []); // ✅ Empty dependency array - run only once
+
   return <>{children}</>;
 };
 
@@ -25,7 +53,6 @@ function App() {
       // Try to load vconsole dynamically
       import('vconsole').then((VConsole) => {
         new VConsole.default();
-        console.log('📱 VConsole initialized for mobile debugging');
       }).catch((error) => {
         console.warn('VConsole not available, loading from CDN:', error);     
         // Fallback: Load VConsole from CDN
@@ -34,7 +61,6 @@ function App() {
         script.onload = () => {
           // eslint-disable-next-line no-undef
           new VConsole();
-          console.log('📱 VConsole loaded from CDN');
         };
         document.head.appendChild(script);
       });
@@ -44,38 +70,40 @@ function App() {
   return (
     <Router>
       <LIFFAuthGuard>
-        <div className="container mt-10 mb-10">
-          <Routes>
-            <Route path="/" element={<Navigate to="/plan/orders" replace />} />
+      <div className="container mt-10 mb-10">
+        <Routes>
+          <Route path="/" element={<Navigate to="/plan/orders" replace />} />
 
-            {/* ✅ Protected Routes */}
-            <Route
-              path="/report/orders"
-              element={
-                <ProtectedRoute>
-                  <ReportOrder />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/plan/orders"
-              element={
-                <ProtectedRoute>
-                  <PlanOrders />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/register" element={<UserRegistration />} />
-          </Routes>
-        </div>
+          {/* ✅ Protected Routes */}
+          <Route
+            path="/report/orders"
+            element={
+              <ProtectedRoute>
+                <ReportOrder />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/plan/orders"
+            element={
+              <ProtectedRoute>
+                <PlanOrders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* ✅ Public Route - Register */}
+          <Route path="/register" element={<UserRegistration />} />
+        </Routes>
+      </div>
       </LIFFAuthGuard>
     </Router>
   );

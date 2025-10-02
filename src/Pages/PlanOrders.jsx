@@ -62,11 +62,12 @@ const PlanOrders = () => {
       
       const endDate = new Date(today);
       endDate.setFullYear(today.getFullYear() + 1); // บวก 1 ปี
-      
+      const profile = localStorage.getItem('profile');
+      const userId = profile ? JSON.parse(profile).userId : null;
       const response = await axios.get(apiUrl, {
        params: {
         action: "get-plan-farm-orders",
-        farmCode: '',
+        farmCode: userId, // ใช้ userId จาก localStorage
         startDate: startDate.toISOString().split('T')[0], // YYYY-MM-DD format
         endDate: endDate.toISOString().split('T')[0], // YYYY-MM-DD format
       },

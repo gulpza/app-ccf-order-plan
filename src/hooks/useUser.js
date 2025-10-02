@@ -1,135 +1,170 @@
-import { useState, useEffect, createContext, useContext } from 'react';
-import { useLIFF } from './useLIFF';
-import userService from '../services/userService';
+import { useState } from 'react';
+import axios from 'axios';
 
-// Create User Context
-const UserContext = createContext();
-
-// Custom hook to use user context
-export const useUser = () => {
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error('useUser must be used within a UserProvider');
-  }
-  return context;
-};
-
-// User Context Provider Component
-export const UserProvider = ({ children }) => {
-  const { isLoggedIn, userProfile: liffProfile } = useLIFF();
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+const useUser = () => {
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const apiUrl = import.meta.env.VITE_SHEET_API_KEY;
 
-  // Load user data when logged in
-  useEffect(() => {
-    const loadUser = async () => {
-      if (!isLoggedIn || !liffProfile?.userId) {
-        setUser(null);
-        return;
-      }
-
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await userService.getUserProfile(liffProfile.userId);
-        if (response.user) {
-          setUser({
-            ...response.user,
-            lineProfile: liffProfile
-          });
-        } else {
-          // User not found in system - this should trigger registration
-          setUser(null);
-        }
-      } catch (error) {
-        console.error('Error loading user:', error);
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadUser();
-  }, [isLoggedIn, liffProfile]);
-
-  // Register new user
-  const registerUser = async (userData) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      const response = await userService.registerUser({
-        ...userData,
-        lineUserId: liffProfile.userId,
-        displayName: liffProfile.displayName,
-        pictureUrl: liffProfile.pictureUrl
-      });
-
-      if (response.success) {
-        setUser({
-          ...response.user,
-          lineProfile: liffProfile
-        });
-        return response.user;
-      } else {
-        throw new Error(response.message);
-      }
-    } catch (error) {
-      setError(error.message);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Update user profile
-  const updateUser = async (userData) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      const response = await userService.updateUserProfile({
-        ...userData,
-        lineUserId: liffProfile.userId
-      });
-
-      if (response.success) {
-        setUser(prev => ({
-          ...prev,
-          ...response.user
-        }));
-        return response.user;
-      } else {
-        throw new Error(response.message);
-      }
-    } catch (error) {
-      setError(error.message);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Clear user data
-  const clearUser = () => {
-    setUser(null);
+  // Function to get user profile by LINE ID
+  const getUserProfile = async (lineId) => {
+    setLoading(true);
     setError(null);
+    try {
+      console.log('🔍 Getting user profile for lineId:', lineId);
+      
+      const response = await axios.get(apiUrl, {
+        params: {
+          action: "get-user-line",
+          lineId: lineId
+        },
+        timeout: 30000,
+      });
+
+      console.log('📥 getUserProfile response:', response.data);
+
+      if (response.data && response.data.length > 0) {
+        const userData = response.data[0]; // Get first user from array
+        console.log('✅ User profile found:', userData);
+        
+        // Store in localStorage for future use
+        localStorage.setItem('profile', JSON.stringify(userData));
+        
+        return {
+          success: true,
+          data: userData,
+          user: {
+            lineId: userData.LineId,
+            name: userData.Name,
+            displayName: userData.DisplayName,
+            phone: userData.Phone,
+            farmName: userData.FarmName,
+            farmCode: userData.FarmCode,
+            userType: userData.UserType,
+            status: userData.Status,
+            createdDate: userData.CreatedDate,
+            latestDate: userData.LatestDate
+          }
+        };
+      } else {
+        console.log('❌ No user profile found');
+        return {
+          success: false,
+          message: 'ไม่พบข้อมูลผู้ใช้',
+          data: null
+        };
+      }
+    } catch (error) {
+      console.error('❌ Error getting user profile:', error);
+      setError('เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้');
+      return {
+        success: false,
+        error: error.message,
+        data: null
+      };
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const value = {
-    user,
-    isLoading,
-    error,
+  // Function to register new user
+  const registerUser = async (userData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      console.log('📝 Registering user:', userData);
+      
+      const response = await axios.post(apiUrl, new URLSearchParams({
+        action: 'add-user-line',
+        lineId: userData.lineUserId,
+        displayName: userData.displayName,
+        name: userData.name,
+        phone: userData.phone,
+        farmName: userData.farmName
+      }), {
+        timeout: 15000,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }
+      });
+      
+      console.log('📥 registerUser response:', response.data);
+      
+      if (response.data) {
+        console.log('✅ User registered successfully');
+        
+        // After successful registration, store userId
+        if (userData.lineUserId) {
+          localStorage.setItem('userId', userData.lineUserId);
+        }
+        
+        return {
+          success: true,
+          data: response.data,
+          message: 'ลงทะเบียนสำเร็จ'
+        };
+      } else {
+        return {
+          success: false,
+          message: 'ไม่สามารถลงทะเบียนได้',
+          data: null
+        };
+      }
+    } catch (error) {
+      console.error('❌ Error registering user:', error);
+      setError('เกิดข้อผิดพลาดในการลงทะเบียน');
+      return {
+        success: false,
+        error: error.message,
+        data: null
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Function to clear user data
+  const clearUserData = () => {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('profile');
+    setError(null);
+    console.log('🗑️ User data cleared');
+  };
+
+  // Function to check if user is registered
+  const isUserRegistered = () => {
+    const userId = localStorage.getItem('userId');
+    const profile = localStorage.getItem('profile');
+    return !!(userId && profile);
+  };
+
+  // Function to get stored user data
+  const getStoredUserData = () => {
+    try {
+      const profile = localStorage.getItem('profile');
+      return profile ? JSON.parse(profile) : null;
+    } catch (error) {
+      console.error('Error parsing stored user data:', error);
+      return null;
+    }
+  };
+
+  return {
+    // Functions
+    getUserProfile,
     registerUser,
-    updateUser,
-    clearUser,
+    clearUserData,
+    isUserRegistered,
+    getStoredUserData,
+    
+    // States
+    loading,
+    error,
+    
     // Computed values
-    isRegistered: !!user,
-    displayName: user?.name || liffProfile?.displayName || 'ผู้ใช้งาน',
-    farmName: user?.farmName || null
+    userId: localStorage.getItem('userId'),
+    hasProfile: !!localStorage.getItem('profile')
   };
-
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
+
+export default useUser;
