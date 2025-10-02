@@ -17,18 +17,10 @@ const ProtectedRoute = ({ children }) => {
 
   // Check user profile if not exists
   React.useEffect(() => {
-    console.log({userProfile})
     const checkUserProfile = async () => {
       // Wait for userProfile to be loaded
       if (!userProfile?.userId) {
         console.log('⏳ Waiting for userProfile...');
-        return;
-      }
-
-      // Check if already checked or profile exists
-      const existingProfile = localStorage.getItem('profile');
-      if (existingProfile || isCheckingProfile || hasChecked) {
-        console.log('✅ Profile already exists or checking');
         return;
       }
 
