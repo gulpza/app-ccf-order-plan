@@ -8,11 +8,8 @@ const UserRegistration = ({  }) => {
 
     // LINE LIFF Integration
     const { 
-      isReady: liffReady, 
-      isLoggedIn, 
-      userProfile, 
-      isInLineClient,
-      closeWindow
+      isReady: liffReady,
+      userProfile
     } = useLIFF();
   
   const navigate = useNavigate();

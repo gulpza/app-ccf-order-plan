@@ -9,6 +9,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import LIFFAuthGuard from './Components/LIFFAuthGuard';
 import { useLIFF } from './hooks/useLIFF';
 import useUser from './hooks/useUser';
+
 const ProtectedRoute = ({ children }) => {
   const { userProfile } = useLIFF();
   const { getUserProfile } = useUser();
@@ -70,10 +71,12 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
+    const env = import.meta.env.VITE_ENV;
+
   // Initialize VConsole for mobile debugging
   useEffect(() => {
     // Only load VConsole in development or when debug=true is in URL
-    // if (process.env.NODE_ENV === 'development' || window.location.search.includes('debug=true')) {
+    if (env === 'development' || window.location.search.includes('debug=true')) {
       // Try to load vconsole dynamically
       import('vconsole').then((VConsole) => {
         new VConsole.default();
@@ -88,7 +91,7 @@ function App() {
         };
         document.head.appendChild(script);
       });
-    // }
+    }
   }, []);
 
   return (

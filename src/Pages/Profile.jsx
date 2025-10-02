@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLIFF } from '../hooks/useLIFF';
 import BottomNavigation from '../Components/BottomNavigation';
-import axios from 'axios';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -91,27 +90,6 @@ const Profile = () => {
 
     loadProfileFromLocalStorage();
   }, []);
-
-  // Loading overlay
-  // if (loading) {
-  //   return ((
-  //       <div 
-  //         className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-  //         style={{
-  //           backgroundColor: 'rgba(217, 215, 215, 0.6)',
-  //           zIndex: 9999,
-  //           backdropFilter: 'blur(2px)'
-  //         }}
-  //       >
-  //         <div className="text-center bg-white rounded-3 shadow-lg p-4" style={{ minWidth: '200px' }}>
-  //           <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
-  //             <span className="visually-hidden">กำลังโหลด...</span>
-  //           </div>
-  //           <div className="text-muted fw-medium">กำลังโหลดข้อมูล...</div>
-  //         </div>
-  //       </div>
-  //     ));
-  // }
 
   // Error state
   if (error) {
