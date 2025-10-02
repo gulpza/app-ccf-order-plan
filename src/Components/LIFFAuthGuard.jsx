@@ -13,14 +13,7 @@ const LIFFAuthGuard = ({ children }) => {
   
   // Show loading while LIFF is initializing
   if (!liffReady) {
-    return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-        <div className="text-center">
-          <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
-          </div>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   // ✅ เช็คว่าต้องเปิดผ่าน LINE app เท่านั้น
