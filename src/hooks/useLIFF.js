@@ -23,11 +23,8 @@ export const useLIFF = () => {
           // Check login status
           if (LIFFService.isLoggedIn()) {
             setIsLoggedIn(true);
-            console.log(111111)
             const profile = await LIFFService.getUserProfile();
-            console.log("ok: ",{profile})
             setUserProfile(profile);
-            
             // Store userId in localStorage when logged in
             if (profile?.userId) {
               localStorage.setItem('userId', profile.userId);
