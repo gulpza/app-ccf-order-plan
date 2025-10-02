@@ -13,35 +13,47 @@ const ProtectedRoute = ({ children }) => {
   const { userProfile } = useLIFF();
   const { getUserProfile } = useUser();
   const [isCheckingProfile, setIsCheckingProfile] = React.useState(false);
+  const [hasChecked, setHasChecked] = React.useState(false);
 
   // Check user profile if not exists
   React.useEffect(() => {
     console.log({userProfile})
     const checkUserProfile = async () => {
-      if (userProfile?.userId) {
-      // if(true){
-        setIsCheckingProfile(true);
-        const userId = userProfile.userId;
-        // const userId = "U121ff51ca1ab3a45adb403fe4cf18f671";
-        try {
-          const res = await getUserProfile(userId);
-          if (res.success && res.data) {
-            // User found - store profile and continue
-            localStorage.setItem('profile', JSON.stringify(res.data));
-            localStorage.setItem('userId', userId);
-          } else {
-            // User not found - redirect to register
-            window.location.href = '/register';
-          }
-        } catch (err) {
-          console.error('❌ Error fetching user profile:', err);
-        } finally {
-          setIsCheckingProfile(false);
+      // Wait for userProfile to be loaded
+      if (!userProfile?.userId) {
+        console.log('⏳ Waiting for userProfile...');
+        return;
+      }
+
+      // Check if already checked or profile exists
+      const existingProfile = localStorage.getItem('profile');
+      if (existingProfile || isCheckingProfile || hasChecked) {
+        console.log('✅ Profile already exists or checking');
+        return;
+      }
+
+      setIsCheckingProfile(true);
+      setHasChecked(true);
+      const userId = userProfile.userId;
+   
+      try {
+        const res = await getUserProfile(userId);
+        if (res.success && res.data) {
+          localStorage.setItem('profile', JSON.stringify(res.data));
+        } else {
+          window.location.href = '/register';
         }
+      } catch (err) {
+        console.error('❌ Error fetching user profile:', err);
+        // On error, redirect to register
+        window.location.href = '/register';
+      } finally {
+        setIsCheckingProfile(false);
       }
     };
+    
     checkUserProfile();
-  }, []); // ✅ Empty dependency array - run only once
+  }, [userProfile?.userId]); // ✅ Run when userProfile changes
 
   return <>{children}</>;
 };
