@@ -16,7 +16,7 @@ const ProtectedRoute = ({ children }) => {
   const [hasChecked, setHasChecked] = React.useState(false);
 
   // Check user profile if not exists
-  React.useEffect(() => {
+  React.useEffect(async () => {
     const checkUserProfile = async () => {
       // Wait for userProfile to be loaded
       if (!userProfile?.userId) {
@@ -44,7 +44,7 @@ const ProtectedRoute = ({ children }) => {
       }
     };
     
-    checkUserProfile();
+    await checkUserProfile();
   }, [userProfile?.userId]); // ✅ Run when userProfile changes
 
   return <>{children}</>;
