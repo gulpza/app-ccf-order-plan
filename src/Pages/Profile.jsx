@@ -165,15 +165,7 @@ const Profile = () => {
                   </p>
                   <div className="d-flex align-items-center">
                     <i className="fas fa-star me-1" style={{ color: '#ffc107' }}></i>
-                     คะแนน: 
-                    <span className="badge px-2 py-1 me-2" style={{ 
-                      backgroundColor: '#4caf50', 
-                      color: 'white' 
-                    }}>
-                      <i className="fas fa-star me-1"></i>
-                      {userData.rating}
-                    </span>
-                    
+                     คะแนน: {userData.rating}
                   </div>
                 </div>
               </div>
