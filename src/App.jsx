@@ -17,8 +17,8 @@ const ProtectedRoute = ({ children }) => {
   // Check user profile if not exists
   React.useEffect(() => {
     const checkUserProfile = async () => {
-      // if (!profile && userProfile?.userId && !isCheckingProfile) {
-      if(true){
+      if (userProfile?.userId) {
+      // if(true){
         setIsCheckingProfile(true);
         const userId = userProfile.userId;
         // const userId = "U121ff51ca1ab3a45adb403fe4cf18f671";

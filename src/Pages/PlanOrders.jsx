@@ -63,6 +63,7 @@ const PlanOrders = () => {
       const endDate = new Date(today);
       endDate.setFullYear(today.getFullYear() + 1); // บวก 1 ปี
       const profile = localStorage.getItem('profile');
+      console.log({profile})
       const userId = profile ? JSON.parse(profile).userId : null;
       const response = await axios.get(apiUrl, {
        params: {
