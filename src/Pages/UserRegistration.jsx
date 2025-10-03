@@ -70,7 +70,7 @@ const UserRegistration = ({  }) => {
     e.preventDefault();
     
     // Validate required fields
-    if (!formData.name.trim() || !formData.phone.trim() || !formData.farmName.trim() || !formData.address.trim()) {
+    if (!formData.name.trim() || !formData.phone.trim() || !formData.farmName.trim()) {
       setError('กรุณากรอกข้อมูลให้ครบถ้วน');
       return;
     }
