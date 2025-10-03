@@ -6,9 +6,9 @@ import { getHeaderBackgroundColor } from '../config/statusColors';
 const PlanOrderDetail = ({ 
   showOrderDetail, 
   selectedOrder, 
-  actualQuantityInput, 
-  setActualQuantityInput,
-  updateActualQuantity,
+  farmQuantityInput, 
+  setfarmQuantityInput,
+  updatefarmQuantity,
   setShowOrderDetail 
 }) => {
   
@@ -21,7 +21,7 @@ const PlanOrderDetail = ({
 
   // Handle save button click - show confirmation modal
   const handleSaveClick = () => {
-    if (!actualQuantityInput || parseFloat(actualQuantityInput) <= 0) {
+    if (!farmQuantityInput || parseFloat(farmQuantityInput) <= 0) {
       alert('กรุณากรอกน้ำหนักที่ถูกต้อง');
       return;
     }
@@ -32,7 +32,7 @@ const PlanOrderDetail = ({
   const handleConfirmSave = async () => {
     setSaving(true);
     try {
-      await updateActualQuantity();
+      await updatefarmQuantity();
       setShowConfirmModal(false);
     } catch (error) {
       console.error('Error saving:', error);
@@ -111,7 +111,7 @@ const PlanOrderDetail = ({
                         <div className="mb-4">
                           <label className="form-label fw-bold mb-3" style={{ fontSize: '1.1rem', color: '#2d5a3d' }}>
                             <i className="fas fa-weight me-2"></i>
-                            กรอกน้ำหนักส่งจริง (กก.)
+                            กรอกน้ำหนักหน้าสวน (กก.)
                           </label>
                           <input
                             type="number"
@@ -119,9 +119,9 @@ const PlanOrderDetail = ({
                             pattern="[0-9]*(\.[0-9]{0,2})?"
                             autoFocus
                             className="form-control form-control-lg"
-                            value={actualQuantityInput}
-                            onChange={(e) => setActualQuantityInput(e.target.value)}
-                            placeholder="กรอกน้ำหนักส่งจริง"
+                            value={farmQuantityInput}
+                            onChange={(e) => setfarmQuantityInput(e.target.value)}
+                            placeholder="กรอกน้ำหนักหน้าสวน"
                             min="0"
                             step="0.01"
                             style={{
@@ -144,9 +144,9 @@ const PlanOrderDetail = ({
                         <h5 className="text-muted">ข้อมูลนี้ไม่สามารถแก้ไขได้</h5>
                         <p className="text-muted small" style={{ fontSize: '1.2rem' }}>
                           สถานะ: {selectedOrder.status}
-                          {selectedOrder.actualQuantity && (
+                          {selectedOrder.farmQuantity && (
                             <>
-                            <br />น้ำหนักส่งจริง: {Number(selectedOrder.actualQuantity).toFixed(2)} กก.
+                            <br />น้ำหนักหน้าสวน: {Number(selectedOrder.farmQuantity).toFixed(2)} กก.
                             </>
                           )}
                         </p>
@@ -196,7 +196,7 @@ const PlanOrderDetail = ({
                               fontSize: '1.5rem'
                             }}
                             onClick={handleSaveClick}
-                            disabled={!actualQuantityInput}
+                            disabled={!farmQuantityInput}
                           >
                             <i className="fas fa-save me-2"></i>
                             บันทึก

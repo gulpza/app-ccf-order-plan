@@ -21,17 +21,17 @@ const PlanOrders = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showOrderDetail, setShowOrderDetail] = useState(false);
-  const [actualQuantityInput, setActualQuantityInput] = useState('');
+  const [farmQuantityInput, setfarmQuantityInput] = useState('');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const apiUrl = import.meta.env.VITE_SHEET_API_KEY; 
 
-  // API function สำหรับอัปเดตน้ำหนักส่งจริง
-  const updateFarmOrderAPI = async (genId, actualQuantity) => {
+  // API function สำหรับอัปเดตน้ำหนักหน้าสวน
+  const updateFarmOrderAPI = async (genId, farmQuantity) => {
     try {
     const response = await axios.post(apiUrl, new URLSearchParams({
       action: 'update-farm-order',
       GenId: genId,
-      'ยอดชั่งหน้าสวน': actualQuantity.toString(),
+      'ยอดชั่งหน้าสวน': farmQuantity.toString(),
       'สถานะการส่ง': 'ส่งแล้ว'
     }), {
       timeout: 15000,
@@ -106,7 +106,7 @@ const PlanOrders = () => {
       deliveryDate: item["วันที่สั่ง"],
       vegetableType: item["ประเภทผัก"] || '',
       plannedQuantity: parseFloat(item["แผน"]) || 0,
-      actualQuantity: item["ยอดชั่งหน้าสวน"] ? parseFloat(item["ยอดชั่งหน้าสวน"]) : null,
+      farmQuantity: item["ยอดชั่งหน้าสวน"] ? parseFloat(item["ยอดชั่งหน้าสวน"]) : null,
       unit: 'กก.',
       status: item["สถานะการส่ง"] || '',
       farmCode: item["รหัสไร่"] || '',
@@ -188,15 +188,15 @@ const PlanOrders = () => {
   // Handle order click
   const handleOrderClick = (order) => {
     setSelectedOrder(order);
-    setActualQuantityInput(order.actualQuantity ? order.actualQuantity.toString() : '');
+    setfarmQuantityInput(order.farmQuantity ? order.farmQuantity.toString() : '');
     setShowOrderDetail(true);
   };
 
   // Update actual quantity
-  const updateActualQuantity = async () => {
+  const updatefarmQuantity = async () => {
     if (selectedOrder) {
       try {
-        const updatedQuantity = actualQuantityInput ? parseFloat(actualQuantityInput) : null;
+        const updatedQuantity = farmQuantityInput ? parseFloat(farmQuantityInput) : null;
         
         if (!updatedQuantity) {
           alert('กรุณากรอกน้ำหนักที่ถูกต้อง');
@@ -216,7 +216,7 @@ const PlanOrders = () => {
           if (order.id === selectedOrder.id) {
             return {
               ...order,
-              actualQuantity: updatedQuantity,
+              farmQuantity: updatedQuantity,
               status: 'ส่งแล้ว'
             };
           }
@@ -226,7 +226,7 @@ const PlanOrders = () => {
         setOrders(updatedOrders);
         setShowOrderDetail(false);
         setSelectedOrder(null);
-        setActualQuantityInput('');
+        setfarmQuantityInput('');
     
       } catch (error) {
         console.error('Error updating quantity:', error);
@@ -504,9 +504,9 @@ const PlanOrders = () => {
                   </div>
                   <div className="col-6">
                     <div className="p-2 bg-light rounded">
-                      <div className="text-muted small" style={{fontSize: '1.2rem'}}>ส่งจริง</div>
+                      <div className="text-muted small" style={{fontSize: '1.2rem'}}>ชั่งหน้าสวน</div>
                       <div className="fw-bold text-success" style={{fontSize: '1.5rem'}}>
-                        {order.actualQuantity ? Number(order.actualQuantity).toFixed(2) : '-'}
+                        {order.farmQuantity ? Number(order.farmQuantity).toFixed(2) : '-'}
                       </div>
                     </div>
                   </div>
@@ -561,9 +561,9 @@ const PlanOrders = () => {
         <PlanOrderDetail
           showOrderDetail={showOrderDetail}
           selectedOrder={selectedOrder}
-          actualQuantityInput={actualQuantityInput}
-          setActualQuantityInput={setActualQuantityInput}
-          updateActualQuantity={updateActualQuantity}
+          farmQuantityInput={farmQuantityInput}
+          setfarmQuantityInput={setfarmQuantityInput}
+          updatefarmQuantity={updatefarmQuantity}
           setShowOrderDetail={setShowOrderDetail}
         />
       )}
