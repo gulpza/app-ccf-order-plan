@@ -22,6 +22,7 @@ const Profile = () => {
     email: userProfile?.email || '-',
     location: '',
     farmName: '',
+    address: '',
     userName: userProfile?.displayName ?? '-',
     displayName: '',
     joinDate: '',
@@ -32,7 +33,6 @@ const Profile = () => {
     lineId: '',
     rating: 5.0
   });
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Status mapping function
@@ -69,6 +69,8 @@ const Profile = () => {
             name: parsedProfile.Name || '',
             phone: parsedProfile.Phone || '',
             farmName: parsedProfile.FarmName || '',
+            address: parsedProfile.Address || '',
+            rating: parsedProfile.Rating || '',
             status: parsedProfile.Status || '',
             farmCode: parsedProfile.FarmCode || '',
             userType: parsedProfile.UserType || '',
@@ -165,7 +167,7 @@ const Profile = () => {
                   </p>
                   <div className="d-flex align-items-center">
                     <i className="fas fa-star me-1" style={{ color: '#ffc107' }}></i>
-                     คะแนน: {userData.rating}
+                     {userData.rating}
                   </div>
                 </div>
               </div>
@@ -241,7 +243,7 @@ const Profile = () => {
                             <i className="fas fa-map-marker-alt text-danger me-3"></i>
                             <div>
                               <div className="small text-muted">ที่อยู่</div>
-                              <div className="fw-bold">{userData.location}</div>
+                              <div className="fw-bold">{userData.address}</div>
                             </div>
                           </div>
                         </div>

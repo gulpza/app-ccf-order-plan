@@ -15,8 +15,10 @@ const UserRegistration = ({  }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     displayName: userProfile?.displayName || '',
+    name: '',
     phone: '',
-    farmName: ''
+    farmName: '',
+    address: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -31,7 +33,8 @@ const UserRegistration = ({  }) => {
         displayName: userData.displayName,
         name: userData.name,
         phone: userData.phone,
-        farmName: userData.farmName
+        farmName: userData.farmName,
+        address: userData.address
     }), {
       timeout: 15000,
       headers: {
@@ -67,7 +70,7 @@ const UserRegistration = ({  }) => {
     e.preventDefault();
     
     // Validate required fields
-    if (!formData.name.trim() || !formData.phone.trim() || !formData.farmName.trim()) {
+    if (!formData.name.trim() || !formData.phone.trim() || !formData.farmName.trim() || !formData.address.trim()) {
       setError('กรุณากรอกข้อมูลให้ครบถ้วน');
       return;
     }
@@ -79,8 +82,9 @@ const UserRegistration = ({  }) => {
         lineUserId: userProfile?.userId || '',
         displayName: userProfile?.displayName || '',
         name: formData.name?.trim() || '',
-        phone: formData.phone?.trim() || '',
-        farmName: formData.farmName?.trim() || '' 
+        phone: `'${formData.phone?.trim() || ''}`,
+        farmName: formData.farmName?.trim() || '',
+        address: formData.address?.trim() || ''
       });
 
       if (!apiResult.success) {
@@ -228,6 +232,30 @@ const UserRegistration = ({  }) => {
                       />
                     </div>
 
+                    {/* ✅ Address Field */}
+                    <div className="col-12">
+                      <label htmlFor="address" className="form-label fw-bold" style={{ color: '#2d5a3d' }}>
+                        <i className="fas fa-map-marker-alt me-2"></i>
+                        ที่อยู่
+                      </label>
+                      <textarea
+                        className="form-control form-control-lg"
+                        id="address"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        placeholder="กรอกที่อยู่ เช่น บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์"
+                        rows="2"
+                        style={{
+                          borderRadius: '10px',
+                          border: '2px solid #a8d5a3',
+                          padding: '12px 16px',
+                          resize: 'vertical'
+                        }}
+                        disabled={isSubmitting}
+                      />
+                    </div>
+
                     {/* LINE Info Display */}
                     <div className="col-12">
                       <div className="bg-light p-4 rounded" style={{ borderRadius: '10px', border: '2px solid #e8f5e8' }}>
@@ -239,10 +267,10 @@ const UserRegistration = ({  }) => {
                         {/* LINE User ID */}
                         <div className="border-top pt-3">
                           <div className="row">
-                            <div className="col-4 col-sm-3">
-                              <strong className="text-muted">LINE ID:</strong>
+                            <div className="col-4 col-sm-4">
+                              <strong className="text-muted small">LINE ID:</strong>
                             </div>
-                            <div className="col-8 col-sm-9">
+                            <div className="col-8 col-sm-8">
                               <code className="bg-white px-2 py-1 rounded border text-dark small">
                                 {userProfile?.userId || 'ไม่พบข้อมูล'}
                               </code>
