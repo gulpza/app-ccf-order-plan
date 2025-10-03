@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'; // Import useLocation
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Spinner } from 'react-bootstrap';
 import moment from 'moment';
-import { formatDate, formatDateForInput, convertBuddhistToGregorian } from '../utils/dateUtils';
+import { formatDateShort, formatDateForInput, convertBuddhistToGregorian } from '../utils/dateUtils';
 import BottomNavigation from '../Components/BottomNavigation';
 import AppHeader from '../Components/AppHeader';
 import axios from "axios";
@@ -74,7 +74,7 @@ function ReportOrder() {
       let result = await onGetOrderReport();
       result = result.map(item => ({
         deliveryDate: item['วันที่สั่ง'], // ✅ เก็บวันที่จาก API ตรงๆ (ยังเป็น ISO format)
-        vegetableType: item["ผัก"] || '',
+        vegetableType: item["ประเภทผัก"] || '',
         plannedQuantity: parseFloat(item["แผน"]) || 0,
         farmQuantity: item["ยอดชั่งหน้าสวน"] ? parseFloat(item["ยอดชั่งหน้าสวน"]) : null,
         actualQuantity: item["ส่งจริง"] ? parseFloat(item["ส่งจริง"]) : null
@@ -213,7 +213,7 @@ function ReportOrder() {
                   filteredData.map((item, index) => (
                     <tr key={index}>
                       <td>
-                        {formatDate(item.deliveryDate)}
+                        {formatDateShort(item.deliveryDate)}
                       </td>
                       <td>
                         {item.vegetableType}
