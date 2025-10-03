@@ -229,15 +229,6 @@ const Profile = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="col-12 col-md-6">
-                          <div className="d-flex align-items-center p-3 bg-light rounded">
-                            <i className="fas fa-envelope text-success me-3"></i>
-                            <div>
-                              <div className="small text-muted">อีเมล</div>
-                              <div className="fw-bold">{userData.email}</div>
-                            </div>
-                          </div>
-                        </div>
                         <div className="col-12">
                           <div className="d-flex align-items-center p-3 bg-light rounded">
                             <i className="fas fa-map-marker-alt text-danger me-3"></i>
