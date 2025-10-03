@@ -74,9 +74,10 @@ function ReportOrder() {
       let result = await onGetOrderReport();
       result = result.map(item => ({
         deliveryDate: item['วันที่สั่ง'], // ✅ เก็บวันที่จาก API ตรงๆ (ยังเป็น ISO format)
-        vegetableType: item["ประเภทผัก"] || '',
+        vegetableType: item["ผัก"] || '',
         plannedQuantity: parseFloat(item["แผน"]) || 0,
-        actualQuantity: item["ยอดชั่งหน้าสวน"] ? parseFloat(item["ยอดชั่งหน้าสวน"]) : null
+        farmQuantity: item["ยอดชั่งหน้าสวน"] ? parseFloat(item["ยอดชั่งหน้าสวน"]) : null,
+        actualQuantity: item["ส่งจริง"] ? parseFloat(item["ส่งจริง"]) : null
       }));
 
       // ✅ Sort โดยแปลง string date เป็น Date object ชั่วคราว
@@ -201,8 +202,9 @@ function ReportOrder() {
               <thead style={{ backgroundColor: '#e4f4e2' }}>
                 <tr>
                   <th scope="col">วันที่สั่ง</th>
-                  <th scope="col">ประเภทผัก</th>
+                  <th scope="col">ผัก</th>
                   <th scope="col" className="text-end">แผน</th>
+                  <th scope="col" className="text-end">ชั่งหน้าสวน</th>
                   <th scope="col" className="text-end">ส่งจริง</th>
                 </tr>
               </thead>
@@ -218,6 +220,9 @@ function ReportOrder() {
                       </td>
                       <td className="text-end fw-bold text-primary">
                         {item.plannedQuantity}
+                      </td>
+                       <td className="text-end fw-bold text-warning">
+                        {item.farmQuantity || '-'}
                       </td>
                       <td className="text-end fw-bold text-success">
                         {item.actualQuantity || '-'}
