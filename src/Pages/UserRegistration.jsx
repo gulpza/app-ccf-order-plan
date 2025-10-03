@@ -244,7 +244,7 @@ const UserRegistration = ({  }) => {
                         name="address"
                         value={formData.address}
                         onChange={handleInputChange}
-                        placeholder="กรอกที่อยู่ เช่น บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์"
+                        placeholder="กรอกที่อยู่"
                         rows="2"
                         style={{
                           borderRadius: '10px',
