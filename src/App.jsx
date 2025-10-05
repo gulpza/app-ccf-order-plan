@@ -68,7 +68,7 @@ const ProtectedRoute = ({ children }) => {
             }}></i>
           </div>
           <p className="text-muted fw-bold" style={{ color: '#2d5a3d' }}>
-            กำลังตรวยสอบข้อมูล
+            กำลังตรวจสอบข้อมูล
           </p>
           
           {/* CSS Animation */}
