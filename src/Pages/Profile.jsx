@@ -210,15 +210,6 @@ const Profile = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="col-12 col-md-6">
-                          <div className="d-flex align-items-center p-3 bg-light rounded">
-                            <i className="fas fa-user-tag text-secondary me-3"></i>
-                            <div>
-                              <div className="small text-muted">ชื่อผู้ใช้ LINE</div>
-                              <div className="fw-bold">{userData.displayName}</div>
-                            </div>
-                          </div>
-                        </div>
                         <div className="row g-3">
                         <div className="col-12 col-md-6">
                           <div className="d-flex align-items-center p-3 bg-light rounded">
@@ -243,7 +234,7 @@ const Profile = () => {
                             <i className="fas fa-id-card text-info me-3"></i>
                             <div>
                               <div className="small text-muted">LINE User ID</div>
-                              <div className="fw-bold small text-break">{userData?.lineId || 'ไม่พบข้อมูล'}</div>
+                              <div className="fw-bold text-break" style={{ fontSize: '0.6rem' }}> {userData?.lineId || 'ไม่พบข้อมูล'}</div>
                             </div>
                           </div>
                         </div>
