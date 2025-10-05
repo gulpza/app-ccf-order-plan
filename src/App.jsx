@@ -63,12 +63,12 @@ const ProtectedRoute = ({ children }) => {
             display: 'inline-block'
           }}>
             <i className="fas fa-leaf" style={{ 
-              fontSize: '3rem', 
+              fontSize: '5rem', 
               color: '#2d5a3d'
             }}></i>
           </div>
           <p className="text-muted fw-bold" style={{ color: '#2d5a3d' }}>
-            กำลังตรวจสอบข้อมูลผู้ใช้...
+            กำลังตรวยสอบข้อมูล
           </p>
           
           {/* CSS Animation */}

@@ -260,6 +260,25 @@ const Profile = () => {
         </div>
       </div>
 
+      {/* ✅ App Version */}
+      <div className="row mb-5 pb-3">
+        <div className="col-12">
+          <div className="text-center py-3">
+            <div className="d-flex align-items-center justify-content-center mb-2">
+              <i className="fas fa-leaf me-2" style={{ color: '#2d5a3d', fontSize: '1.2rem' }}></i>
+              <span className="fw-bold" style={{ color: '#2d5a3d' }}>CCF ฟาร์มแพลน</span>
+            </div>
+            <div className="text-muted small">
+              <i className="fas fa-code-branch me-1"></i>
+              Version 1.0.0
+            </div>
+            <div className="text-muted small mt-1">
+              © 2025 CCF. All rights reserved.
+            </div>
+          </div>
+        </div>
+      </div>
+
       <BottomNavigation activeTab="profile" />
       </div>
   );
