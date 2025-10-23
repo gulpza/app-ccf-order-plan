@@ -105,6 +105,7 @@ const PlanOrders = () => {
       id: item.GenId,
       deliveryDate: item["วันที่สั่ง"],
       vegetableType: item["ประเภทผัก"] || '',
+      remark: item["หมายเหตุ"] || '',
       plannedQuantity: parseFloat(item["แผน"]) || 0,
       farmQuantity: item["ยอดชั่งหน้าสวน"] ? parseFloat(item["ยอดชั่งหน้าสวน"]) : null,
       unit: 'กก.',
@@ -483,7 +484,7 @@ const PlanOrders = () => {
                 {/* ประเภทผัก - ชิดขวา */}
                 <div className="position-absolute end-0 top-50 translate-middle-y">
                   <h6 className="mb-0 fw-bold text-white text-end pe-3" style={{fontSize: '1.2rem'}}>
-                    {order.vegetableType}
+                    {order.remark === '' ? order.vegetableType : order.vegetableType + ' + ' + order.remark}
                   </h6>
                 </div>
                 
