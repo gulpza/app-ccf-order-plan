@@ -484,7 +484,7 @@ const PlanOrders = () => {
                 {/* ประเภทผัก - ชิดขวา */}
                 <div className="position-absolute end-0 top-50 translate-middle-y">
                   <h6 className="mb-0 fw-bold text-white text-end pe-3" style={{fontSize: '1.2rem'}}>
-                    {order.remark === '' ? order.vegetableType : order.vegetableType + ' + ' + order.remark}
+                    {order.remark === '' ? order.vegetableType : order.vegetableType + '+' + order.remark}
                   </h6>
                 </div>
                 
