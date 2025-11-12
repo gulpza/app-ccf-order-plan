@@ -69,3 +69,89 @@ button:focus-visible {
 .table-responsive {
   overflow-x: auto;
 }
+
+/* ✅ Full Screen for Landscape Mode */
+@media screen and (orientation: landscape) {
+  body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  #root {
+    width: 100vw;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .container {
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin: 0 !important;
+  }
+
+  .container-fluid {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  /* Hide bottom navigation in landscape */
+  .bottom-navigation {
+    display: none !important;
+  }
+
+  /* Adjust padding for landscape */
+  .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Full width cards in landscape */
+  .card {
+    margin-bottom: 8px !important;
+  }
+}
+
+/* ✅ Portrait Mode - Normal behavior */
+@media screen and (orientation: portrait) {
+  body {
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  #root {
+    width: 100%;
+    min-height: 100vh;
+  }
+}
+
+/* ✅ Landscape and Mobile specific */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+  /* Extra compact for small landscape screens */
+  .card-body {
+    padding: 0.75rem !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .mb-3, .my-3 {
+    margin-bottom: 0.5rem !important;
+  }
+
+  .mt-3, .my-3 {
+    margin-top: 0.5rem !important;
+  }
+
+  .p-3 {
+    padding: 0.5rem !important;
+  }
+
+  .p-4 {
+    padding: 0.75rem !important;
+  }
+}
