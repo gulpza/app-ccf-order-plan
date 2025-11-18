@@ -24,12 +24,15 @@ function ReportDelivery() {
       // let userStatus = null;
       const profile = localStorage.getItem('profile') || null;
       console.log({profile})
+        console.log({apiFarmUrl})
+          console.log({apiProductionUrl})
       if (profile) {
         try {
           const profileData = JSON.parse(profile);
           farmCode = profileData.FarmCode || null;
           userStatus = profileData.Status || null;
         } catch (error) {
+           console.log({error})
            return null;
         }
       }
