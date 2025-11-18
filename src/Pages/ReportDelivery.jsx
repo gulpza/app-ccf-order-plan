@@ -232,37 +232,37 @@ function ReportDelivery() {
         </div>
         <div className="card-body p-0">
           <div className="table-responsive" style={{ overflowX: 'auto' }}>
-            <table className="table table-hover mb-0" style={{ minWidth: '600px' }}>
+            <table className="table table-hover mb-0" style={{ minWidth: '650px' }}>
               <thead style={{ backgroundColor: '#e4f4e2' }}>
                 <tr>
-                  <th scope="col">วันที่สั่ง</th>
-                  <th scope="col">ผัก</th>
-                  <th scope="col" className="text-end">ส่งจริง</th>
-                  <th scope="col">วันที่ส่ง</th>
-                  <th scope="col">สถานที่ส่ง</th>
-                  <th scope="col" className="text-end">รวม</th>
+                  <th scope="col" style={{ width: '15%', minWidth: '85px' }}>วันที่สั่ง</th>
+                  <th scope="col" style={{ width: '18%', minWidth: '95px' }}>ผัก</th>
+                  <th scope="col" className="text-end" style={{ width: '13%', minWidth: '75px' }}>ส่งจริง</th>
+                  <th scope="col" style={{ width: '15%', minWidth: '85px' }}>วันที่ส่ง</th>
+                  <th scope="col" style={{ width: '28%', minWidth: '130px' }}>สถานที่ส่ง</th>
+                  <th scope="col" className="text-end" style={{ width: '11%', minWidth: '65px' }}>รวม</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredData.length > 0 ? (
                   filteredData.map((item, index) => (
                     <tr key={index}>
-                      <td>
+                      <td style={{ width: '15%' }}>
                         {item.deliveryDateFarm ? formatDateShort(item.deliveryDateFarm) : '-'}
                       </td>
-                      <td>
+                      <td style={{ width: '18%' }}>
                         {item.vegetableType || '-'}
                       </td>
-                      <td className="text-end fw-bold text-success">
+                      <td className="text-end fw-bold text-success" style={{ width: '13%' }}>
                         {item.vegetableWeight || '-'}
                       </td>
-                      <td>
+                      <td style={{ width: '15%' }}>
                         {item.deliveryDateProduction ? formatDateShort(item.deliveryDateProduction) : '-'}
                       </td>
-                      <td>
+                      <td style={{ width: '28%' }}>
                         {item.deliveryLocation || '-'}
                       </td>
-                      <td className="text-end fw-bold text-primary">
+                      <td className="text-end fw-bold text-primary" style={{ width: '11%' }}>
                         {item.quantity || '-'}
                       </td>
                     </tr>
