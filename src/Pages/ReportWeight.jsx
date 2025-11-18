@@ -207,33 +207,33 @@ function ReportWeight() {
         </div>
         <div className="card-body p-0">
           <div className="table-responsive" style={{ overflowX: 'auto' }}>
-            <table className="table table-hover mb-0" style={{ minWidth: '320px' }}>
+            <table className="table table-hover mb-0">
               <thead style={{ backgroundColor: '#e4f4e2' }}>
                 <tr>
-                  <th scope="col" style={{ width: '20%', minWidth: '90px' }}>วันที่ส่ง</th>
-                  <th scope="col" style={{ width: '20%', minWidth: '110px' }}>ผัก</th>
-                  <th scope="col" className="text-end" style={{ width: '20%', minWidth: '70px' }}>แผน</th>
-                  <th scope="col" className="text-end" style={{ width: '20%', minWidth: '85px' }}>หน้าสวน</th>
-                  <th scope="col" className="text-end" style={{ width: '20%', minWidth: '75px' }}>ส่งจริง</th>
+                  <th scope="col" style={{ width: '20%' }}>วันที่ส่ง</th>
+                  <th scope="col" style={{ width: '30%' }}>ผัก</th>
+                  <th scope="col" className="text-end" style={{ width: '15%' }}>แผน</th>
+                  <th scope="col" className="text-end" style={{ width: '18%' }}>หน้าสวน</th>
+                  <th scope="col" className="text-end" style={{ width: '17%' }}>ส่งจริง</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredData.length > 0 ? (
                   filteredData.map((item, index) => (
                     <tr key={index}>
-                      <td style={{ width: '20%' }}>
+                      <td>
                         {formatDateShort(item.deliveryDate)}
                       </td>
-                      <td style={{ width: '20%' }}>
+                      <td>
                         {item.vegetableType}
                       </td>
-                      <td className="text-end fw-bold text-primary" style={{ width: '20%' }}>
+                      <td className="text-end fw-bold text-primary">
                         {item.plannedQuantity}
                       </td>
-                       <td className="text-end fw-bold text-warning" style={{ width: '20%' }}>
+                       <td className="text-end fw-bold text-warning">
                         {item.farmQuantity || '-'}
                       </td>
-                      <td className="text-end fw-bold text-success" style={{ width: '20%' }}>
+                      <td className="text-end fw-bold text-success">
                         {item.actualQuantity || '-'}
                       </td>
                     </tr>
