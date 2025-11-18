@@ -207,7 +207,7 @@ function ReportWeight() {
         </div>
         <div className="card-body p-0">
           <div className="table-responsive" style={{ overflowX: 'auto' }}>
-            <table className="table table-hover mb-0" style={{ minWidth: '550px' }}>
+            <table className="table table-hover mb-0" style={{ minWidth: '320px' }}>
               <thead style={{ backgroundColor: '#e4f4e2' }}>
                 <tr>
                   <th scope="col" style={{ width: '15%', minWidth: '90px' }}>วันที่ส่ง</th>
