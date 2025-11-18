@@ -210,30 +210,30 @@ function ReportWeight() {
             <table className="table table-hover mb-0">
               <thead style={{ backgroundColor: '#e4f4e2' }}>
                 <tr>
-                  <th scope="col" style={{ width: '28%' }}>วันที่ส่ง</th>
-                  <th scope="col" style={{ width: '30%' }}>ผัก</th>
-                  <th scope="col" className="text-end" style={{ width: '14%' }}>แผน</th>
-                  <th scope="col" className="text-end" style={{ width: '14%' }}>หน้าสวน</th>
-                  <th scope="col" className="text-end" style={{ width: '14%' }}>ส่งจริง</th>
+                  <th scope="col" style={{ width: '28%', whiteSpace: 'nowrap' }}>วันที่ส่ง</th>
+                  <th scope="col" style={{ width: '30%', whiteSpace: 'nowrap' }}>ผัก</th>
+                  <th scope="col" className="text-end" style={{ width: '14%', whiteSpace: 'nowrap' }}>แผน</th>
+                  <th scope="col" className="text-end" style={{ width: '14%', whiteSpace: 'nowrap' }}>หน้าสวน</th>
+                  <th scope="col" className="text-end" style={{ width: '14%', whiteSpace: 'nowrap' }}>ส่งจริง</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredData.length > 0 ? (
                   filteredData.map((item, index) => (
                     <tr key={index}>
-                      <td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
                         {formatDateShort(item.deliveryDate)}
                       </td>
-                      <td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
                         {item.vegetableType}
                       </td>
-                      <td className="text-end fw-bold text-primary">
+                      <td className="text-end fw-bold text-primary" style={{ whiteSpace: 'nowrap' }}>
                         {item.plannedQuantity}
                       </td>
-                       <td className="text-end fw-bold text-warning">
+                       <td className="text-end fw-bold text-warning" style={{ whiteSpace: 'nowrap' }}>
                         {item.farmQuantity || '-'}
                       </td>
-                      <td className="text-end fw-bold text-success">
+                      <td className="text-end fw-bold text-success" style={{ whiteSpace: 'nowrap' }}>
                         {item.actualQuantity || '-'}
                       </td>
                     </tr>
