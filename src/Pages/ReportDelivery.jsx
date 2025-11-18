@@ -235,10 +235,10 @@ function ReportDelivery() {
             <table className="table table-hover mb-0" style={{ minWidth: '320px' }}>
               <thead style={{ backgroundColor: '#e4f4e2' }}>
                 <tr>
-                  <th scope="col" style={{ width: '15%', minWidth: '85px' }}>วันที่สั่ง</th>
+                  <th scope="col" style={{ width: '20%', minWidth: '85px' }}>วันที่สั่ง</th>
                   <th scope="col" style={{ width: '20%', minWidth: '95px' }}>ผัก</th>
                   <th scope="col" className="text-end" style={{ width: '15%', minWidth: '75px' }}>ส่งจริง</th>
-                  <th scope="col" style={{ width: '15%', minWidth: '85px' }}>วันที่ส่ง</th>
+                  <th scope="col" style={{ width: '20%', minWidth: '85px' }}>วันที่ส่ง</th>
                   <th scope="col" style={{ width: '25%', minWidth: '130px' }}>สถานที่ส่ง</th>
                   <th scope="col" className="text-end" style={{ width: '10%', minWidth: '65px' }}>รวม</th>
                 </tr>
@@ -247,7 +247,7 @@ function ReportDelivery() {
                 {filteredData.length > 0 ? (
                   filteredData.map((item, index) => (
                     <tr key={index}>
-                      <td style={{ width: '15%' }}>
+                      <td style={{ width: '20%' }}>
                         {item.deliveryDateFarm ? formatDateShort(item.deliveryDateFarm) : '-'}
                       </td>
                       <td style={{ width: '20%' }}>
@@ -256,7 +256,7 @@ function ReportDelivery() {
                       <td className="text-end fw-bold text-success" style={{ width: '15%' }}>
                         {item.vegetableWeight || '-'}
                       </td>
-                      <td style={{ width: '15%' }}>
+                      <td style={{ width: '20%' }}>
                         {item.deliveryDateProduction ? formatDateShort(item.deliveryDateProduction) : '-'}
                       </td>
                       <td style={{ width: '25%' }}>
