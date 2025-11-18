@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import React, { useEffect } from 'react';
 import './App.css';
 import Reports from './Pages/Reports';
+import PlanOrders from './Pages/PlanOrders';
 import Profile from './Pages/Profile';
 import UserRegistration from './Pages/UserRegistration';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -125,7 +126,15 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/plan/orders" replace />} />
 
-          {/* ✅ Protected Routes */}
+          {/* Protected Routes */}
+          <Route
+            path="/plan/orders"
+            element={
+              <ProtectedRoute>
+                <PlanOrders />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/reports"
             element={
