@@ -235,34 +235,34 @@ function ReportDelivery() {
             <table className="table table-hover mb-0">
               <thead style={{ backgroundColor: '#e4f4e2' }}>
                 <tr>
-                  <th scope="col" style={{ width: '15%' }}>วันที่สั่ง</th>
-                  <th scope="col" style={{ width: '18%' }}>ผัก</th>
-                  <th scope="col" className="text-end" style={{ width: '13%' }}>ส่งจริง</th>
-                  <th scope="col" style={{ width: '15%' }}>วันที่ส่ง</th>
-                  <th scope="col" style={{ width: '28%' }}>สถานที่ส่ง</th>
-                  <th scope="col" className="text-end" style={{ width: '11%' }}>รวม</th>
+                  <th scope="col" style={{ width: '28%', whiteSpace: 'nowrap' }}>วันที่สั่ง</th>
+                  <th scope="col" style={{ width: '30%', whiteSpace: 'nowrap' }}>ผัก</th>
+                  <th scope="col" className="text-end" style={{ width: '14%', whiteSpace: 'nowrap' }}>ส่งจริง</th>
+                  <th scope="col" style={{ width: '28%', whiteSpace: 'nowrap' }}>วันที่ส่ง</th>
+                  <th scope="col" style={{ width: '30%', whiteSpace: 'nowrap' }}>สถานที่ส่ง</th>
+                  <th scope="col" className="text-end" style={{ width: '11%', whiteSpace: 'nowrap' }}>รวม</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredData.length > 0 ? (
                   filteredData.map((item, index) => (
                     <tr key={index}>
-                      <td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
                         {item.deliveryDateFarm ? formatDateShort(item.deliveryDateFarm) : '-'}
                       </td>
-                      <td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
                         {item.vegetableType || '-'}
                       </td>
-                      <td className="text-end fw-bold text-success">
+                      <td className="text-end fw-bold text-success" style={{ whiteSpace: 'nowrap' }}>
                         {item.vegetableWeight || '-'}
                       </td>
-                      <td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
                         {item.deliveryDateProduction ? formatDateShort(item.deliveryDateProduction) : '-'}
                       </td>
-                      <td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
                         {item.deliveryLocation || '-'}
                       </td>
-                      <td className="text-end fw-bold text-primary">
+                      <td className="text-end fw-bold text-primary" style={{ whiteSpace: 'nowrap' }}>
                         {item.quantity || '-'}
                       </td>
                     </tr>
