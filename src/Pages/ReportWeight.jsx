@@ -72,19 +72,23 @@ function ReportWeight() {
   const handleFilter = async () => {
     setLoading(true);
     try {
-     
       let result = await onGetReport();
-      result = result.map(item => ({
-        deliveryDate: item['วันที่สั่ง'], // ✅ เก็บวันที่จาก API ตรงๆ (ยังเป็น ISO format)
-        vegetableType: item["ประเภทผัก"] || '',
-        plannedQuantity: parseFloat(item["แผน"]) || 0,
-        farmQuantity: item["ยอดชั่งหน้าสวน"] ? parseFloat(item["ยอดชั่งหน้าสวน"]) : null,
-        actualQuantity: item["ส่งจริง"] ? parseFloat(item["ส่งจริง"]) : null
-      }));
+      
+      if (result && result.length > 0) {
+        result = result.map(item => ({
+          deliveryDate: item['วันที่สั่ง'],
+          vegetableType: item["ประเภทผัก"] || '',
+          plannedQuantity: parseFloat(item["แผน"]) || 0,
+          farmQuantity: item["ยอดชั่งหน้าสวน"] ? parseFloat(item["ยอดชั่งหน้าสวน"]) : null,
+          actualQuantity: item["ส่งจริง"] ? parseFloat(item["ส่งจริง"]) : null
+        }));
 
-      // ✅ Sort โดยแปลง string date เป็น Date object ชั่วคราว
-      result.sort((a, b) => new Date(a.deliveryDate) - new Date(b.deliveryDate));
-      setFilteredData(result);
+        // Sort โดยแปลง string date เป็น Date object ชั่วคราว
+        result.sort((a, b) => new Date(a.deliveryDate) - new Date(b.deliveryDate));
+        setFilteredData(result);
+      } else {
+        setFilteredData([]);
+      }
     } finally {
       setLoading(false);
     }

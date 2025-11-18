@@ -80,7 +80,7 @@ function ReportDelivery() {
     try {
     
       let result = await onGetReport();
-      if (result && result.farmData && result.productionData) {
+      if (result && result.farmData && result.productionData && result.farmData.length > 0) {
         // รวมข้อมูลจาก farmData และ productionData
         const combinedData = [];
         

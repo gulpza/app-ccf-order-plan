@@ -261,7 +261,7 @@ const Profile = () => {
             </div>
             <div className="text-muted small">
               <i className="fas fa-code-branch me-1"></i>
-              Version 1.0.0
+              Version 1.1.0
             </div>
             <div className="text-muted small mt-1">
               © 2025 CCF. All rights reserved.
