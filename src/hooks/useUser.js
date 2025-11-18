@@ -4,7 +4,7 @@ import axios from 'axios';
 const useUser = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const apiUrl = import.meta.env.VITE_SHEET_API_KEY;
+  const apiUrl = import.meta.env.VITE_SHEET_FARM_API_KEY;
 
   // Function to get user profile by LINE ID
   const getUserProfile = async (lineId) => {

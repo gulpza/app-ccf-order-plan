@@ -9,7 +9,7 @@ import AppHeader from '../Components/AppHeader';
 import axios from "axios";
 
 
-function ReportOrder() {
+function ReportWeight() {
   const location = useLocation(); // Get the location object to access the URL query parameters
   const searchParams = new URLSearchParams(location.search); // Parse query parameters
 
@@ -21,13 +21,14 @@ function ReportOrder() {
   const [startDate, setStartDate] = useState(formatDateForInput(getStartOfMonth())); // Start date for API calls
   const [endDate, setEndDate] = useState(formatDateForInput(getEndOfMonth())); // End date for API calls
   const [loading, setLoading] = useState(false); // State variable for loading indicator
-  const apiUrl = import.meta.env.VITE_SHEET_API_KEY;
+  const apiUrl = import.meta.env.VITE_SHEET_FARM_API_KEY;
 
-  const onGetOrderReport = async () => { 
+  const onGetReport = async () => { 
     try {
-      const profile = localStorage.getItem('profile');
-      let farmCode = null;
-      let userStatus = null;
+     
+      // let farmCode = "2";
+      // let userStatus = null;
+      const profile = localStorage.getItem('profile') || null;
       if (profile) {
         try {
           const profileData = JSON.parse(profile);
@@ -47,7 +48,7 @@ function ReportOrder() {
       const gregorianEndDate = convertBuddhistToGregorian(endDate);
       const response = await axios.get(apiUrl, {
        params: {
-        action: "get-farm-order-report",
+        action: "get-farm-weight-report",
         farmCode: farmCode,
         startDate: gregorianStartDate, // ✅ ใช้ string ที่แปลงแล้ว
         endDate: gregorianEndDate,     // ✅ ใช้ string ที่แปลงแล้ว
@@ -64,14 +65,15 @@ function ReportOrder() {
   // Fetch employee data when the component mounts
   useEffect(() => {
     // Set sample data on component mount
-    handleFilter();
+    // handleFilter();
   }, []);
 
   // Function to handle filtering
   const handleFilter = async () => {
     setLoading(true);
     try {
-      let result = await onGetOrderReport();
+     
+      let result = await onGetReport();s
       result = result.map(item => ({
         deliveryDate: item['วันที่สั่ง'], // ✅ เก็บวันที่จาก API ตรงๆ (ยังเป็น ISO format)
         vegetableType: item["ประเภทผัก"] || '',
@@ -103,7 +105,7 @@ function ReportOrder() {
   return (
       <div className="container-fluid px-2 px-md-3 pt-0 mt-2">
         {/* Header Section */}
-        <AppHeader title="รายงานการส่งผัก"/>
+        <AppHeader title="รายงานน้ำหนัก"/>
          {loading && (
         <div 
           className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
@@ -193,7 +195,7 @@ function ReportOrder() {
         <div className="card-header" style={{ backgroundColor: '#f0f8ef' }}>
           <h6 className="mb-0 fw-bold" style={{ color: '#2d5a3d' }}>
             <i className="fas fa-table me-2"></i>
-            ตารางรายงาน
+            
           </h6>
         </div>
         <div className="card-body p-0">
@@ -245,9 +247,9 @@ function ReportOrder() {
         </div>
       </div>
 
-      <BottomNavigation activeTab="report" />
+      <BottomNavigation activeTab="report-weight" />
       </div>
   );
 }
 
-export default ReportOrder;
+export default ReportWeight;

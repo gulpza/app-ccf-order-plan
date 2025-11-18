@@ -23,7 +23,7 @@ const PlanOrders = () => {
   const [showOrderDetail, setShowOrderDetail] = useState(false);
   const [farmQuantityInput, setfarmQuantityInput] = useState('');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-  const apiUrl = import.meta.env.VITE_SHEET_API_KEY; 
+  const apiUrl = import.meta.env.VITE_SHEET_FARM_API_KEY; 
 
   // API function สำหรับอัปเดตน้ำหนักหน้าสวน
   const updateFarmOrderAPI = async (genId, farmQuantity) => {

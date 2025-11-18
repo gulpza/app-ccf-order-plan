@@ -9,7 +9,7 @@ const Profile = () => {
   }, []);
 
   const [activeTab, setActiveTab] = useState('personal');
-  const apiUrl = import.meta.env.VITE_SHEET_API_KEY; 
+  const apiUrl = import.meta.env.VITE_SHEET_FARM_API_KEY; 
   // LINE LIFF Integration
   const { 
     isReady: liffReady, 

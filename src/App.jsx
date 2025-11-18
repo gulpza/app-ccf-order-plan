@@ -1,14 +1,15 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import './App.css';
-import ReportOrder from './Pages/ReportOrder';
-import PlanOrders from './Pages/PlanOrders';
+import Reports from './Pages/Reports';
 import Profile from './Pages/Profile';
 import UserRegistration from './Pages/UserRegistration';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import LIFFAuthGuard from './Components/LIFFAuthGuard';
 import { useLIFF } from './hooks/useLIFF';
 import useUser from './hooks/useUser';
+import ReportWeight from './Pages/ReportWeight';
+import ReportDelivery from './Pages/ReportDelivery'; 
 
 const ProtectedRoute = ({ children }) => {
   const { userProfile } = useLIFF();
@@ -126,18 +127,26 @@ function App() {
 
           {/* ✅ Protected Routes */}
           <Route
-            path="/report/orders"
+            path="/reports"
             element={
               <ProtectedRoute>
-                <ReportOrder />
+                <Reports />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/plan/orders"
+            path="/report/weight"
             element={
               <ProtectedRoute>
-                <PlanOrders />
+                <ReportWeight />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/report/delivery"
+            element={
+              <ProtectedRoute>
+                <ReportDelivery />
               </ProtectedRoute>
             }
           />

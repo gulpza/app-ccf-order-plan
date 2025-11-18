@@ -23,7 +23,7 @@ const UserRegistration = ({  }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const apiUrl = import.meta.env.VITE_SHEET_API_KEY;
+  const apiUrl = import.meta.env.VITE_SHEET_FARM_API_KEY;
 
   const registerUserAPI = async (userData) => {
     try {

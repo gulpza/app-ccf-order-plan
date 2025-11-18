@@ -2,7 +2,7 @@
 
 class UserService {
   constructor() {
-    this.apiKey = import.meta.env.VITE_SHEET_API_KEY; // Google Apps Script URL from environment variable
+    this.apiKey = import.meta.env.VITE_SHEET_FARM_API_KEY; // Google Apps Script URL from environment variable
     this.baseUrl = this.apiKey; // Google Apps Script URL
   }
 
