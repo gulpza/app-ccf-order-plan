@@ -236,11 +236,11 @@ function ReportDelivery() {
               <thead style={{ backgroundColor: '#e4f4e2' }}>
                 <tr>
                   <th scope="col" style={{ width: '15%', minWidth: '85px' }}>วันที่สั่ง</th>
-                  <th scope="col" style={{ width: '18%', minWidth: '95px' }}>ผัก</th>
-                  <th scope="col" className="text-end" style={{ width: '13%', minWidth: '75px' }}>ส่งจริง</th>
+                  <th scope="col" style={{ width: '20%', minWidth: '95px' }}>ผัก</th>
+                  <th scope="col" className="text-end" style={{ width: '15%', minWidth: '75px' }}>ส่งจริง</th>
                   <th scope="col" style={{ width: '15%', minWidth: '85px' }}>วันที่ส่ง</th>
-                  <th scope="col" style={{ width: '28%', minWidth: '130px' }}>สถานที่ส่ง</th>
-                  <th scope="col" className="text-end" style={{ width: '11%', minWidth: '65px' }}>รวม</th>
+                  <th scope="col" style={{ width: '25%', minWidth: '130px' }}>สถานที่ส่ง</th>
+                  <th scope="col" className="text-end" style={{ width: '10%', minWidth: '65px' }}>รวม</th>
                 </tr>
               </thead>
               <tbody>
@@ -250,19 +250,19 @@ function ReportDelivery() {
                       <td style={{ width: '15%' }}>
                         {item.deliveryDateFarm ? formatDateShort(item.deliveryDateFarm) : '-'}
                       </td>
-                      <td style={{ width: '18%' }}>
+                      <td style={{ width: '20%' }}>
                         {item.vegetableType || '-'}
                       </td>
-                      <td className="text-end fw-bold text-success" style={{ width: '13%' }}>
+                      <td className="text-end fw-bold text-success" style={{ width: '15%' }}>
                         {item.vegetableWeight || '-'}
                       </td>
                       <td style={{ width: '15%' }}>
                         {item.deliveryDateProduction ? formatDateShort(item.deliveryDateProduction) : '-'}
                       </td>
-                      <td style={{ width: '28%' }}>
+                      <td style={{ width: '25%' }}>
                         {item.deliveryLocation || '-'}
                       </td>
-                      <td className="text-end fw-bold text-primary" style={{ width: '11%' }}>
+                      <td className="text-end fw-bold text-primary" style={{ width: '10%' }}>
                         {item.quantity || '-'}
                       </td>
                     </tr>

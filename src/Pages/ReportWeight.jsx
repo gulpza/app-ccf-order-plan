@@ -210,30 +210,30 @@ function ReportWeight() {
             <table className="table table-hover mb-0" style={{ minWidth: '550px' }}>
               <thead style={{ backgroundColor: '#e4f4e2' }}>
                 <tr>
-                  <th scope="col" style={{ width: '20%', minWidth: '90px' }}>วันที่ส่ง</th>
-                  <th scope="col" style={{ width: '30%', minWidth: '110px' }}>ผัก</th>
+                  <th scope="col" style={{ width: '15%', minWidth: '90px' }}>วันที่ส่ง</th>
+                  <th scope="col" style={{ width: '20%', minWidth: '110px' }}>ผัก</th>
                   <th scope="col" className="text-end" style={{ width: '15%', minWidth: '70px' }}>แผน</th>
-                  <th scope="col" className="text-end" style={{ width: '18%', minWidth: '85px' }}>หน้าสวน</th>
-                  <th scope="col" className="text-end" style={{ width: '17%', minWidth: '75px' }}>ส่งจริง</th>
+                  <th scope="col" className="text-end" style={{ width: '15%', minWidth: '85px' }}>หน้าสวน</th>
+                  <th scope="col" className="text-end" style={{ width: '15%', minWidth: '75px' }}>ส่งจริง</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredData.length > 0 ? (
                   filteredData.map((item, index) => (
                     <tr key={index}>
-                      <td style={{ width: '20%' }}>
+                      <td style={{ width: '15%' }}>
                         {formatDateShort(item.deliveryDate)}
                       </td>
-                      <td style={{ width: '30%' }}>
+                      <td style={{ width: '20%' }}>
                         {item.vegetableType}
                       </td>
                       <td className="text-end fw-bold text-primary" style={{ width: '15%' }}>
                         {item.plannedQuantity}
                       </td>
-                       <td className="text-end fw-bold text-warning" style={{ width: '18%' }}>
+                       <td className="text-end fw-bold text-warning" style={{ width: '15%' }}>
                         {item.farmQuantity || '-'}
                       </td>
-                      <td className="text-end fw-bold text-success" style={{ width: '17%' }}>
+                      <td className="text-end fw-bold text-success" style={{ width: '15%' }}>
                         {item.actualQuantity || '-'}
                       </td>
                     </tr>
