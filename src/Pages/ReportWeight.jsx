@@ -210,11 +210,11 @@ function ReportWeight() {
             <table className="table table-hover mb-0">
               <thead style={{ backgroundColor: '#e4f4e2' }}>
                 <tr>
-                  <th scope="col" style={{ width: '20%' }}>วันที่ส่ง</th>
+                  <th scope="col" style={{ width: '25%' }}>วันที่ส่ง</th>
                   <th scope="col" style={{ width: '30%' }}>ผัก</th>
                   <th scope="col" className="text-end" style={{ width: '15%' }}>แผน</th>
-                  <th scope="col" className="text-end" style={{ width: '18%' }}>หน้าสวน</th>
-                  <th scope="col" className="text-end" style={{ width: '17%' }}>ส่งจริง</th>
+                  <th scope="col" className="text-end" style={{ width: '15%' }}>หน้าสวน</th>
+                  <th scope="col" className="text-end" style={{ width: '15%' }}>ส่งจริง</th>
                 </tr>
               </thead>
               <tbody>
