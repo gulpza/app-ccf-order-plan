@@ -23,6 +23,7 @@ function ReportDelivery() {
       // let farmCode = "2";
       // let userStatus = null;
       const profile = localStorage.getItem('profile') || null;
+      console.log({profile})
       if (profile) {
         try {
           const profileData = JSON.parse(profile);
