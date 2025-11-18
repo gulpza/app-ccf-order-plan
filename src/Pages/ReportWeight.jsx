@@ -73,7 +73,7 @@ function ReportWeight() {
     setLoading(true);
     try {
      
-      let result = await onGetReport();s
+      let result = await onGetReport();
       result = result.map(item => ({
         deliveryDate: item['วันที่สั่ง'], // ✅ เก็บวันที่จาก API ตรงๆ (ยังเป็น ISO format)
         vegetableType: item["ประเภทผัก"] || '',
