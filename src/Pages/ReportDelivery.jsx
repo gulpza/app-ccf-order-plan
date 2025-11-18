@@ -71,7 +71,7 @@ function ReportDelivery() {
   };
 
   useEffect(() => {
-    // handleFilter();
+    handleFilter();
   }, []);
 
   // Function to handle filtering

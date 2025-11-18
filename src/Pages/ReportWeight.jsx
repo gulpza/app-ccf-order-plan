@@ -65,7 +65,7 @@ function ReportWeight() {
   // Fetch employee data when the component mounts
   useEffect(() => {
     // Set sample data on component mount
-    // handleFilter();
+    handleFilter();
   }, []);
 
   // Function to handle filtering
