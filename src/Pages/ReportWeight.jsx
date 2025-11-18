@@ -28,9 +28,9 @@ function ReportWeight() {
      
       // let farmCode = "2";
       // let userStatus = null;
+      let farmCode = null;
+      let userStatus = null;
       const profile = localStorage.getItem('profile') || null;
-      console.log({profile})
-      console.log({apiUrl})
       if (profile) {
         try {
           const profileData = JSON.parse(profile);
