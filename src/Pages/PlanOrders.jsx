@@ -290,7 +290,7 @@ const PlanOrders = () => {
         <div className="d-md-none mb-3 mt-2">
           <div className="row g-2">
             {/* ทั้งหมด */}
-            <div className="col-3">
+            <div className="col">
               <div 
                 className={`card text-white cursor-pointer border border-2 ${
                   selectedStatus === 'ทั้งหมด' 
@@ -331,7 +331,7 @@ const PlanOrders = () => {
             </div>
 
           {/* รอส่ง */}
-          <div className="col-3">
+          <div className="col">
             <div 
               className={`card text-white cursor-pointer border border-2 ${
                 selectedStatus === 'รอส่ง' 
@@ -372,7 +372,7 @@ const PlanOrders = () => {
           </div>
           
           {/* ส่งแล้ว */}
-          <div className="col-3">
+          <div className="col">
             <div 
               className={`card text-white cursor-pointer border border-2 ${
                 selectedStatus === 'ส่งแล้ว' 
@@ -413,7 +413,7 @@ const PlanOrders = () => {
           </div>
           
           {/* รับแล้ว */}
-          <div className="col-3">
+          <div className="col">
             <div 
               className={`card text-white cursor-pointer border border-2 ${
                 selectedStatus === 'รับแล้ว' 
@@ -454,7 +454,7 @@ const PlanOrders = () => {
           </div>
           
           {/* ยกเลิก */}
-          <div className="col-3">
+          <div className="col">
             <div 
               className={`card text-white cursor-pointer border border-2 ${
                 selectedStatus === 'ยกเลิก' 

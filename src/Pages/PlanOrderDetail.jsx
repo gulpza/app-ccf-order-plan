@@ -17,7 +17,7 @@ const PlanOrderDetail = ({
   const [saving, setSaving] = useState(false);
   
   // Check if order can be edited (only "รอส่ง" status)
-  const canEdit = selectedOrder?.status === 'รอส่ง' || selectedOrder?.status === 'ส่งแล้ว';
+  const canEdit = selectedOrder?.status === 'รอส่ง' || selectedOrder?.status === 'ส่งแล้ว' || selectedOrder?.status === 'รับแล้ว';
 
   // Handle save button click - show confirmation modal
   const handleSaveClick = () => {
