@@ -448,7 +448,7 @@ const PlanOrders = () => {
               <div className="card-body p-2 text-center">
                 {selectedStatus === 'รับแล้ว' && (
                   <div className="mb-1">
-                    <i className="fas fa-box-check" style={{ fontSize: '1.2rem' }}></i>
+                    <i className="fas fa-check-double" style={{ fontSize: '1.2rem' }}></i>
                   </div>
                 )}
                 <div className="small" style={{
