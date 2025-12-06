@@ -26,13 +26,21 @@ const PlanOrders = () => {
   const apiUrl = import.meta.env.VITE_SHEET_FARM_API_KEY; 
 
   // API function สำหรับอัปเดตน้ำหนักหน้าสวน
-  const updateFarmOrderAPI = async (genId, farmQuantity) => {
+  const updateFarmOrderAPI = async (genId, farmQuantity, currentStatus) => {
     try {
+    // กำหนดสถานะใหม่ตามสถานะเดิม
+    let newStatus = currentStatus;
+    if (currentStatus === 'รอส่ง' || currentStatus === 'ส่งแล้ว') {
+      newStatus = 'ส่งแล้ว';
+    } else if (currentStatus === 'รับแล้ว') {
+      newStatus = 'รับแล้ว';
+    }
+    
     const response = await axios.post(apiUrl, new URLSearchParams({
       action: 'update-farm-order',
       GenId: genId,
       'ยอดชั่งหน้าสวน': farmQuantity.toString(),
-      'สถานะการส่ง': 'ส่งแล้ว'
+      'สถานะการส่ง': newStatus
     }), {
       timeout: 15000,
       headers: {
@@ -42,7 +50,8 @@ const PlanOrders = () => {
     
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        newStatus: newStatus
       };
       
     } catch (error) {
@@ -204,8 +213,8 @@ const PlanOrders = () => {
           return;
         }
         
-        // เรียก API เพื่อบันทึกข้อมูล
-        const apiResult = await updateFarmOrderAPI(selectedOrder.id, updatedQuantity);
+        // เรียก API เพื่อบันทึกข้อมูล พร้อมส่งสถานะปัจจุบัน
+        const apiResult = await updateFarmOrderAPI(selectedOrder.id, updatedQuantity, selectedOrder.status);
         
         if (!apiResult.success) {
           alert('ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง');
@@ -215,18 +224,10 @@ const PlanOrders = () => {
         // อัปเดต local state เมื่อ API สำเร็จ
         const updatedOrders = orders.map(order => {
           if (order.id === selectedOrder.id) {
-            // กำหนดสถานะใหม่ตามสถานะเดิม
-            let newStatus = order.status;
-            if (order.status === 'รอส่ง' || order.status === 'ส่งแล้ว') {
-              newStatus = 'ส่งแล้ว';
-            } else if (order.status === 'รับแล้ว') {
-              newStatus = 'รับแล้ว';
-            }
-            
             return {
               ...order,
               farmQuantity: updatedQuantity,
-              status: newStatus
+              status: apiResult.newStatus
             };
           }
           return order;
@@ -310,12 +311,16 @@ const PlanOrders = () => {
                 }}
               >
                 <div className="card-body p-2 text-center">
-                  <div className="small mb-1" style={{
+                  {selectedStatus === 'ทั้งหมด' && (
+                    <div className="mb-1">
+                      <i className="fas fa-check-circle" style={{ fontSize: '1.2rem' }}></i>
+                    </div>
+                  )}
+                  <div className="small" style={{
                     fontSize: '0.9rem', 
                     color: selectedStatus === 'ทั้งหมด' ? '#ffffff' : '#ffffff',
                     fontWeight: selectedStatus === 'ทั้งหมด' ? 'bold' : 'normal'
                   }}>
-                    {selectedStatus === 'ทั้งหมด' && <i className="fas fa-check-circle me-1"></i>}
                     ทั้งหมด
                   </div>
                   <div className="fw-bold pt-2" style={{
@@ -351,12 +356,16 @@ const PlanOrders = () => {
               }}
             >
               <div className="card-body p-2 text-center">
-                <div className="small mb-1" style={{
+                {selectedStatus === 'รอส่ง' && (
+                  <div className="mb-1">
+                    <i className="fas fa-clock" style={{ fontSize: '1.2rem' }}></i>
+                  </div>
+                )}
+                <div className="small" style={{
                   fontSize: '0.9rem', 
                   color: selectedStatus === 'รอส่ง' ? '#ffffff' : '#ffffff',
                   fontWeight: selectedStatus === 'รอส่ง' ? 'bold' : 'normal'
                 }}>
-                  {selectedStatus === 'รอส่ง' && <i className="fas fa-check-circle me-1"></i>}
                   รอส่ง
                 </div>
                 <div className="fw-bold pt-2" style={{
@@ -392,12 +401,16 @@ const PlanOrders = () => {
               }}
             >
               <div className="card-body p-2 text-center">
-                <div className="small mb-1" style={{
+                {selectedStatus === 'ส่งแล้ว' && (
+                  <div className="mb-1">
+                    <i className="fas fa-truck" style={{ fontSize: '1.2rem' }}></i>
+                  </div>
+                )}
+                <div className="small" style={{
                   fontSize: '0.9rem', 
                   color: selectedStatus === 'ส่งแล้ว' ? '#ffffff' : '#ffffff',
                   fontWeight: selectedStatus === 'ส่งแล้ว' ? 'bold' : 'normal'
                 }}>
-                  {selectedStatus === 'ส่งแล้ว' && <i className="fas fa-check-circle me-1"></i>}
                   ส่งแล้ว
                 </div>
                 <div className="fw-bold pt-2" style={{
@@ -433,12 +446,16 @@ const PlanOrders = () => {
               }}
             >
               <div className="card-body p-2 text-center">
-                <div className="small mb-1" style={{
+                {selectedStatus === 'รับแล้ว' && (
+                  <div className="mb-1">
+                    <i className="fas fa-box-check" style={{ fontSize: '1.2rem' }}></i>
+                  </div>
+                )}
+                <div className="small" style={{
                   fontSize: '0.9rem', 
                   color: selectedStatus === 'รับแล้ว' ? '#ffffff' : '#ffffff',
                   fontWeight: selectedStatus === 'รับแล้ว' ? 'bold' : 'normal'
                 }}>
-                  {selectedStatus === 'รับแล้ว' && <i className="fas fa-check-circle me-1"></i>}
                   รับแล้ว
                 </div>
                 <div className="fw-bold pt-2" style={{
@@ -474,12 +491,16 @@ const PlanOrders = () => {
               }}
             >
               <div className="card-body p-2 text-center">
-                <div className="small mb-1" style={{
+                {selectedStatus === 'ยกเลิก' && (
+                  <div className="mb-1">
+                    <i className="fas fa-times-circle" style={{ fontSize: '1.2rem' }}></i>
+                  </div>
+                )}
+                <div className="small" style={{
                   fontSize: '0.9rem', 
                   color: selectedStatus === 'ยกเลิก' ? '#ffffff' : '#ffffff',
                   fontWeight: selectedStatus === 'ยกเลิก' ? 'bold' : 'normal'
                 }}>
-                  {selectedStatus === 'ยกเลิก' && <i className="fas fa-check-circle me-1"></i>}
                   ยกเลิก
                 </div>
                 <div className="fw-bold pt-2" style={{
