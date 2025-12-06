@@ -215,10 +215,18 @@ const PlanOrders = () => {
         // อัปเดต local state เมื่อ API สำเร็จ
         const updatedOrders = orders.map(order => {
           if (order.id === selectedOrder.id) {
+            // กำหนดสถานะใหม่ตามสถานะเดิม
+            let newStatus = order.status;
+            if (order.status === 'รอส่ง' || order.status === 'ส่งแล้ว') {
+              newStatus = 'ส่งแล้ว';
+            } else if (order.status === 'รับแล้ว') {
+              newStatus = 'รับแล้ว';
+            }
+            
             return {
               ...order,
               farmQuantity: updatedQuantity,
-              status: 'ส่งแล้ว'
+              status: newStatus
             };
           }
           return order;
@@ -240,11 +248,13 @@ const PlanOrders = () => {
   const getStatistics = () => {
     const pendingOrders = orders.filter(order => order.status === 'รอส่ง').length;
     const completedOrders = orders.filter(order => order.status === 'ส่งแล้ว').length;
+    const receivedOrders = orders.filter(order => order.status === 'รับแล้ว').length;
     const cancelledOrders = orders.filter(order => order.status === 'ยกเลิก').length;
     
     return {
       pendingOrders,
       completedOrders,
+      receivedOrders,
       cancelledOrders,
       totalOrders: orders.length
     };
@@ -397,6 +407,47 @@ const PlanOrders = () => {
                   transform: selectedStatus === 'ส่งแล้ว' ? 'scale(1.1)' : 'scale(1)'
                 }}>
                   {getStatistics().completedOrders}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* รับแล้ว */}
+          <div className="col-3">
+            <div 
+              className={`card text-white cursor-pointer border border-2 ${
+                selectedStatus === 'รับแล้ว' 
+                  ? 'border-dark shadow-lg' 
+                  : 'border-secondary'
+              }`}
+              onClick={() => handleStatusFilter('รับแล้ว')}
+              style={{ 
+                background: getGradientBackground('รับแล้ว', selectedStatus === 'รับแล้ว'),
+                cursor: 'pointer', 
+                transition: 'all 0.3s ease',
+                transform: selectedStatus === 'รับแล้ว' ? 'scale(1.05)' : 'scale(1)',
+                borderRadius: '8px',
+                boxShadow: selectedStatus === 'รับแล้ว' 
+                  ? `0 4px 12px ${getShadowColor('รับแล้ว')}` 
+                  : 'none'
+              }}
+            >
+              <div className="card-body p-2 text-center">
+                <div className="small mb-1" style={{
+                  fontSize: '0.9rem', 
+                  color: selectedStatus === 'รับแล้ว' ? '#ffffff' : '#ffffff',
+                  fontWeight: selectedStatus === 'รับแล้ว' ? 'bold' : 'normal'
+                }}>
+                  {selectedStatus === 'รับแล้ว' && <i className="fas fa-check-circle me-1"></i>}
+                  รับแล้ว
+                </div>
+                <div className="fw-bold pt-2" style={{
+                  fontSize: selectedStatus === 'รับแล้ว' ? '1.4rem' : '1.2rem', 
+                  color: selectedStatus === 'รับแล้ว' ? '#ffffff' : '#000000',
+                  transition: 'all 0.3s ease',
+                  transform: selectedStatus === 'รับแล้ว' ? 'scale(1.1)' : 'scale(1)'
+                }}>
+                  {getStatistics().receivedOrders}
                 </div>
               </div>
             </div>

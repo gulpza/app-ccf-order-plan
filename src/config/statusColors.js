@@ -2,6 +2,7 @@
 export const STATUS_COLORS = {
   'รอส่ง': '#efd846ff',
   'ส่งแล้ว': '#4caf50',
+  'รับแล้ว': '#9b59b6',
   'ยกเลิก': '#ef5350',
   'ทั้งหมด': '#4074e3ff'
 };
@@ -15,6 +16,10 @@ export const STATUS_COLOR_VARIANTS = {
   'ส่งแล้ว': {
     primary: '#4caf50',
     shadow: 'rgba(76, 175, 80, 0.4)'
+  },
+  'รับแล้ว': {
+    primary: '#9b59b6',
+    shadow: 'rgba(155, 89, 182, 0.4)'
   },
   'ยกเลิก': {
     primary: '#ef5350',
