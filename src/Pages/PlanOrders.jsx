@@ -118,7 +118,7 @@ const PlanOrders = () => {
       plannedQuantity: parseFloat(item["แผน"]) || 0,
       farmQuantity: item["ยอดชั่งหน้าสวน"] ? parseFloat(item["ยอดชั่งหน้าสวน"]) : null,
       unit: 'กก.',
-      status: item["สถานะการส่ง"] || '',
+      status: (item["สถานะการส่ง"] || '').trim(),
       farmCode: item["รหัสไร่"] || '',
       farmName: item["ชื่อไร่"] || ''
     }));
@@ -170,7 +170,11 @@ const PlanOrders = () => {
 
     // Filter by status - เพิ่มการกรองตามสถานะ
     if (selectedStatus && selectedStatus !== 'ทั้งหมด') {
-      filtered = filtered.filter(order => order.status === selectedStatus);
+      filtered = filtered.filter(order => {
+        const orderStatus = (order.status || '').trim();
+        const filterStatus = (selectedStatus || '').trim();
+        return orderStatus === filterStatus;
+      });
     }
 
     setFilteredOrders(filtered);
