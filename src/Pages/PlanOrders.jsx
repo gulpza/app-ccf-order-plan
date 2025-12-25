@@ -25,6 +25,13 @@ const PlanOrders = () => {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const apiUrl = import.meta.env.VITE_SHEET_FARM_API_KEY; 
 
+  // Helper function to normalize status string
+  const normalizeStatus = (status) => {
+    if (!status) return '';
+    // ลบช่องว่างทั้งหมด, trim, และแปลงเป็นตัวพิมพ์ปกติ
+    return String(status).trim().replace(/\s+/g, ' ');
+  };
+
   // API function สำหรับอัปเดตน้ำหนักหน้าสวน
   const updateFarmOrderAPI = async (genId, farmQuantity, currentStatus) => {
     try {
@@ -110,18 +117,21 @@ const PlanOrders = () => {
     const transformApiData = (apiData) => {
     if (!apiData || !Array.isArray(apiData)) return [];
     
-    return apiData.map(item => ({
-      id: item.GenId,
-      deliveryDate: item["วันที่สั่ง"],
-      vegetableType: item["ประเภทผัก"] || '',
-      remark: item["หมายเหตุ"] || '',
-      plannedQuantity: parseFloat(item["แผน"]) || 0,
-      farmQuantity: item["ยอดชั่งหน้าสวน"] ? parseFloat(item["ยอดชั่งหน้าสวน"]) : null,
-      unit: 'กก.',
-      status: (item["สถานะการส่ง"] || '').trim(),
-      farmCode: item["รหัสไร่"] || '',
-      farmName: item["ชื่อไร่"] || ''
-    }));
+    return apiData.map(item => {
+      const status = normalizeStatus(item["สถานะการส่ง"]);
+      return {
+        id: item.GenId,
+        deliveryDate: item["วันที่สั่ง"],
+        vegetableType: item["ประเภทผัก"] || '',
+        remark: item["หมายเหตุ"] || '',
+        plannedQuantity: parseFloat(item["แผน"]) || 0,
+        farmQuantity: item["ยอดชั่งหน้าสวน"] ? parseFloat(item["ยอดชั่งหน้าสวน"]) : null,
+        unit: 'กก.',
+        status: status,
+        farmCode: item["รหัสไร่"] || '',
+        farmName: item["ชื่อไร่"] || ''
+      };
+    });
   };
 
   const fetchData = async () => {
@@ -171,8 +181,8 @@ const PlanOrders = () => {
     // Filter by status - เพิ่มการกรองตามสถานะ
     if (selectedStatus && selectedStatus !== 'ทั้งหมด') {
       filtered = filtered.filter(order => {
-        const orderStatus = (order.status || '').trim();
-        const filterStatus = (selectedStatus || '').trim();
+        const orderStatus = normalizeStatus(order.status);
+        const filterStatus = normalizeStatus(selectedStatus);
         return orderStatus === filterStatus;
       });
     }
@@ -256,10 +266,10 @@ const PlanOrders = () => {
 
   // Get statistics for summary display - แก้ไขให้คำนวณจาก orders แทน filteredOrders
   const getStatistics = () => {
-    const pendingOrders = orders.filter(order => order.status === 'รอส่ง').length;
-    const completedOrders = orders.filter(order => order.status === 'ส่งแล้ว').length;
-    const receivedOrders = orders.filter(order => order.status === 'รับแล้ว').length;
-    const cancelledOrders = orders.filter(order => order.status === 'ยกเลิก').length;
+    const pendingOrders = orders.filter(order => normalizeStatus(order.status) === 'รอส่ง').length;
+    const completedOrders = orders.filter(order => normalizeStatus(order.status) === 'ส่งแล้ว').length;
+    const receivedOrders = orders.filter(order => normalizeStatus(order.status) === 'รับแล้ว').length;
+    const cancelledOrders = orders.filter(order => normalizeStatus(order.status) === 'ยกเลิก').length;
     
     return {
       pendingOrders,
