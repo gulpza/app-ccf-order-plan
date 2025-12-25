@@ -187,10 +187,15 @@ const PlanOrders = () => {
 
   // Handle status filter - ฟังก์ชันสำหรับจัดการการกรองสถานะ
   const handleStatusFilter = (status) => {
-    if (selectedStatus === status) {
+    // ป้องกันการเปิด order detail เมื่อกดการ์ด summary
+    if (status === 'ทั้งหมด') {
+      // กดที่ "ทั้งหมด" เพื่อแสดงทั้งหมด
+      setSelectedStatus('ทั้งหมด');
+    } else if (selectedStatus === status) {
       // ถ้ากดสถานะเดิมซ้ำ ให้ยกเลิกการกรอง (แสดงทั้งหมด)
       setSelectedStatus('ทั้งหมด');
     } else {
+      // เลือกสถานะใหม่
       setSelectedStatus(status);
     }
   };
@@ -593,10 +598,13 @@ const PlanOrders = () => {
               }}>
                 <button 
                   className="btn btn-sm w-100 fw-bold"
+                  disabled={order.status === 'ยกเลิก'}
                   style={{
-                    color: '#555555ff',
+                    color: order.status === 'ยกเลิก' ? '#999999' : '#555555ff',
                     fontSize: '1.4rem',
-                    // backgroundColor: '#2d5a3d'
+                    backgroundColor: order.status === 'ยกเลิก' ? '#e9ecef' : 'transparent',
+                    cursor: order.status === 'ยกเลิก' ? 'not-allowed' : 'pointer',
+                    opacity: order.status === 'ยกเลิก' ? 0.6 : 1
                   }}
                 >
                   <i className="fas fa-weight me-2 py-2"></i>
