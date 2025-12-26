@@ -48,7 +48,7 @@ const BottomNavigation = ({ activeTab = 'plan' }) => {
                 </div>
               </button>
             </div>
-            <div className="col-3">
+            {/* <div className="col-3">
               <button 
                 className="btn btn-link text-decoration-none p-2 w-100" 
                 style={getButtonStyle(activeTab === 'report-delivery')}
@@ -61,7 +61,7 @@ const BottomNavigation = ({ activeTab = 'plan' }) => {
                   รายงาน<br/>ส่งผัก
                 </div>
               </button>
-            </div>
+            </div> */}
           
             <div className="col-3">
               <button 
