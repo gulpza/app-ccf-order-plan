@@ -22,7 +22,7 @@ const BottomNavigation = ({ activeTab = 'plan' }) => {
       <div className="fixed-bottom bg-white border-top shadow-sm">
         <div className="container-fluid">
           <div className="row text-center py-2">
-            <div className="col-3">
+            <div className="col-4">
               <button 
                 className="btn btn-link text-decoration-none p-2 w-100" 
                 style={getButtonStyle(activeTab === 'plan')}
@@ -34,7 +34,7 @@ const BottomNavigation = ({ activeTab = 'plan' }) => {
                 <div className={`small ${activeTab === 'plan' ? 'fw-bold' : ''}`}>แผน</div>
               </button>
             </div>
-              <div className="col-3">
+              <div className="col-4">
               <button 
                 className="btn btn-link text-decoration-none p-2 w-100" 
                 style={getButtonStyle(activeTab === 'report-weight')}
@@ -63,7 +63,7 @@ const BottomNavigation = ({ activeTab = 'plan' }) => {
               </button>
             </div> */}
           
-            <div className="col-3">
+            <div className="col-4">
               <button 
                 className="btn btn-link text-decoration-none p-2 w-100" 
                 style={getButtonStyle(activeTab === 'profile')}
